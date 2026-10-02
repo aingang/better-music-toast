@@ -1,0 +1,21 @@
+{
+	"required": true,
+	"package": "de.bettermusictoast.mixin",
+	"compatibilityLevel": "JAVA_25",
+	"client": [
+		"BossHealthOverlayAccessor",
+		"HudAccessor",
+		"NowPlayingToastMixin",
+		"PauseScreenMixin",
+		"SoundOptionsScreenMixin",
+		"ToastInstanceAccessor",
+		"ToastManagerAccessor",
+		"ToastManagerMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	},
+	"overwrites": {
+		"requireAnnotations": true
+	}
+}
