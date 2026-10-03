@@ -2,6 +2,7 @@ package de.bettermusictoast.mixin;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import de.bettermusictoast.compat.McCompat;
 import de.bettermusictoast.config.ConfigScreen;
 import de.bettermusictoast.config.ThemedButton;
 import java.util.ArrayList;
@@ -52,7 +53,7 @@ public abstract class SoundOptionsScreenMixin {
 	private ThemedButton createSettingsButton() {
 		Screen parent = (Screen) (Object) this;
 		ThemedButton button = new ThemedButton(150, Component.translatable("bettermusictoast.soundOptions.button"),
-				() -> Minecraft.getInstance().gui.setScreen(new ConfigScreen(parent)));
+				() -> McCompat.setScreen(Minecraft.getInstance(), new ConfigScreen(parent)));
 		button.setTooltip(Tooltip.create(Component.translatable("bettermusictoast.soundOptions.button.tooltip")));
 		return button;
 	}

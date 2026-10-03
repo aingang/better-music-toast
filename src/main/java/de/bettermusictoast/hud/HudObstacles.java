@@ -1,6 +1,7 @@
 package de.bettermusictoast.hud;
 
 import de.bettermusictoast.BetterMusicToastClient;
+import de.bettermusictoast.compat.McCompat;
 import de.bettermusictoast.mixin.BossHealthOverlayAccessor;
 import de.bettermusictoast.mixin.HudAccessor;
 import de.bettermusictoast.mixin.ToastInstanceAccessor;
@@ -9,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.Hud;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.screens.PauseScreen;
 import net.minecraft.network.chat.Component;
@@ -30,11 +30,10 @@ public final class HudObstacles {
 	 */
 	public static List<Rect> collect(Minecraft mc, int screenWidth, int screenHeight, boolean includeHud) {
 		List<Rect> result = new ArrayList<>();
-		Hud hud = mc.gui.hud;
 		Font font = mc.font;
 
 		// Advancement / recipe / system toasts (top right, slide in from the right).
-		for (Object entry : ((ToastManagerAccessor) mc.gui.toastManager()).bettermusictoast$getVisibleToasts()) {
+		for (Object entry : ((ToastManagerAccessor) McCompat.toastManager(mc)).bettermusictoast$getVisibleToasts()) {
 			ToastInstanceAccessor instance = (ToastInstanceAccessor) entry;
 			float portion = instance.bettermusictoast$getVisiblePortion();
 			if (portion <= 0.0f) continue;
@@ -48,7 +47,7 @@ public final class HudObstacles {
 		// Its permanent pause-menu variant sits in the same spot.
 		if (!BetterMusicToastClient.config().hideVanillaToast
 				&& (BetterMusicToastClient.tracker().isVanillaToastVisible()
-						|| mc.gui.screen() instanceof PauseScreen pause && pause.rendersNowPlayingToast())) {
+						|| McCompat.screen(mc) instanceof PauseScreen pause && pause.rendersNowPlayingToast())) {
 			result.add(new Rect(0, 0, 200, 30));
 		}
 
@@ -71,7 +70,7 @@ public final class HudObstacles {
 		}
 
 		// Boss bars (top center): first bar at y=12, name 9px above, 19px per bar, capped at a third of the screen.
-		int bosses = ((BossHealthOverlayAccessor) hud.getBossOverlay()).bettermusictoast$getEvents().size();
+		int bosses = ((BossHealthOverlayAccessor) McCompat.bossOverlay(mc)).bettermusictoast$getEvents().size();
 		if (bosses > 0) {
 			int y = 12;
 			int bottom = 0;
@@ -83,7 +82,7 @@ public final class HudObstacles {
 			result.add(new Rect(screenWidth / 2 - 92, 2, 184, bottom - 1));
 		}
 
-		HudAccessor hudAccess = (HudAccessor) hud;
+		HudAccessor hudAccess = McCompat.hud(mc);
 
 		// Action bar / jukebox "Now Playing" message, drawn centered at screenHeight - 68.
 		Component overlay = hudAccess.bettermusictoast$getOverlayMessage();

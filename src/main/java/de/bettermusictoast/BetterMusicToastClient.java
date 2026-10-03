@@ -1,6 +1,7 @@
 package de.bettermusictoast;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import de.bettermusictoast.compat.McCompat;
 import de.bettermusictoast.config.ConfigScreen;
 import de.bettermusictoast.config.ModConfig;
 import de.bettermusictoast.hud.NowPlayingHud;
@@ -46,7 +47,7 @@ public final class BetterMusicToastClient implements ClientModInitializer {
 				TRACKER.reshow();
 			}
 			while (openSettings.consumeClick()) {
-				client.gui.setScreen(new ConfigScreen(client.gui.screen()));
+				McCompat.setScreen(client, new ConfigScreen(McCompat.screen(client)));
 			}
 		});
 

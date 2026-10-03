@@ -1,6 +1,7 @@
 package de.bettermusictoast.hud;
 
 import de.bettermusictoast.BetterMusicToastClient;
+import de.bettermusictoast.compat.McCompat;
 import de.bettermusictoast.config.ColorTheme;
 import de.bettermusictoast.config.ModConfig;
 import de.bettermusictoast.config.ModConfig.Position;
@@ -43,7 +44,7 @@ public final class NowPlayingHud implements HudElement {
 	/** In-game HUD pass. With "show in menus" the screen pass takes over while a menu is open. */
 	@Override
 	public void extractRenderState(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) {
-		if (drawsOverScreen() && Minecraft.getInstance().gui.screen() != null) {
+		if (drawsOverScreen() && McCompat.screen(Minecraft.getInstance()) != null) {
 			return;
 		}
 		render(graphics, false);
@@ -112,12 +113,12 @@ public final class NowPlayingHud implements HudElement {
 			blocked = obstacles.stream().anyMatch(panel::intersects);
 		}
 
-		boolean hudHidden = !overScreen && (mc.gui.hud.isHidden() || mc.gui.hud.getDebugOverlay().showDebugScreen());
+		boolean hudHidden = !overScreen && McCompat.isHudHidden(mc);
 		boolean show = tracker.wantsVisible() && !blocked && !hudHidden;
 
 		// Only count time the player can actually see the panel, so a blocked or
 		// covered display does not silently run out.
-		if (show && anim >= 1.0f && (overScreen || mc.gui.screen() == null)) {
+		if (show && anim >= 1.0f && (overScreen || McCompat.screen(mc) == null)) {
 			tracker.addShownTime(dtMs);
 		}
 

@@ -2,6 +2,7 @@ package de.bettermusictoast.config;
 
 import com.mojang.serialization.Codec;
 import de.bettermusictoast.BetterMusicToastClient;
+import de.bettermusictoast.compat.McCompat;
 import java.util.Arrays;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -28,7 +29,7 @@ public final class ConfigScreen extends OptionsSubScreen {
 		this.list.addBig(bool("enabled", config.enabled, v -> config.enabled = v));
 		this.list.addBig(enumOption("position", ModConfig.Position.values(), config.position,
 				ModConfig.Position::translationKey, v -> config.position = v));
-		this.list.addBig(new ColorThemeButton(config, this::showPreview));
+		McCompat.addWide(this.list, new ColorThemeButton(config, this::showPreview));
 		this.list.addBig(enumOption("displayMode", ModConfig.DisplayMode.values(), config.displayMode,
 				ModConfig.DisplayMode::translationKey, v -> {
 					config.displayMode = v;
