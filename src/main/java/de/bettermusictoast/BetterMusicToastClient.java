@@ -33,7 +33,12 @@ public final class BetterMusicToastClient implements ClientModInitializer {
 	public void onInitializeClient() {
 		config = ModConfig.load();
 
+		// Key categories became objects in 1.21.9; before that a category is its translation key.
+		//? if >=1.21.9 {
 		KeyMapping.Category category = KeyMapping.Category.register(Identifier.fromNamespaceAndPath(MOD_ID, "main"));
+		//?} else {
+		/*String category = "key.category." + MOD_ID + ".main";
+		*///?}
 		KeyMapping showAgain = KeyMappingHelper.registerKeyMapping(
 				new KeyMapping("key.bettermusictoast.show", InputConstants.UNKNOWN.getValue(), category));
 		KeyMapping openSettings = KeyMappingHelper.registerKeyMapping(

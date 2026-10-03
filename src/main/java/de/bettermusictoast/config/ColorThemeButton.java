@@ -3,7 +3,6 @@ package de.bettermusictoast.config;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Options;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
@@ -23,7 +22,7 @@ public final class ColorThemeButton extends ThemedButton {
 	}
 
 	@Override
-	public void onPress(InputWithModifiers input) {
+	protected void pressed() {
 		ColorTheme[] themes = ColorTheme.values();
 		config.colorTheme = themes[(config.colorTheme.ordinal() + 1) % themes.length];
 		refresh();

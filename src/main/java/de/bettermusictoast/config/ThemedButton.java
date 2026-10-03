@@ -7,6 +7,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+//? if >=1.21.9
 import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.network.chat.Component;
 import org.joml.Matrix3x2fStack;
@@ -20,8 +21,18 @@ public class ThemedButton extends AbstractButton {
 		this.action = action;
 	}
 
+	// Since 1.21.9 the click also reports which key or mouse button triggered it.
 	@Override
+	//? if >=1.21.9 {
 	public void onPress(InputWithModifiers input) {
+	//?} else {
+	/*public void onPress() {
+	*///?}
+		pressed();
+	}
+
+	/** Version-independent click handler for subclasses. */
+	protected void pressed() {
 		action.run();
 	}
 
