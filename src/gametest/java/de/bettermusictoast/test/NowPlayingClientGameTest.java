@@ -99,11 +99,11 @@ public class NowPlayingClientGameTest implements FabricClientGameTest {
 			// 7. Large size, top left, after closing settings (preview path).
 			context.runOnClient(mc -> {
 				config.position = ModConfig.Position.TOP_LEFT;
-				config.size = ModConfig.Size.LARGE;
+				config.sizePercent = 150;
 			});
 			context.waitTicks(20);
 			context.takeScreenshot("npt_08_top_left_large");
-			context.runOnClient(mc -> config.size = ModConfig.Size.NORMAL);
+			context.runOnClient(mc -> config.sizePercent = 100);
 
 			// 7b. A music disc playing in a nearby jukebox (shows the disc item as icon).
 			context.runOnClient(mc -> {

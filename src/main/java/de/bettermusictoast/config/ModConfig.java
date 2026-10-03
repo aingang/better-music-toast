@@ -43,17 +43,11 @@ public final class ModConfig {
 		}
 	}
 
-	public enum Size {
-		SMALL(0.75f), NORMAL(1.0f), LARGE(1.25f);
-
-		public final float scale;
-
-		Size(float scale) {
-			this.scale = scale;
-		}
+	public enum MusicStyle {
+		MIXED, CLASSIC;
 
 		public String translationKey() {
-			return "bettermusictoast.size." + name().toLowerCase();
+			return "bettermusictoast.musicStyle." + name().toLowerCase();
 		}
 	}
 
@@ -62,11 +56,15 @@ public final class ModConfig {
 	public DisplayMode displayMode = DisplayMode.TIMED;
 	public int durationSeconds = 6;
 	public AvoidMode avoidMode = AvoidMode.MOVE;
-	public Size size = Size.NORMAL;
+	/** Requested box size in percent; snapped to a sharp step for the current GUI scale. */
+	public Integer sizePercent;
+	/** Pre-1.3 setting (SMALL / NORMAL / LARGE), only read to migrate old configs. */
+	private String size;
 	public boolean showArtist = true;
 	public boolean showMusicDiscs = true;
 	public boolean hideVanillaToast = true;
 	public boolean showInMenus = false;
+	public MusicStyle musicStyle = MusicStyle.MIXED;
 
 	public static ModConfig load() {
 		Path source = Files.exists(PATH) ? PATH : LEGACY_PATH;
@@ -84,9 +82,31 @@ public final class ModConfig {
 				LOGGER.warn("Could not read {}, using defaults", source, e);
 			}
 		}
-		ModConfig config = new ModConfig();
+		ModConfig config = new ModConfig().sanitize();
 		config.save();
 		return config;
+	}
+
+	/*
+	 * The box stays pixel-sharp only if every font pixel covers a whole number of screen
+	 * pixels, so sizes are expressed in screen pixels per GUI pixel: from one step below
+	 * normal (the GUI scale itself) up to twice the normal size.
+	 */
+
+	public static int minSizePixels(int guiScale) {
+		return Math.max(1, guiScale - 1);
+	}
+
+	public static int maxSizePixels(int guiScale) {
+		return guiScale * 2;
+	}
+
+	public int sizePixels(int guiScale) {
+		return Math.clamp(Math.round(sizePercent / 100.0f * guiScale), minSizePixels(guiScale), maxSizePixels(guiScale));
+	}
+
+	public float scale(int guiScale) {
+		return (float) sizePixels(guiScale) / guiScale;
 	}
 
 	public void save() {
@@ -106,7 +126,16 @@ public final class ModConfig {
 		if (position == null) position = defaults.position;
 		if (displayMode == null) displayMode = defaults.displayMode;
 		if (avoidMode == null) avoidMode = defaults.avoidMode;
-		if (size == null) size = defaults.size;
+		if (musicStyle == null) musicStyle = defaults.musicStyle;
+		if (sizePercent == null) {
+			sizePercent = switch (size == null ? "NORMAL" : size) {
+				case "SMALL" -> 75;
+				case "LARGE" -> 125;
+				default -> 100;
+			};
+		}
+		size = null;
+		sizePercent = Math.clamp(sizePercent, 25, 400);
 		durationSeconds = Math.clamp(durationSeconds, 2, 30);
 		return this;
 	}

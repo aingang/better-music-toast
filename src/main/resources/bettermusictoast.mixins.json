@@ -3,6 +3,7 @@
 	"package": "de.bettermusictoast.mixin",
 	"compatibilityLevel": "JAVA_25",
 	"client": [
+		"AbstractSoundInstanceMixin",
 		"BossHealthOverlayAccessor",
 		"ChannelMixin",
 		"HudAccessor",

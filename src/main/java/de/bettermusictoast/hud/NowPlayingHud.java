@@ -85,7 +85,8 @@ public final class NowPlayingHud implements HudElement {
 		int width = TEXT_X + textWidth + PADDING_RIGHT;
 		int height = artist == null ? HEIGHT_ONE_LINE : HEIGHT_TWO_LINES;
 
-		float scale = config.size.scale;
+		int guiScale = mc.getWindow().getGuiScale();
+		float scale = config.scale(guiScale);
 		int scaledWidth = (int) Math.ceil(width * scale);
 		int scaledHeight = (int) Math.ceil(height * scale);
 		int screenWidth = graphics.guiWidth();
@@ -160,7 +161,9 @@ public final class NowPlayingHud implements HudElement {
 
 		Matrix3x2fStack pose = graphics.pose();
 		pose.pushMatrix();
-		pose.translate(x + dx, currentY + dy);
+		// Snap to whole screen pixels so the font never lands between pixels.
+		pose.translate(Math.round((x + dx) * guiScale) / (float) guiScale,
+				Math.round((currentY + dy) * guiScale) / (float) guiScale);
 		pose.scale(scale, scale);
 		drawPanel(graphics, font, track, title, artist, width, height, alpha);
 		pose.popMatrix();

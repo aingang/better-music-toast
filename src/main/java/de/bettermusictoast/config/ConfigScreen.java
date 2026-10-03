@@ -29,15 +29,14 @@ public final class ConfigScreen extends OptionsSubScreen {
 				ModConfig.Position::translationKey, v -> config.position = v));
 		this.list.addBig(enumOption("displayMode", ModConfig.DisplayMode.values(), config.displayMode,
 				ModConfig.DisplayMode::translationKey, v -> config.displayMode = v));
-		this.list.addSmall(
-				duration(),
-				enumOption("size", ModConfig.Size.values(), config.size,
-						ModConfig.Size::translationKey, v -> config.size = v));
+		this.list.addSmall(duration(), size());
 		this.list.addBig(enumOption("avoidMode", ModConfig.AvoidMode.values(), config.avoidMode,
 				ModConfig.AvoidMode::translationKey, v -> config.avoidMode = v));
 		this.list.addSmall(
 				bool("showArtist", config.showArtist, v -> config.showArtist = v),
 				bool("showMusicDiscs", config.showMusicDiscs, v -> config.showMusicDiscs = v));
+		this.list.addBig(enumOption("musicStyle", ModConfig.MusicStyle.values(), config.musicStyle,
+				ModConfig.MusicStyle::translationKey, v -> config.musicStyle = v));
 		this.list.addBig(bool("showInMenus", config.showInMenus, v -> config.showInMenus = v));
 		this.list.addBig(bool("hideVanillaToast", config.hideVanillaToast, v -> {
 			config.hideVanillaToast = v;
@@ -88,6 +87,18 @@ public final class ConfigScreen extends OptionsSubScreen {
 				(caption, v) -> Component.translatable(translationKey.apply(v)),
 				new OptionInstance.Enum<>(Arrays.asList(values), codec),
 				value, setter::accept);
+	}
+
+	/** Slider over the sizes that stay pixel-sharp at the current GUI scale. */
+	private OptionInstance<Integer> size() {
+		int guiScale = Minecraft.getInstance().getWindow().getGuiScale();
+		return new OptionInstance<>(key("size"),
+				OptionInstance.cachedConstantTooltip(Component.translatable(key("size") + ".tooltip")),
+				(caption, pixels) -> Options.genericValueLabel(caption,
+						Component.literal(Math.round(pixels * 100.0f / guiScale) + "%")),
+				new OptionInstance.IntRange(ModConfig.minSizePixels(guiScale), ModConfig.maxSizePixels(guiScale)),
+				config.sizePixels(guiScale),
+				pixels -> config.sizePercent = Math.round(pixels * 100.0f / guiScale));
 	}
 
 	private OptionInstance<Integer> duration() {
