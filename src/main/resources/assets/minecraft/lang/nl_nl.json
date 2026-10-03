@@ -1,0 +1,6 @@
+{
+	"options.music_frequency": "Muziekfrequentie",
+	"options.music_frequency.default": "standaard",
+	"options.music_frequency.frequent": "vaak",
+	"options.music_frequency.tooltip": "Bepaalt hoe vaak muziek speelt wanneer je in een wereld bent."
+}

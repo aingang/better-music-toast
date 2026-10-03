@@ -6,7 +6,7 @@ You can choose where it shows up, how long it stays, and it moves out of the way
 
 ## Requirements
 
-- Minecraft 26.2 – 26.3 with Fabric Loader
+- Minecraft 1.21.5 – 26.3 with Fabric Loader (one jar per version range)
 - [Fabric API](https://modrinth.com/mod/fabric-api)
 - [Mod Menu](https://modrinth.com/mod/modmenu) (optional)
 
@@ -31,3 +31,8 @@ All jars end up in `build/libs/<mod version>/`.
 ## License
 
 MIT, see [LICENSE](LICENSE).
+
+Minecraft only added song names, the music notes icon and the Music Frequency option in 1.21.6. The jars
+for older versions bring these themselves: the song names and option texts as Mojang wrote them, and the
+icon taken from Minecraft 1.21.6 (© Mojang). Music Frequency works and is saved exactly like in 1.21.6+,
+and like in 1.21.6+ the music keeps playing while the game is paused.

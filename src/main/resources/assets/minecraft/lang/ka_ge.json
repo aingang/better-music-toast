@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "მუსიკის დაკვრის სიხშირე",
+	"options.music_frequency.constant": "მუდმივი",
+	"options.music_frequency.default": "ნაგულისხმევი",
+	"options.music_frequency.frequent": "ხშირი",
+	"options.music_frequency.tooltip": "ცვლის მუსიკის დაკვრის სიხშირეს თამაშის სამყაროში ყოფნისას."
+}

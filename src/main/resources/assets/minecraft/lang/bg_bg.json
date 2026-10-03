@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "Честота на музиката",
+	"options.music_frequency.constant": "Постоянно",
+	"options.music_frequency.default": "По подразбиране",
+	"options.music_frequency.frequent": "Често",
+	"options.music_frequency.tooltip": "Променя честотата на възпроизвеждане на музика, докато сте в игровия свят."
+}

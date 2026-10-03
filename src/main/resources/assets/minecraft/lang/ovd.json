@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "Musikuppspelning",
+	"options.music_frequency.constant": "Hela tiden",
+	"options.music_frequency.default": "Standard",
+	"options.music_frequency.frequent": "Ofta",
+	"options.music_frequency.tooltip": "Ändrar hur ofta musik spelas i en spelvärld."
+}

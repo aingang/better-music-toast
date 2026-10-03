@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "Музыка тӑтӑшлӑхӗ",
+	"options.music_frequency.constant": "Ялан",
+	"options.music_frequency.default": "Йӗркеллӗ",
+	"options.music_frequency.frequent": "Тӑтӑш",
+	"options.music_frequency.tooltip": "Вӑйӑ тӗнчинче музыка вылянин тапхӑрлӑхне улӑштарать."
+}

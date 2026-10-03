@@ -86,7 +86,13 @@ public final class NowPlayingTracker implements SoundEventListener {
 		if (!config.enabled || ended) {
 			return false;
 		}
+		//? if >=1.21.6 {
 		if (Minecraft.getInstance().options.getFinalSoundSourceVolume(source) <= 0.0f) {
+		//?} else {
+		/*// Same as getFinalSoundSourceVolume, which 1.21.6 added: the source volume times master.
+		net.minecraft.client.Options options = Minecraft.getInstance().options;
+		if (options.getSoundSourceVolume(source) * options.getSoundSourceVolume(SoundSource.MASTER) <= 0.0f) {
+		*///?}
 			return false;
 		}
 		return config.displayMode == ModConfig.DisplayMode.WHOLE_SONG || shownMs < config.durationSeconds * 1000L;

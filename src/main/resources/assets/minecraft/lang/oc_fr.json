@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "Frequéncia de la musica",
+	"options.music_frequency.constant": "En continú",
+	"options.music_frequency.default": "Per deca",
+	"options.music_frequency.frequent": "Frequenta",
+	"options.music_frequency.tooltip": "Cambia la frequéncia a laquala la musica es jogada dins un mond."
+}

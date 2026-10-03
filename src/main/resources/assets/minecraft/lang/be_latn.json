@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "Pieryjadyčnasć muzyki",
+	"options.music_frequency.constant": "Pastajanna",
+	"options.music_frequency.default": "Pa zmaŭčanni",
+	"options.music_frequency.frequent": "Časta",
+	"options.music_frequency.tooltip": "Zmianiaje častatu prajhravannia muzyki ŭ sviecie."
+}

@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "תדירות מוזיקה",
+	"options.music_frequency.constant": "תמידית",
+	"options.music_frequency.default": "ברירת מחדל",
+	"options.music_frequency.frequent": "גבוהה",
+	"options.music_frequency.tooltip": "קובע את תדירות ניגון המוזיקה בזמן משחק בעולם."
+}

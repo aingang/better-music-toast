@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "Kekerapan Musik",
+	"options.music_frequency.constant": "Selalu",
+	"options.music_frequency.default": "Jarang",
+	"options.music_frequency.frequent": "Sering",
+	"options.music_frequency.tooltip": "Mengubah seberapa sering musik dimainkan ketika di dalam dunia permainan."
+}

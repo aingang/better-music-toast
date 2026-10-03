@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "Երաժշտության հաճախությունը",
+	"options.music_frequency.constant": "Հաստատուն",
+	"options.music_frequency.default": "Հիմնական",
+	"options.music_frequency.frequent": "Հաճախ",
+	"options.music_frequency.tooltip": "Փոխում է երաժշտության հաճախությունը խաղային աշխարհում:"
+}

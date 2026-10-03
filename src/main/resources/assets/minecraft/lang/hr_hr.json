@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "Učestalost glazbe",
+	"options.music_frequency.constant": "Neprekidna",
+	"options.music_frequency.default": "Uobičajena",
+	"options.music_frequency.frequent": "Česta",
+	"options.music_frequency.tooltip": "Određuje koliko često glazba svira za vrijeme igranja u svijetu."
+}

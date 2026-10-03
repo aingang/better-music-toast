@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "ความถี่ในการเล่นเพลง",
+	"options.music_frequency.constant": "ต่อเนื่อง",
+	"options.music_frequency.default": "ค่าเริ่มต้น",
+	"options.music_frequency.frequent": "บ่อยครั้ง",
+	"options.music_frequency.tooltip": "เปลี่ยนว่าจะให้เพลงเล่นบ่อยแค่ไหนขณะที่อยู่ในโลกเกม"
+}

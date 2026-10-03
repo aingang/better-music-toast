@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "Musiikin esiintymistiheys",
+	"options.music_frequency.constant": "Jatkuva",
+	"options.music_frequency.default": "Oletus",
+	"options.music_frequency.frequent": "Tiheä",
+	"options.music_frequency.tooltip": "Muuttaa sitä, kuinka usein musiikkia soi pelimaailmassa."
+}

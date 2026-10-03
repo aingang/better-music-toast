@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "Amlder Cerddoriaeth",
+	"options.music_frequency.constant": "Cyson",
+	"options.music_frequency.default": "Diofyn",
+	"options.music_frequency.frequent": "Aml",
+	"options.music_frequency.tooltip": "Yn newid pa mor aml mae'r gerddoriaeth yn chwarae tra mewn byd gêm."
+}

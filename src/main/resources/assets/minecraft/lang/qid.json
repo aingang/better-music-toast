@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "Kekerapan muziek",
+	"options.music_frequency.constant": "selaloe",
+	"options.music_frequency.default": "djarang",
+	"options.music_frequency.frequent": "sering",
+	"options.music_frequency.tooltip": "Mengoebah seberapa sering muziek dimaïnkan ketika didalam doenia permaïnan."
+}

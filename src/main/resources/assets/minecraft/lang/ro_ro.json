@@ -1,0 +1,6 @@
+{
+	"options.music_frequency": "Frecvența muzicii",
+	"options.music_frequency.default": "Implicit",
+	"options.music_frequency.frequent": "Frecvent",
+	"options.music_frequency.tooltip": "Modifică frecvența cu care se redă muzica într-o lume de joc."
+}

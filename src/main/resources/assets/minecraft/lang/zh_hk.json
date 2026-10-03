@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "音樂頻率",
+	"options.music_frequency.constant": "持續",
+	"options.music_frequency.default": "預設",
+	"options.music_frequency.frequent": "頻繁",
+	"options.music_frequency.tooltip": "調整遊戲世界中音樂播放的頻率。"
+}

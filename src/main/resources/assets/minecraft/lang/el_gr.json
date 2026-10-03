@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "Συχνότητα Μουσικής",
+	"options.music_frequency.constant": "Σταθερή",
+	"options.music_frequency.default": "Προεπιλεγμένη",
+	"options.music_frequency.frequent": "Συχνή",
+	"options.music_frequency.tooltip": "Αλλάζει πόσο συχνά παίζει μουσική σε έναν κόσμο παιχνιδιού."
+}

@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "BGMの頻度",
+	"options.music_frequency.constant": "常時",
+	"options.music_frequency.default": "デフォルト",
+	"options.music_frequency.frequent": "頻繁",
+	"options.music_frequency.tooltip": "ゲームワールド内でBGMが再生される頻度を変更します。"
+}

@@ -29,6 +29,14 @@ public abstract class SoundOptionsScreenMixin {
 			target = "Lnet/minecraft/client/gui/components/OptionsList;addSmall([Lnet/minecraft/client/OptionInstance;)V"))
 	private void bettermusictoast$replaceMusicToastButton(OptionsList list, OptionInstance<?>[] options, Operation<Void> original) {
 		Options gameOptions = Minecraft.getInstance().options;
+		// Before 1.21.6 there is neither a Music Frequency nor a music toast button, so the mod adds
+		// the row 1.21.6+ has below Show Subtitles / Directional Audio: Music Frequency and our button.
+		//? if <1.21.6 {
+		/*original.call(list, options);
+		if (java.util.Arrays.asList(options).contains(gameOptions.directionalAudio())) {
+			list.addSmall(List.of(new de.bettermusictoast.config.MusicFrequencyButton(), createSettingsButton()));
+		}
+		*///?} else {
 		OptionInstance<?> musicToast = McCompat.vanillaToastOption(gameOptions);
 
 		List<AbstractWidget> widgets = new ArrayList<>();
@@ -47,6 +55,7 @@ public abstract class SoundOptionsScreenMixin {
 		} else {
 			original.call(list, options);
 		}
+		//?}
 	}
 
 	/** Drawn in the selected colour theme, so it doubles as a small preview of the song box. */

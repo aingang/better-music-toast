@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "Частота музикы",
+	"options.music_frequency.constant": "Фурт",
+	"options.music_frequency.default": "Стандардно",
+	"options.music_frequency.frequent": "Часто",
+	"options.music_frequency.tooltip": "Становить, як часто пуд час бавкы буде бавити музика."
+}

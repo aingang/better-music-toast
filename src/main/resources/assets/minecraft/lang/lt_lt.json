@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "Muzikos dažnumas",
+	"options.music_frequency.constant": "nuolatinis",
+	"options.music_frequency.default": "numatytasis",
+	"options.music_frequency.frequent": "dažnas",
+	"options.music_frequency.tooltip": "Keičia kaip dažnai žaidime skamba muzika."
+}

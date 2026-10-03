@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "Frequentatio musicae",
+	"options.music_frequency.constant": "Constans",
+	"options.music_frequency.default": "Normalis",
+	"options.music_frequency.frequent": "Frequens",
+	"options.music_frequency.tooltip": "Quam frequenter musica canat mutat dum in mundo ludi."
+}

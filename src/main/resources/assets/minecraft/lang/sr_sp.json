@@ -1,0 +1,6 @@
+{
+	"options.music_frequency": "Учесталост музике",
+	"options.music_frequency.constant": "Стална",
+	"options.music_frequency.default": "Стандардна",
+	"options.music_frequency.frequent": "Честа"
+}

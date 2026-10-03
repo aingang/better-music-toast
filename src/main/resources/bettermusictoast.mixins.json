@@ -7,12 +7,18 @@
 		"BossHealthOverlayAccessor",
 		"ChannelMixin",
 		"HudAccessor",
-		"NowPlayingToastMixin",
+<% if (vanilla_toast) { %>		"NowPlayingToastMixin",
 		"PauseScreenMixin",
-		"SoundOptionsScreenMixin",
+<% } else { %>		"MinecraftMixin",
+		"MusicManagerAccessor",
+		"MusicManagerMixin",
+		"OptionsMixin",
+		"SoundEngineMixin",
+		"SoundManagerAccessor",
+<% } %>		"SoundOptionsScreenMixin",
 		"ToastInstanceAccessor",
-		"ToastManagerAccessor",
-		"ToastManagerMixin"
+		"ToastManagerAccessor"<% if (vanilla_toast) { %>,
+		"ToastManagerMixin"<% } %>
 	],
 	"injectors": {
 		"defaultRequire": 1

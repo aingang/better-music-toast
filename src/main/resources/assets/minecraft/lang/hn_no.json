@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "Musikktidleike",
+	"options.music_frequency.constant": "Stødt",
+	"options.music_frequency.default": "Fyrevalt",
+	"options.music_frequency.frequent": "Ofte",
+	"options.music_frequency.tooltip": "Brigder kor tidt toneleik verd spelad av i ein spelheim."
+}

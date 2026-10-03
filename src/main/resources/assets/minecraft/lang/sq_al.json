@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "Frekuenca e muzikës",
+	"options.music_frequency.constant": "E vazhdueshme",
+	"options.music_frequency.default": "E parazgjedhur",
+	"options.music_frequency.frequent": "E shpeshtë",
+	"options.music_frequency.tooltip": "Ndryshon shpeshtësinë e lurjes së muzikës në një botë."
+}

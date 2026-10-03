@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "Prehrávanie hudby",
+	"options.music_frequency.constant": "Stále",
+	"options.music_frequency.default": "Štandardné",
+	"options.music_frequency.frequent": "Časté",
+	"options.music_frequency.tooltip": "Určuje, ako často bude hrať hudba v hernom svete."
+}

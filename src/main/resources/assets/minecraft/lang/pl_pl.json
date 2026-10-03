@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "Częstość muzyki",
+	"options.music_frequency.constant": "Stała",
+	"options.music_frequency.default": "Domyślna",
+	"options.music_frequency.frequent": "Wysoka",
+	"options.music_frequency.tooltip": "Zmienia częstotliwość odtwarzania muzyki w świecie gry."
+}

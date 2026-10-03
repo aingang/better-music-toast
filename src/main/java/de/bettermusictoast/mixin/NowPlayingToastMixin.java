@@ -1,5 +1,7 @@
 package de.bettermusictoast.mixin;
 
+// Vanilla's music toast only exists since 1.21.6; older versions build without this mixin.
+//? if >=1.21.6 {
 import de.bettermusictoast.BetterMusicToastClient;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -23,3 +25,4 @@ public abstract class NowPlayingToastMixin {
 		}
 	}
 }
+//?}

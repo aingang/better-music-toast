@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "Frekuenzia musikala",
+	"options.music_frequency.constant": "Etengabe",
+	"options.music_frequency.default": "Lehenetsia",
+	"options.music_frequency.frequent": "Maiz",
+	"options.music_frequency.tooltip": "Joko mundu batean musika zein maiztasunarekin jotzen den aldatzen du."
+}

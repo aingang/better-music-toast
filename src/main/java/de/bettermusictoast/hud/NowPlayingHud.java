@@ -8,21 +8,35 @@ import de.bettermusictoast.config.ModConfig.Position;
 import de.bettermusictoast.track.NowPlayingTracker;
 import de.bettermusictoast.track.TrackInfo;
 import java.util.List;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
+//? if >=1.21.6 {
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
+import net.minecraft.client.renderer.RenderPipelines;
 import org.joml.Matrix3x2fStack;
+//?} else {
+/*import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.LayeredDraw;
+import net.minecraft.client.renderer.RenderType;
+*///?}
 
 /**
  * Draws the "now playing" panel: a compact, advancement-toast-like box with a light
  * background and a darker pixel border in the selected {@link ColorTheme}.
  */
+//? if >=1.21.6 {
 public final class NowPlayingHud implements HudElement {
 	private static final Identifier MUSIC_NOTES_SPRITE = Identifier.withDefaultNamespace("icon/music_notes");
+//?} else {
+/*// Before 1.21.6 the HUD is built from layers, and Minecraft has no music notes icon of its own yet,
+// so the mod ships the same icon.
+public final class NowPlayingHud implements LayeredDraw.Layer {
+	private static final Identifier MUSIC_NOTES_SPRITE =
+			Identifier.fromNamespaceAndPath(BetterMusicToastClient.MOD_ID, "music_notes");
+*///?}
 
 	private static final int SCREEN_MARGIN = 4;
 	private static final int OBSTACLE_GAP = 2;
@@ -88,7 +102,8 @@ public final class NowPlayingHud implements HudElement {
 		int width = TEXT_X + textWidth + PADDING_RIGHT;
 		int height = artist == null ? HEIGHT_ONE_LINE : HEIGHT_TWO_LINES;
 
-		int guiScale = mc.getWindow().getGuiScale();
+		// The cast is only needed before 1.21.6, where the GUI scale is a double.
+		int guiScale = (int) mc.getWindow().getGuiScale();
 		float scale = config.scale(guiScale);
 		int scaledWidth = (int) Math.ceil(width * scale);
 		int scaledHeight = (int) Math.ceil(height * scale);
@@ -162,6 +177,7 @@ public final class NowPlayingHud implements HudElement {
 			}
 		}
 
+		//? if >=1.21.6 {
 		Matrix3x2fStack pose = graphics.pose();
 		pose.pushMatrix();
 		// Snap to whole screen pixels so the font never lands between pixels.
@@ -170,6 +186,17 @@ public final class NowPlayingHud implements HudElement {
 		pose.scale(scale, scale);
 		drawPanel(graphics, font, track, title, artist, width, height, alpha, config.colorTheme);
 		pose.popMatrix();
+		//?} else {
+		/*// Before 1.21.6 the GUI is depth-tested: lift the box to the height vanilla toasts use,
+		// so menu items and tooltips never show through it.
+		PoseStack pose = graphics.pose();
+		pose.pushPose();
+		pose.translate(Math.round((x + dx) * guiScale) / (float) guiScale,
+				Math.round((currentY + dy) * guiScale) / (float) guiScale, 800.0f);
+		pose.scale(scale, scale, 1.0f);
+		drawPanel(graphics, font, track, title, artist, width, height, alpha, config.colorTheme);
+		pose.popPose();
+		*///?}
 	}
 
 	/** Above the hearts / hunger bar in survival, just above the hotbar item names in creative. */
@@ -207,7 +234,11 @@ public final class NowPlayingHud implements HudElement {
 		if (!track.icon().isEmpty() && alpha > 0.6f) {
 			g.item(track.icon(), ICON_X, iconY);
 		} else {
+			//? if >=1.21.6 {
 			g.blitSprite(RenderPipelines.GUI_TEXTURED, MUSIC_NOTES_SPRITE, ICON_X, iconY, 16, 16, argb(theme.icon, alpha));
+			//?} else {
+			/*g.blitSprite(RenderType::guiTextured, MUSIC_NOTES_SPRITE, ICON_X, iconY, 16, 16, argb(theme.icon, alpha));
+			*///?}
 		}
 
 		if (alpha < 0.05f) {

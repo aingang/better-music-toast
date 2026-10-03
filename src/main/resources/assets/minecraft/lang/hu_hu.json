@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "Zene gyakorisága",
+	"options.music_frequency.constant": "Folyamatos",
+	"options.music_frequency.default": "Alapértelmezett",
+	"options.music_frequency.frequent": "Gyakori",
+	"options.music_frequency.tooltip": "Azt szabályozza, milyen gyakran induljon el háttérzene, amíg egy világban tartózkodsz."
+}

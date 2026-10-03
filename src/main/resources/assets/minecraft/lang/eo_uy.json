@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "Ofto de muziko",
+	"options.music_frequency.constant": "Senĉesa",
+	"options.music_frequency.default": "Defaŭlta",
+	"options.music_frequency.frequent": "Ofta",
+	"options.music_frequency.tooltip": "Tio ŝanĝas la ofton de muziko en la mondo."
+}

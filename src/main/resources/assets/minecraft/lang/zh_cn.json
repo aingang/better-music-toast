@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "音乐播放频率",
+	"options.music_frequency.constant": "持续",
+	"options.music_frequency.default": "默认",
+	"options.music_frequency.frequent": "频繁",
+	"options.music_frequency.tooltip": "调整游戏世界中音乐播放的频率。"
+}

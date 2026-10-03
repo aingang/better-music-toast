@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "Frekvenca zvoka",
+	"options.music_frequency.constant": "Konstantno",
+	"options.music_frequency.default": "Privzeto",
+	"options.music_frequency.frequent": "Pogosto",
+	"options.music_frequency.tooltip": "Spremeni se kako pogosto se predvaja glasba v svetu."
+}

@@ -1,0 +1,5 @@
+{
+	"options.music_frequency": "Shanty frequency",
+	"options.music_frequency.default": "Standard",
+	"options.music_frequency.tooltip": "Changes how frequently yer crew plays shanties while sailin'."
+}

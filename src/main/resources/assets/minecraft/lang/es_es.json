@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "Música",
+	"options.music_frequency.constant": "Constante",
+	"options.music_frequency.default": "Por defecto",
+	"options.music_frequency.frequent": "Frecuente",
+	"options.music_frequency.tooltip": "Cambia la frecuencia con la que se reproduce música durante una partida."
+}

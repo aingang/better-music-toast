@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "Периодичность музыки",
+	"options.music_frequency.constant": "Постоянная",
+	"options.music_frequency.default": "По умолчанию",
+	"options.music_frequency.frequent": "Частая",
+	"options.music_frequency.tooltip": "Меняет периодичность воспроизведения музыки в игровом мире."
+}

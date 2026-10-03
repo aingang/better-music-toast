@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "Musiekfrekwensie",
+	"options.music_frequency.constant": "Konstant",
+	"options.music_frequency.default": "Verstek",
+	"options.music_frequency.frequent": "Gereeld",
+	"options.music_frequency.tooltip": "Verander hoe gereeld musiek speel terwyl jy in die spelwêreld is."
+}

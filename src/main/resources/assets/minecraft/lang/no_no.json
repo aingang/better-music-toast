@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "Musikkhyppighet",
+	"options.music_frequency.constant": "Alltid",
+	"options.music_frequency.default": "Forvalgt",
+	"options.music_frequency.frequent": "Ofte",
+	"options.music_frequency.tooltip": "Endrer hvor ofte musikk spilles av mens man er i en spillverden."
+}

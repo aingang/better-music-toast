@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "Dalas ng Musika",
+	"options.music_frequency.constant": "Tuloy-tuloy",
+	"options.music_frequency.default": "Panimula",
+	"options.music_frequency.frequent": "Madalas",
+	"options.music_frequency.tooltip": "Binabago kung gaanong kadalas tumugtog ang musika habang nasa mundo ng laro."
+}

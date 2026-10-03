@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "Musikhüüfigkeit",
+	"options.music_frequency.constant": "Durchgängig",
+	"options.music_frequency.default": "Standard",
+	"options.music_frequency.frequent": "Hüüfig",
+	"options.music_frequency.tooltip": "Stüüret, wie hüüfig Musik bim Spieler i enere Welt wiederge wird."
+}

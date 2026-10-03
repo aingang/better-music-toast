@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "Fréquence musicale",
+	"options.music_frequency.constant": "En continu",
+	"options.music_frequency.default": "Par défaut",
+	"options.music_frequency.frequent": "Fréquente",
+	"options.music_frequency.tooltip": "Change à quelle fréquence la musique est jouée dans un monde."
+}

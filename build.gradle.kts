@@ -35,6 +35,11 @@ loom {
     runConfigs.all {
         runDirectory = rootProject.file("run")
     }
+
+    // Before 1.21.6 the mod adds Minecraft's "Music Frequency" option itself (see MusicFrequency).
+    if (sc.current.parsed < "1.21.6") {
+        accessWidenerPath = rootProject.file("src/main/resources/bettermusictoast.accesswidener")
+    }
 }
 
 java {
@@ -57,9 +62,28 @@ tasks {
             "minecraft" to mcCompat,
             "java" to "JAVA_${requiredJava.majorVersion}",
             "java_version" to requiredJava.majorVersion,
+            // Vanilla's own music toast (and its mixins) only exists since 1.21.6.
+            "vanilla_toast" to (sc.current.parsed >= "1.21.6"),
         )
         inputs.properties(props)
         filesMatching(listOf("fabric.mod.json", "*.mixins.json")) { expand(props) }
+
+        // Song names, the music notes icon and the Music Frequency option that Minecraft itself
+        // only has since 1.21.6.
+        if (sc.current.parsed >= "1.21.6") {
+            exclude(
+                "assets/minecraft/lang/**",
+                "assets/bettermusictoast/textures/gui/sprites/**",
+                "bettermusictoast.accesswidener",
+            )
+        } else {
+            // Registers the access widener in fabric.mod.json, right before "mixins".
+            filesMatching("fabric.mod.json") {
+                filter { line ->
+                    if (line.trim() == "\"mixins\": [") "\t\"accessWidener\": \"bettermusictoast.accesswidener\",\n$line" else line
+                }
+            }
+        }
     }
 
     withType<Jar>().configureEach {

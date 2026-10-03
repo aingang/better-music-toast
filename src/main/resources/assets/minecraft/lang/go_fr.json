@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "Freqence de sonerie",
+	"options.music_frequency.constant": "Tenante",
+	"options.music_frequency.default": "Côme d'orine",
+	"options.music_frequency.frequent": "Souvente fais",
+	"options.music_frequency.tooltip": "Chanje la freqence de la muziqe a soner den un monde."
+}

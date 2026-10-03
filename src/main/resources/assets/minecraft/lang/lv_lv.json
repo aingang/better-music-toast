@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "Mūzikas Frekvence",
+	"options.music_frequency.constant": "Konstanta",
+	"options.music_frequency.default": "Noklusējums",
+	"options.music_frequency.frequent": "Bieža",
+	"options.music_frequency.tooltip": "Maina mūzikas atskaņošanas biežumu spēles pasaulē."
+}

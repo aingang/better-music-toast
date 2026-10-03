@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "Әуен жиілігі",
+	"options.music_frequency.constant": "Тұрақты мән",
+	"options.music_frequency.default": "Әдепкі",
+	"options.music_frequency.frequent": "Жиі",
+	"options.music_frequency.tooltip": "Әлемдегі әуен жиілігін өзгертеді."
+}

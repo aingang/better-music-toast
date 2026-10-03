@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "Aliested ar sonerezh",
+	"options.music_frequency.constant": "Dalc'hmat",
+	"options.music_frequency.default": "Dre ziouer",
+	"options.music_frequency.frequent": "Alies",
+	"options.music_frequency.tooltip": "Cheñch a ra pegen alies e vez klevet sonerezh er c'hoari."
+}

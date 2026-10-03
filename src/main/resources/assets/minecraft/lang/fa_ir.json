@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "تکرر موسيقی",
+	"options.music_frequency.constant": "مداوم",
+	"options.music_frequency.default": "پيشفرض",
+	"options.music_frequency.frequent": "مکرر",
+	"options.music_frequency.tooltip": "تناوب پخش موسيقی را در دنيای بازی تغيير میدهد."
+}

@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "Frecuençia de la múçica",
+	"options.music_frequency.constant": "Côttante",
+	"options.music_frequency.default": "Por defêtto",
+	"options.music_frequency.frequent": "Frecuente",
+	"options.music_frequency.tooltip": "Cambia la frecuençia con la que çe reproduçe múçica durante una partía."
+}

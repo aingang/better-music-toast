@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "Czynstość muzyki",
+	"options.music_frequency.constant": "Stoło",
+	"options.music_frequency.default": "Normalno",
+	"options.music_frequency.frequent": "Czynsto",
+	"options.music_frequency.tooltip": "Kōntroluje, jak czynsto muzyka bydzie grano we świecie."
+}

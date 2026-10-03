@@ -1,0 +1,6 @@
+{
+	"options.music_frequency": "Freqüència de la música",
+	"options.music_frequency.default": "Per defecte",
+	"options.music_frequency.frequent": "Freqüent",
+	"options.music_frequency.tooltip": "Canvia la freqüència amb què sona la música mentre es juga en un món."
+}

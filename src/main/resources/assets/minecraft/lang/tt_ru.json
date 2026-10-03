@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "Моң ешлыгы",
+	"options.music_frequency.constant": "Даими",
+	"options.music_frequency.default": "Беренчел",
+	"options.music_frequency.frequent": "Еш",
+	"options.music_frequency.tooltip": "Уен дөньясында моң уйнау ешлыгын үзгәртә."
+}

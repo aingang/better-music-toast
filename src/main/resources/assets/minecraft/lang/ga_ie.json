@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "Minicíocht Ceoil",
+	"options.music_frequency.constant": "I gcónaí",
+	"options.music_frequency.default": "Réamhshocrú",
+	"options.music_frequency.frequent": "Go minic",
+	"options.music_frequency.tooltip": "Rialaíonn sé seo cé chomh minic a sheinntear ceol agus tú i ndomhan cluiche."
+}

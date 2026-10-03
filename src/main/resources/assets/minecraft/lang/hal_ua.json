@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "Чєстота музики",
+	"options.music_frequency.constant": "Все",
+	"options.music_frequency.default": "Визначена",
+	"options.music_frequency.frequent": "Чєсто",
+	"options.music_frequency.tooltip": "Мінєє, як чєсто музика буде грала при бавлені."
+}

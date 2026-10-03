@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "Musikhäufigkeit",
+	"options.music_frequency.constant": "Durchgängig",
+	"options.music_frequency.default": "Standard",
+	"options.music_frequency.frequent": "Häufig",
+	"options.music_frequency.tooltip": "Steuert, wie häufig Musik beim Spielen in einer Welt wiedergegeben wird."
+}

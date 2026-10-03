@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "Soon Oftenness",
+	"options.music_frequency.constant": "Unyielding",
+	"options.music_frequency.default": "Stock",
+	"options.music_frequency.frequent": "Often",
+	"options.music_frequency.tooltip": "Wends how often soon plays while in a game world."
+}

@@ -1,0 +1,6 @@
+{
+	"options.music_frequency": "Frekwenza tal-Mużika",
+	"options.music_frequency.constant": "Kontinwu",
+	"options.music_frequency.frequent": "Spiss",
+	"options.music_frequency.tooltip": "Tbiddel il-frekwenza tad-daqq tal-mużika f'dinja."
+}

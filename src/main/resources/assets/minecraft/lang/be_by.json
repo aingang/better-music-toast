@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "Перыядычнасць музыкі",
+	"options.music_frequency.constant": "Пастаянна",
+	"options.music_frequency.default": "Па змаўчанні",
+	"options.music_frequency.frequent": "Часта",
+	"options.music_frequency.tooltip": "Змяняе частату прайгравання музыкі ў свеце."
+}

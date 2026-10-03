@@ -10,7 +10,12 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
+//? if >=1.21.6 {
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
+//?} else {
+/*import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
+*///?}
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.resources.Identifier;
@@ -57,7 +62,13 @@ public final class BetterMusicToastClient implements ClientModInitializer {
 		});
 
 		NowPlayingHud hud = new NowPlayingHud();
+		//? if >=1.21.6 {
 		HudElementRegistry.addLast(Identifier.fromNamespaceAndPath(MOD_ID, "now_playing"), hud);
+		//?} else {
+		/*// Before 1.21.6 Fabric adds HUD parts as layers; addLayer puts ours on top, like addLast.
+		HudLayerRegistrationCallback.EVENT.register(layers ->
+				layers.addLayer(IdentifiedLayer.of(Identifier.fromNamespaceAndPath(MOD_ID, "now_playing"), hud)));
+		*///?}
 		ScreenEvents.AFTER_INIT.register((client, screen, width, height) ->
 				ScreenEvents.afterExtract(screen).register((s, graphics, mouseX, mouseY, delta) -> hud.extractOverScreen(graphics)));
 	}

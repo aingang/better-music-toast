@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "Muusika sagedus",
+	"options.music_frequency.constant": "pidev",
+	"options.music_frequency.default": "vaikimisi",
+	"options.music_frequency.frequent": "tihe",
+	"options.music_frequency.tooltip": "Määrab, kui tihti mängumaailmas olles muusikat esitatakse."
+}

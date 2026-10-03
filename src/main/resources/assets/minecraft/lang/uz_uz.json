@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "Musiqa davriyligi",
+	"options.music_frequency.constant": "Doimiy",
+	"options.music_frequency.default": "Birlamchi",
+	"options.music_frequency.frequent": "Tez-tez",
+	"options.music_frequency.tooltip": "O'yin olamida musiqa yangrash chastotasini belgilaydi."
+}

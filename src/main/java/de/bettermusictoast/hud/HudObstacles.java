@@ -38,18 +38,26 @@ public final class HudObstacles {
 			float portion = instance.bettermusictoast$getVisiblePortion();
 			if (portion <= 0.0f) continue;
 			Toast toast = instance.bettermusictoast$getToast();
+			//? if >=1.21.6 {
 			int x = (int) toast.xPos(screenWidth, portion);
 			int y = (int) toast.yPos(instance.bettermusictoast$getFirstSlotIndex());
+			//?} else {
+			/*// Same placement vanilla's ToastInstance.render uses before 1.21.6.
+			int x = (int) (screenWidth - toast.width() * portion);
+			int y = instance.bettermusictoast$getFirstSlotIndex() * 32;
+			*///?}
 			result.add(new Rect(x, y, toast.width(), toast.height()));
 		}
 
 		// Vanilla's own music toast (top left), only if the player kept it enabled.
-		// Its permanent pause-menu variant sits in the same spot.
+		// Its permanent pause-menu variant sits in the same spot. It only exists since 1.21.6.
+		//? if >=1.21.6 {
 		if (!BetterMusicToastClient.config().hideVanillaToast
 				&& (BetterMusicToastClient.tracker().isVanillaToastVisible()
 						|| McCompat.screen(mc) instanceof PauseScreen pause && pause.rendersNowPlayingToast())) {
 			result.add(new Rect(0, 0, 200, 30));
 		}
+		//?}
 
 		if (!includeHud) {
 			return result;

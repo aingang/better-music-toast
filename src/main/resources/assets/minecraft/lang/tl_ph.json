@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "Dalas ng Tugtugin",
+	"options.music_frequency.constant": "Tuloy-tuloy",
+	"options.music_frequency.default": "Panimula",
+	"options.music_frequency.frequent": "Madalas",
+	"options.music_frequency.tooltip": "Binabago ang pagkamadalas mapatugtog ang tugtugin habang nasa daigdig ng laro."
+}

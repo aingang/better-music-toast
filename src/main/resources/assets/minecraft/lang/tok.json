@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "kalama sin o lon tenpo pi mute seme",
+	"options.music_frequency.constant": "tenpo ale",
+	"options.music_frequency.default": "nasin pi ante ala",
+	"options.music_frequency.frequent": "tenpo mute",
+	"options.music_frequency.tooltip": "mi ante e mute pi tenpo ni: kalama sin li kama lon."
+}

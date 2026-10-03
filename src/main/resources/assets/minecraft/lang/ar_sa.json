@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "تكرار الموسيقى",
+	"options.music_frequency.constant": "دائم",
+	"options.music_frequency.default": "افتراضي",
+	"options.music_frequency.frequent": "متكرر",
+	"options.music_frequency.tooltip": "يغير عدد مرات تشغيل الموسيقى داخل عالم اللعبة."
+}

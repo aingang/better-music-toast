@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "Tíðni tónlistar",
+	"options.music_frequency.constant": "Stöðug",
+	"options.music_frequency.default": "Sjálfgefið",
+	"options.music_frequency.frequent": "Oft",
+	"options.music_frequency.tooltip": "Breytir því hve oft tónlist spilast í leikveröld."
+}

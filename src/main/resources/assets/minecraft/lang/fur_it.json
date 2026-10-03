@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "Frecuence musiche",
+	"options.music_frequency.constant": "Costant",
+	"options.music_frequency.default": "Predefinît",
+	"options.music_frequency.frequent": "Frecuent",
+	"options.music_frequency.tooltip": "Al modifiche trop dispès che e ven riprodote la musiche intun mont dal zûc."
+}

@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "음악 빈도",
+	"options.music_frequency.constant": "항상",
+	"options.music_frequency.default": "기본",
+	"options.music_frequency.frequent": "자주",
+	"options.music_frequency.tooltip": "게임 세계 안에서 음악이 재생되는 빈도를 바꿉니다."
+}

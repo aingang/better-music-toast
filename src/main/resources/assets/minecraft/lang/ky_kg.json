@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "Музыка жыштыгы",
+	"options.music_frequency.constant": "Үзгүлтүксүз",
+	"options.music_frequency.default": "Кадимки",
+	"options.music_frequency.frequent": "Тез-тез",
+	"options.music_frequency.tooltip": "Оюндагы музыканын мезгил-мезгилин өзгөртүп турат."
+}

@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "Muusiga sagõhus",
+	"options.music_frequency.constant": "Perräjäämäldäq",
+	"options.music_frequency.default": "Harilik",
+	"options.music_frequency.frequent": "Tihtsä",
+	"options.music_frequency.tooltip": "Määräs, ku sakõstõ muusiga mängomaailman mäng."
+}

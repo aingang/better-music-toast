@@ -74,15 +74,17 @@ public final class McCompat {
 
 	/**
 	 * Vanilla's music toast setting: a three-way choice since 1.21.11, a plain on/off switch
-	 * ("Show Music Toast") in 1.21.6 – 1.21.10.
+	 * ("Show Music Toast") in 1.21.6 – 1.21.10, and no music toast at all before that.
 	 */
+	//? if >=1.21.11 {
 	public static OptionInstance<?> vanillaToastOption(Options options) {
-		//? if >=1.21.11 {
 		return options.musicToast();
-		//?} else {
-		/*return options.showNowPlayingToast();
-		*///?}
 	}
+	//?} else if >=1.21.6 {
+	/*public static OptionInstance<?> vanillaToastOption(Options options) {
+		return options.showNowPlayingToast();
+	}
+	*///?}
 
 	/** Adds a full-width widget row to an options list. */
 	public static void addWide(OptionsList list, AbstractWidget widget) {

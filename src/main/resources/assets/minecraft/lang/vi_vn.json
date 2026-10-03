@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "Tần suất âm nhạc",
+	"options.music_frequency.constant": "Liên tục",
+	"options.music_frequency.default": "Mặc định",
+	"options.music_frequency.frequent": "Th.xuyên",
+	"options.music_frequency.tooltip": "Thay đổi tần suất phát nhạc khi ở trong một thế giới."
+}

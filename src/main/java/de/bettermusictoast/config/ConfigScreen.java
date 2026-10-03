@@ -46,6 +46,8 @@ public final class ConfigScreen extends OptionsSubScreen {
 		this.list.addBig(enumOption("musicStyle", ModConfig.MusicStyle.values(), config.musicStyle,
 				ModConfig.MusicStyle::translationKey, v -> config.musicStyle = v));
 		this.list.addBig(bool("showInMenus", config.showInMenus, v -> config.showInMenus = v));
+		// Minecraft only has its own music toast since 1.21.6.
+		//? if >=1.21.6 {
 		this.list.addBig(bool("hideVanillaToast", config.hideVanillaToast, v -> {
 			config.hideVanillaToast = v;
 			updateVanillaToastButton();
@@ -53,6 +55,7 @@ public final class ConfigScreen extends OptionsSubScreen {
 		// Moved here from the Music & Sounds screen, where our button takes its place.
 		this.list.addBig(McCompat.vanillaToastOption(this.options));
 		updateVanillaToastButton();
+		//?}
 		showPreview();
 	}
 
@@ -79,6 +82,7 @@ public final class ConfigScreen extends OptionsSubScreen {
 		}
 	}
 
+	//? if >=1.21.6 {
 	/** Vanilla's music toast settings are irrelevant (and greyed out) while it is hidden. */
 	private void updateVanillaToastButton() {
 		if (this.list == null) {
@@ -89,6 +93,7 @@ public final class ConfigScreen extends OptionsSubScreen {
 			button.active = !config.hideVanillaToast;
 		}
 	}
+	//?}
 
 	@Override
 	public void removed() {
@@ -123,7 +128,8 @@ public final class ConfigScreen extends OptionsSubScreen {
 
 	/** Slider over the sizes that stay pixel-sharp at the current GUI scale. */
 	private OptionInstance<Integer> size() {
-		int guiScale = Minecraft.getInstance().getWindow().getGuiScale();
+		// The cast is only needed before 1.21.6, where the GUI scale is a double.
+		int guiScale = (int) Minecraft.getInstance().getWindow().getGuiScale();
 		return new OptionInstance<>(key("size"),
 				OptionInstance.cachedConstantTooltip(Component.translatable(key("size") + ".tooltip")),
 				(caption, pixels) -> Options.genericValueLabel(caption,

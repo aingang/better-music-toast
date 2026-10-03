@@ -1,0 +1,7 @@
+{
+	"options.music_frequency": "Müzik Sıklığı",
+	"options.music_frequency.constant": "Sürekli",
+	"options.music_frequency.default": "Varsayılan",
+	"options.music_frequency.frequent": "Sık",
+	"options.music_frequency.tooltip": "Oyun dünyasındayken müziğin ne sıklıkla çalacağını değiştirir."
+}
