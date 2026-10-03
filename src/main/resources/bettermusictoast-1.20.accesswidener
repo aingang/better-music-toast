@@ -1,0 +1,8 @@
+accessWidener v2 named
+
+# Only used before 1.21.
+# The backported "Music Frequency" option is saved in options.txt:
+accessible class net/minecraft/client/Options$FieldAccess
+accessible class net/minecraft/client/Options$OptionAccess
+# The mod's buttons are placed in vanilla option lists as options (see WidgetOption):
+accessible class net/minecraft/client/OptionInstance$ValueSet

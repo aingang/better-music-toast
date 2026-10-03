@@ -1,2 +1,2 @@
-- Better Music Toast is now available for NeoForge on every supported Minecraft version (1.21 – 26.3), with the same features as on Fabric. The settings open from the Mods list (Config button), or from Options → Music & Sounds → Better Music Toast.
-- Fixed: on Minecraft 26.3 the game crashed on start, because Minecraft 26.3 renamed some of its internals. 26.3 now has its own jar.
+- New: Minecraft 1.20 – 1.20.6 on Fabric, Forge (and NeoForge) for Minecraft 1.20.1 and NeoForge for Minecraft 1.20.6, with the same features as on the newer versions, including Minecraft's Music Frequency option and music that keeps playing while the game is paused.
+- Changed: the Size setting is now a button that steps through the sizes, like Minecraft's GUI Scale button (click for the next size, shift-click for the previous one), instead of a slider.

@@ -20,7 +20,18 @@ import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
 /*import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 *///?}
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
-//?} else {
+//?} else if forge {
+/*import net.minecraft.client.Minecraft;
+import net.minecraftforge.client.ConfigScreenHandler;
+import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
+import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
+import net.minecraftforge.client.event.ScreenEvent;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+*///?} else {
 /*import net.minecraft.client.Minecraft;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
@@ -39,7 +50,10 @@ import net.minecraft.resources.Identifier;
 
 //? if fabric {
 public final class BetterMusicToastClient implements ClientModInitializer {
-//?} else {
+//?} else if forge {
+/*// On Forge the @Mod entry point is BetterMusicToastForge, which only calls initForge on the client.
+public final class BetterMusicToastClient {
+*///?} else {
 /*@Mod(value = BetterMusicToastClient.MOD_ID, dist = Dist.CLIENT)
 public final class BetterMusicToastClient {
 *///?}
@@ -49,6 +63,11 @@ public final class BetterMusicToastClient {
 	private static final NowPlayingTracker TRACKER = new NowPlayingTracker();
 
 	public static ModConfig config() {
+		// The mixins can run even if the loader never started the mod (e.g. when another mod failed
+		// to load), so never hand them a missing config.
+		if (config == null) {
+			config = ModConfig.load();
+		}
 		return config;
 	}
 
@@ -98,7 +117,47 @@ public final class BetterMusicToastClient {
 		ScreenEvents.AFTER_INIT.register((client, screen, width, height) ->
 				ScreenEvents.afterExtract(screen).register((s, graphics, mouseX, mouseY, delta) -> hud.extractOverScreen(graphics)));
 	}
-	//?} else {
+	//?} else if forge {
+	/*// Forge: the same setup as on Fabric, through Forge's events.
+	public static void initForge(IEventBus modBus) {
+		config = ModConfig.load();
+
+		String category = "key.category." + MOD_ID + ".main";
+		KeyMapping showAgain = new KeyMapping("key.bettermusictoast.show", InputConstants.UNKNOWN.getValue(), category);
+		KeyMapping openSettings = new KeyMapping("key.bettermusictoast.settings", InputConstants.UNKNOWN.getValue(), category);
+		modBus.addListener((RegisterKeyMappingsEvent event) -> {
+			event.register(showAgain);
+			event.register(openSettings);
+		});
+
+		modBus.addListener((FMLClientSetupEvent event) ->
+				event.enqueueWork(() -> Minecraft.getInstance().getSoundManager().addListener(TRACKER)));
+
+		MinecraftForge.EVENT_BUS.addListener((TickEvent.ClientTickEvent event) -> {
+			if (event.phase != TickEvent.Phase.END) {
+				return;
+			}
+			Minecraft client = Minecraft.getInstance();
+			TRACKER.tick();
+			while (showAgain.consumeClick()) {
+				TRACKER.reshow();
+			}
+			while (openSettings.consumeClick()) {
+				McCompat.setScreen(client, new ConfigScreen(McCompat.screen(client)));
+			}
+		});
+
+		// On top of every other HUD part, like addLast on Fabric.
+		NowPlayingHud hud = new NowPlayingHud();
+		modBus.addListener((RegisterGuiOverlaysEvent event) -> event.registerAboveAll("now_playing",
+				(gui, graphics, partialTick, width, height) -> hud.render(graphics, partialTick)));
+		MinecraftForge.EVENT_BUS.addListener((ScreenEvent.Render.Post event) -> hud.extractOverScreen(event.getGuiGraphics()));
+
+		// Settings button in Forge's own mod list (Mod Menu does this on Fabric).
+		ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class,
+				() -> new ConfigScreenHandler.ConfigScreenFactory((mc, parent) -> new ConfigScreen(parent)));
+	}
+	*///?} else {
 	/*// NeoForge: the same setup as on Fabric, through NeoForge's events.
 	public BetterMusicToastClient(IEventBus modBus, ModContainer container) {
 		config = ModConfig.load();
@@ -134,8 +193,14 @@ public final class BetterMusicToastClient {
 
 		// On top of every other HUD part, like addLast on Fabric.
 		NowPlayingHud hud = new NowPlayingHud();
+		//? if >=1.21 {
 		modBus.addListener((RegisterGuiLayersEvent event) ->
 				event.registerAboveAll(Identifier.fromNamespaceAndPath(MOD_ID, "now_playing"), hud));
+		//?} else {
+		/^// Before 1.21 the box is not a layer itself, but its render(GuiGraphics, float) fits one.
+		modBus.addListener((RegisterGuiLayersEvent event) ->
+				event.registerAboveAll(Identifier.fromNamespaceAndPath(MOD_ID, "now_playing"), hud::render));
+		^///?}
 		NeoForge.EVENT_BUS.addListener((ScreenEvent.Render.Post event) -> hud.extractOverScreen(event.getGuiGraphics()));
 
 		// Settings button in NeoForge's own mod list (Mod Menu does this on Fabric).

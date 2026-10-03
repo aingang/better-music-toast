@@ -10,9 +10,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 //? if fabric {
 import net.fabricmc.loader.api.FabricLoader;
-//?} else {
+//?} else if forge {
+/*import net.minecraftforge.fml.loading.FMLPaths;
+*///?} else {
 /*import net.neoforged.fml.loading.FMLPaths;
 *///?}
+//? if <1.20.5
+/*import net.minecraft.util.Mth;*/
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

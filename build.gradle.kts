@@ -18,6 +18,15 @@ val requiredJava: JavaVersion = when {
     else -> JavaVersion.VERSION_17
 }
 
+// Before 1.21.6 the mod adds Minecraft's "Music Frequency" option itself (see MusicFrequency);
+// before 1.21 it also puts its own buttons into vanilla option lists (see WidgetOption).
+val accessWidener: String? = when {
+    sc.current.parsed < "1.20.1" -> "bettermusictoast-1.20.0.accesswidener"
+    sc.current.parsed < "1.21" -> "bettermusictoast-1.20.accesswidener"
+    sc.current.parsed < "1.21.6" -> "bettermusictoast.accesswidener"
+    else -> null
+}
+
 repositories {
     maven("https://maven.terraformersmc.com/releases/") { name = "TerraformersMC" }
 }
@@ -31,7 +40,9 @@ dependencies {
     modImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric_api")}")
 
     // Mod Menu is optional at runtime; we only compile against its API.
-    modCompileOnly("com.terraformersmc:modmenu:${property("deps.modmenu")}")
+    // Without its own dependencies: only its API is needed, and some versions pull in libraries
+    // from repositories we do not use.
+    modCompileOnly("com.terraformersmc:modmenu:${property("deps.modmenu")}") { isTransitive = false }
 }
 
 loom {
@@ -39,9 +50,8 @@ loom {
         runDirectory = rootProject.file("run")
     }
 
-    // Before 1.21.6 the mod adds Minecraft's "Music Frequency" option itself (see MusicFrequency).
-    if (sc.current.parsed < "1.21.6") {
-        accessWidenerPath = rootProject.file("src/main/resources/bettermusictoast.accesswidener")
+    if (accessWidener != null) {
+        accessWidenerPath = rootProject.file("src/main/resources/$accessWidener")
     }
 }
 
@@ -93,25 +103,34 @@ tasks {
             "java_version" to requiredJava.majorVersion,
             // Vanilla's own music toast (and its mixins) only exists since 1.21.6.
             "vanilla_toast" to (sc.current.parsed >= "1.21.6"),
+            // Only Forge needs a mixin refmap.
+            "refmap" to false,
         )
         inputs.properties(props)
         filesMatching(listOf("fabric.mod.json", "*.mixins.json")) { expand(props) }
 
+        // Local copy: the filters below must not reference the build script itself.
+        val accessWidener = accessWidener
+
+        // NeoForge and Forge files, and the access wideners this version does not use.
+        exclude("META-INF/neoforge.mods.toml", "META-INF/mods.toml", "META-INF/accesstransformer*.cfg", "pack.mcmeta")
+        exclude { it.name.endsWith(".accesswidener") && it.name != accessWidener }
+
         // Song names, the music notes icon and the Music Frequency option that Minecraft itself
         // only has since 1.21.6.
-        // NeoForge-only files.
-        exclude("META-INF/neoforge.mods.toml", "META-INF/accesstransformer.cfg")
         if (sc.current.parsed >= "1.21.6") {
-            exclude(
-                "assets/minecraft/lang/**",
-                "assets/bettermusictoast/textures/gui/sprites/**",
-                "bettermusictoast.accesswidener",
-            )
-        } else {
-            // Registers the access widener in fabric.mod.json, right before "mixins".
+            exclude("assets/minecraft/lang/**", "assets/bettermusictoast/textures/gui/sprites/**")
+        }
+        // Names for C418's numbered music files (calm1, hal1, ...), renamed by Minecraft in 1.20.3.
+        if (sc.current.parsed >= "1.20.3") {
+            exclude("assets/bettermusictoast_old_music/**")
+        }
+
+        // Registers the access widener in fabric.mod.json, right before "mixins".
+        if (accessWidener != null) {
             filesMatching("fabric.mod.json") {
                 filter { line ->
-                    if (line.trim() == "\"mixins\": [") "\t\"accessWidener\": \"bettermusictoast.accesswidener\",\n$line" else line
+                    if (line.trim() == "\"mixins\": [") "\t\"accessWidener\": \"$accessWidener\",\n$line" else line
                 }
             }
         }

@@ -58,8 +58,10 @@ public final class McCompat {
 	public static boolean isHudHidden(Minecraft mc) {
 		//? if >=26.2 {
 		return mc.gui.hud.isHidden() || mc.gui.hud.getDebugOverlay().showDebugScreen();
-		//?} else {
+		//?} else if >=1.20.2 {
 		/*return mc.options.hideGui || mc.gui.getDebugOverlay().showDebugScreen();
+		*///?} else {
+		/*return mc.options.hideGui || mc.options.renderDebug;
 		*///?}
 	}
 
@@ -109,8 +111,11 @@ public final class McCompat {
 	public static void addWide(OptionsList list, AbstractWidget widget) {
 		//? if >=26.2 {
 		list.addBig(widget);
-		//?} else {
+		//?} else if >=1.21 {
 		/*list.addSmall(java.util.List.of(widget));
+		*///?} else {
+		/*// Before 1.21 option lists only take options (see WidgetOption).
+		list.addBig(WidgetOption.of(widget));
 		*///?}
 	}
 }

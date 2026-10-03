@@ -25,8 +25,14 @@ public final class MusicFrequencyButton extends ThemedButton {
 		cycle(Screen.hasShiftDown() ? -1 : 1);
 	}
 
+	// Horizontal scrolling only reaches widgets since 1.20.2.
+	//? if >=1.20.2 {
 	@Override
 	public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+	//?} else {
+	/^@Override
+	public boolean mouseScrolled(double mouseX, double mouseY, double scrollY) {
+	^///?}
 		if (scrollY > 0.0) {
 			cycle(-1);
 		} else if (scrollY < 0.0) {

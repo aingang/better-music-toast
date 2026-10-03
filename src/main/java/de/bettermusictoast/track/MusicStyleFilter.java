@@ -25,17 +25,33 @@ public final class MusicStyleFilter {
 	private static final String CLASSIC_ARTIST = "C418";
 
 	/** C418's overworld tracks from Volume Alpha / Beta. */
+	//? if >=1.21 {
 	private static final Identifier OVERWORLD_POOL = Identifier.withDefaultNamespace("music.game");
+	//?} else {
+	/*private static final Identifier OVERWORLD_POOL = new ResourceLocation("music.game");
+	*///?}
 	/** Contains C418's four Nether tracks next to Lena Raine's Rubedo. */
+	//? if >=1.21 {
 	private static final Identifier NETHER_POOL = Identifier.withDefaultNamespace("music.nether.nether_wastes");
+	//?} else {
+	/*private static final Identifier NETHER_POOL = new ResourceLocation("music.nether.nether_wastes");
+	*///?}
 
 	/**
 	 * Biomes whose vanilla music contains no C418 track. Calm but slightly darker pieces fit
 	 * the swamp and the deep dark best.
 	 */
+	//? if >=1.20.3 {
 	private static final Map<String, Set<String>> CUSTOM_POOLS = Map.of(
 			"music.overworld.swamp", Set.of("subwoofer_lullaby", "living_mice", "oxygene", "key", "mice_on_venus"),
 			"music.overworld.deep_dark", Set.of("subwoofer_lullaby", "living_mice", "key", "oxygene"));
+	//?} else {
+	/*// The same songs under the numbered file names C418's music had before 1.20.3:
+	// hal1 Subwoofer Lullaby, hal2 Living Mice, nuance2 Oxygène, nuance1 Key, piano3 Mice on Venus.
+	private static final Map<String, Set<String>> CUSTOM_POOLS = Map.of(
+			"music.overworld.swamp", Set.of("hal1", "hal2", "nuance2", "nuance1", "piano3"),
+			"music.overworld.deep_dark", Set.of("hal1", "hal2", "nuance1", "nuance2"));
+	*///?}
 
 	private MusicStyleFilter() {
 	}

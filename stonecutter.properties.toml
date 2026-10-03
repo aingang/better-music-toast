@@ -1,19 +1,59 @@
 # Mod settings shared by every jar.
 mod.id = "bettermusictoast"
 mod.archive = "better-music-toast"
-mod.version = "1.6.3"
+mod.version = "1.6.4"
 
 deps.fabric_loader = "0.19.5"
 loomx.loom_version = "1.18-SNAPSHOT"
 
 # One section per jar. The section name is the Minecraft version the jar is compiled against,
-# with "-neoforge" for the NeoForge jars.
+# with "-neoforge" / "-forge" for the NeoForge and Forge jars.
 #   mod.mc_label    -> suffix in the file name, e.g. better-music-toast-1.6.3+26.2.jar
 #   mod.mc_compat   -> Minecraft versions the jar accepts (fabric.mod.json / neoforge.mods.toml);
 #                      NeoForge writes it as a Maven range, e.g. "[1.21.2,1.21.3]"
 #   mod.mc_releases -> versions to tick on Modrinth, comma-separated
 
 # Fabric
+
+["1.20"]
+mod.mc_label = "1.20"
+mod.mc_compat = "1.20"
+mod.mc_releases = "1.20"
+
+deps.fabric_api = "0.83.0+1.20"
+deps.modmenu = "7.0.1"
+
+["1.20.1"]
+mod.mc_label = "1.20.1"
+mod.mc_compat = "1.20.1"
+mod.mc_releases = "1.20.1"
+
+deps.fabric_api = "0.92.12+1.20.1"
+deps.modmenu = "7.2.2"
+
+["1.20.2"]
+mod.mc_label = "1.20.2"
+mod.mc_compat = "1.20.2"
+mod.mc_releases = "1.20.2"
+
+deps.fabric_api = "0.91.6+1.20.2"
+deps.modmenu = "8.0.1"
+
+["1.20.4"]
+mod.mc_label = "1.20.3-1.20.4"
+mod.mc_compat = ">=1.20.3 <=1.20.4"
+mod.mc_releases = "1.20.3, 1.20.4"
+
+deps.fabric_api = "0.97.3+1.20.4"
+deps.modmenu = "9.2.0"
+
+["1.20.6"]
+mod.mc_label = "1.20.5-1.20.6"
+mod.mc_compat = ">=1.20.5 <=1.20.6"
+mod.mc_releases = "1.20.5, 1.20.6"
+
+deps.fabric_api = "0.100.8+1.20.6"
+deps.modmenu = "10.0.0"
 
 ["1.21.1"]
 mod.mc_label = "1.21-1.21.1"
@@ -90,6 +130,13 @@ deps.modmenu = "21.0.0"
 
 # NeoForge
 
+["1.20.6-neoforge"]
+mod.mc_label = "1.20.6"
+mod.mc_compat = "[1.20.6]"
+mod.mc_releases = "1.20.6"
+
+deps.neoforge = "20.6.141"
+
 ["1.21.1-neoforge"]
 mod.mc_label = "1.21-1.21.1"
 mod.mc_compat = "[1.21,1.21.1]"
@@ -153,3 +200,12 @@ mod.mc_compat = "[26.3,26.4)"
 mod.mc_releases = "26.3"
 
 deps.neoforge = "26.3.0.46-beta"
+
+# Forge (only for the versions where it still matters)
+
+["1.20.1-forge"]
+mod.mc_label = "1.20.1"
+mod.mc_compat = "[1.20.1]"
+mod.mc_releases = "1.20.1"
+
+deps.forge = "1.20.1-47.3.0"

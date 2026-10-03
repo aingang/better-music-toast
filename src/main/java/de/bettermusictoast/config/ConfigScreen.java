@@ -3,7 +3,9 @@ package de.bettermusictoast.config;
 import com.mojang.serialization.Codec;
 import de.bettermusictoast.BetterMusicToastClient;
 import de.bettermusictoast.compat.McCompat;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import net.minecraft.client.Minecraft;
@@ -11,21 +13,46 @@ import net.minecraft.client.OptionInstance;
 import net.minecraft.client.Options;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.Screen;
+//? if >=1.21 {
 import net.minecraft.client.gui.screens.options.OptionsSubScreen;
+//?} else {
+/*import net.minecraft.client.gui.screens.SimpleOptionsSubScreen;
+*///?}
 import net.minecraft.network.chat.Component;
 
 /** Settings screen built from vanilla option widgets, so it looks like the regular options menus. */
+//? if >=1.21 {
 public final class ConfigScreen extends OptionsSubScreen {
+//?} else {
+/*// Before 1.21 option screens fill their list in init(); SimpleOptionsSubScreen provides the list,
+// title and Done button exactly like the vanilla screens of that version.
+public final class ConfigScreen extends SimpleOptionsSubScreen {
+*///?}
 	private final ModConfig config;
 	private OptionInstance<Integer> durationOption;
 
 	public ConfigScreen(Screen parent) {
+		//? if >=1.21 {
 		super(parent, Minecraft.getInstance().options, Component.translatable("bettermusictoast.config.title"));
+		//?} else {
+		/*super(parent, Minecraft.getInstance().options, Component.translatable("bettermusictoast.config.title"),
+				new OptionInstance<?>[0]);
+		*///?}
 		this.config = BetterMusicToastClient.config();
 	}
 
+	//? if <1.21 {
+	/*@Override
+	protected void init() {
+		super.init();
+		addOptions();
+	}
+
+	private void addOptions() {
+	*///?} else {
 	@Override
 	protected void addOptions() {
+	//?}
 		this.list.addBig(bool("enabled", config.enabled, v -> config.enabled = v));
 		this.list.addBig(enumOption("position", ModConfig.Position.values(), config.position,
 				ModConfig.Position::translationKey, v -> config.position = v));
@@ -126,15 +153,22 @@ public final class ConfigScreen extends OptionsSubScreen {
 				value, withPreview(setter)::accept);
 	}
 
-	/** Slider over the sizes that stay pixel-sharp at the current GUI scale. */
+	/**
+	 * Cycles through the sizes that stay pixel-sharp at the current GUI scale, like vanilla's GUI
+	 * Scale button: click for the next size, shift-click for the previous one.
+	 */
 	private OptionInstance<Integer> size() {
 		// The cast is only needed before 1.21.6, where the GUI scale is a double.
 		int guiScale = (int) Minecraft.getInstance().getWindow().getGuiScale();
+		List<Integer> sizes = new ArrayList<>();
+		for (int pixels = ModConfig.minSizePixels(guiScale); pixels <= ModConfig.maxSizePixels(guiScale); pixels++) {
+			sizes.add(pixels);
+		}
 		return new OptionInstance<>(key("size"),
 				OptionInstance.cachedConstantTooltip(Component.translatable(key("size") + ".tooltip")),
-				(caption, pixels) -> Options.genericValueLabel(caption,
-						Component.literal(Math.round(pixels * 100.0f / guiScale) + "%")),
-				new OptionInstance.IntRange(ModConfig.minSizePixels(guiScale), ModConfig.maxSizePixels(guiScale)),
+				// Cycle buttons prepend the caption themselves.
+				(caption, pixels) -> Component.literal(Math.round(pixels * 100.0f / guiScale) + "%"),
+				new OptionInstance.Enum<>(sizes, Codec.INT),
 				config.sizePixels(guiScale),
 				withPreview((Integer pixels) -> config.sizePercent = Math.round(pixels * 100.0f / guiScale))::accept);
 	}

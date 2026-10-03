@@ -1,7 +1,9 @@
 {
 	"required": true,
 	"package": "de.bettermusictoast.mixin",
-	"compatibilityLevel": "${java}",
+	"compatibilityLevel": "${java}",<% if (refmap) { %>
+	"minVersion": "0.8",
+	"refmap": "bettermusictoast.refmap.json",<% } %>
 	"client": [
 		"AbstractSoundInstanceMixin",
 		"BossHealthOverlayAccessor",

@@ -73,7 +73,11 @@ public final class HudObstacles {
 			int harmful = 0;
 			for (MobEffectInstance effect : mc.player.getActiveEffects()) {
 				if (!effect.showIcon()) continue;
+				//? if >=1.20.5 {
 				if (effect.getEffect().value().isBeneficial()) beneficial++;
+				//?} else {
+				/*if (effect.getEffect().isBeneficial()) beneficial++;
+				*///?}
 				else harmful++;
 			}
 			int top = mc.isDemo() ? 15 : 0;

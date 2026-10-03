@@ -10,7 +10,7 @@ stonecutter active "26.2"
 fun minecraftOrder(version: String) = version.split('.').map { it.toIntOrNull() ?: 0 }
     .let { parts -> parts.getOrElse(0) { 0 } * 1_000_000 + parts.getOrElse(1) { 0 } * 1_000 + parts.getOrElse(2) { 0 } }
 stonecutter.versions
-    .sortedWith(compareBy({ minecraftOrder(it.version) }, { it.project.endsWith("-neoforge") }))
+    .sortedWith(compareBy({ minecraftOrder(it.version) }, { it.project.endsWith("-neoforge") }, { it.project.endsWith("-forge") }))
     .map { it.project }
     .zipWithNext { older, newer ->
     project(":$newer").tasks.matching { it.name == "publishModrinth" }.configureEach {
@@ -19,8 +19,13 @@ stonecutter.versions
 }
 
 stonecutter parameters {
-    // "//? if fabric {" / "//? if neoforge {" pick the code for the mod loader being built.
-    constants.match(if (current.project.endsWith("-neoforge")) "neoforge" else "fabric", "fabric", "neoforge")
+    // "//? if fabric {" / "//? if neoforge {" / "//? if forge {" pick the code for the mod loader being built.
+    val loader = when {
+        current.project.endsWith("-neoforge") -> "neoforge"
+        current.project.endsWith("-forge") -> "forge"
+        else -> "fabric"
+    }
+    constants.match(loader, "fabric", "neoforge", "forge")
 
     // Names Mojang changed in 26.1 (render... -> extract...). The source uses the new names;
     // older versions get the old ones written back automatically.
@@ -39,6 +44,20 @@ stonecutter parameters {
         // Mojang renamed ResourceLocation to Identifier in 1.21.11.
         string(current.parsed >= "1.21.11") {
             replace("ResourceLocation", "Identifier")
+        }
+
+        // Before 1.21 ids are created with the constructor. A regex, so it neither depends on nor
+        // blocks the Identifier rename above. withDefaultNamespace is handled with plain conditions.
+        regex(current.parsed >= "1.21") {
+            replace(
+                "new (ResourceLocation|Identifier)\\(", "\$1.fromNamespaceAndPath(",
+                "(?:ResourceLocation|Identifier)\\.fromNamespaceAndPath\\(", "new ResourceLocation(",
+            )
+        }
+
+        // Math.clamp only exists since Java 21 (Minecraft 1.20.5); older versions use Minecraft's own.
+        string(current.parsed >= "1.20.5") {
+            replace("Mth.clamp(", "Math.clamp(")
         }
 
         // NeoForge kept the method name ScreenEvent.Render.getGuiGraphics() in 26.1, so undo the

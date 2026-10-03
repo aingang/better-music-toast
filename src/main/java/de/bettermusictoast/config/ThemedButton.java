@@ -41,8 +41,11 @@ public class ThemedButton extends AbstractButton {
 	@Override
 	//? if >=1.21.11 {
 	protected void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-	//?} else {
+	//?} else if >=1.20.1 {
 	/*protected void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+	*///?} else {
+	/*// Public in 1.20.
+	public void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
 	*///?}
 		ColorTheme theme = BetterMusicToastClient.config().colorTheme;
 		// Light up under the mouse, or when selected with the keyboard. A mouse click also selects the

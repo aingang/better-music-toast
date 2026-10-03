@@ -8,11 +8,14 @@ import de.bettermusictoast.config.ModConfig.Position;
 import de.bettermusictoast.track.NowPlayingTracker;
 import de.bettermusictoast.track.TrackInfo;
 import java.util.List;
+//? if >=1.21
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.resources.Identifier;
+//? if <1.20.5
+/*import net.minecraft.util.Mth;*/
 //? if >=1.21.6 {
 //? if fabric {
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
@@ -21,10 +24,12 @@ import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
 *///?}
 import net.minecraft.client.renderer.RenderPipelines;
 import org.joml.Matrix3x2fStack;
-//?} else {
+//?} else if >=1.21 {
 /*import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.LayeredDraw;
 import net.minecraft.client.renderer.RenderType;
+*///?} else {
+/*import com.mojang.blaze3d.vertex.PoseStack;
 *///?}
 
 /**
@@ -38,10 +43,15 @@ public final class NowPlayingHud implements HudElement {
 /*// NeoForge draws HUD parts as GUI layers.
 public final class NowPlayingHud implements GuiLayer {
 	private static final Identifier MUSIC_NOTES_SPRITE = Identifier.withDefaultNamespace("icon/music_notes");
-*///?} else {
+*///?} else if >=1.21 {
 /*// Before 1.21.6 the HUD is built from layers, and Minecraft has no music notes icon of its own yet,
 // so the mod ships the same icon.
 public final class NowPlayingHud implements LayeredDraw.Layer {
+	private static final Identifier MUSIC_NOTES_SPRITE =
+			Identifier.fromNamespaceAndPath(BetterMusicToastClient.MOD_ID, "music_notes");
+*///?} else {
+/*// Before 1.21 the HUD is drawn through a plain callback (see BetterMusicToastClient).
+public final class NowPlayingHud {
 	private static final Identifier MUSIC_NOTES_SPRITE =
 			Identifier.fromNamespaceAndPath(BetterMusicToastClient.MOD_ID, "music_notes");
 *///?}
@@ -64,12 +74,16 @@ public final class NowPlayingHud implements LayeredDraw.Layer {
 	private long lastFrameNanos;
 
 	/** In-game HUD pass. With "show in menus" the screen pass takes over while a menu is open. */
-	@Override
 	// NeoForge's GUI layers keep the name render() on every version.
 	//? if fabric && >=26.1 {
+	@Override
 	public void extractRenderState(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) {
-	//?} else {
-	/*public void render(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) {
+	//?} else if >=1.21 {
+	/*@Override
+	public void render(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) {
+	*///?} else {
+	/*// Before 1.21 the HUD callback passes the partial tick instead of a DeltaTracker.
+	public void render(GuiGraphicsExtractor graphics, float partialTick) {
 	*///?}
 		if (drawsOverScreen() && McCompat.screen(Minecraft.getInstance()) != null) {
 			return;
@@ -247,7 +261,7 @@ public final class NowPlayingHud implements LayeredDraw.Layer {
 			g.blitSprite(RenderPipelines.GUI_TEXTURED, MUSIC_NOTES_SPRITE, ICON_X, iconY, 16, 16, argb(theme.icon, alpha));
 			//?} else if >=1.21.2 {
 			/*g.blitSprite(RenderType::guiTextured, MUSIC_NOTES_SPRITE, ICON_X, iconY, 16, 16, argb(theme.icon, alpha));
-			*///?} else {
+			*///?} else if >=1.20.2 {
 			/*// Before 1.21.2 sprites take no colour and are drawn without blending: tint and fade
 			// them through the shader colour, like vanilla did back then.
 			int tint = argb(theme.icon, alpha);
@@ -255,6 +269,18 @@ public final class NowPlayingHud implements LayeredDraw.Layer {
 			g.setColor(((tint >> 16) & 0xFF) / 255.0f, ((tint >> 8) & 0xFF) / 255.0f, (tint & 0xFF) / 255.0f,
 					((tint >>> 24) & 0xFF) / 255.0f);
 			g.blitSprite(MUSIC_NOTES_SPRITE, ICON_X, iconY, 16, 16);
+			g.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+			com.mojang.blaze3d.systems.RenderSystem.disableBlend();
+			*///?} else {
+			/*// Before 1.20.2 there is no sprite atlas for menus, so the icon is a plain texture and its
+			// animation (8 frames, 2 ticks each, stacked vertically) is played here.
+			int tint = argb(theme.icon, alpha);
+			int frame = (int) (net.minecraft.Util.getMillis() / 100L % 8L);
+			com.mojang.blaze3d.systems.RenderSystem.enableBlend();
+			g.setColor(((tint >> 16) & 0xFF) / 255.0f, ((tint >> 8) & 0xFF) / 255.0f, (tint & 0xFF) / 255.0f,
+					((tint >>> 24) & 0xFF) / 255.0f);
+			g.blit(Identifier.fromNamespaceAndPath(BetterMusicToastClient.MOD_ID, "textures/gui/sprites/music_notes.png"),
+					ICON_X, iconY, 0.0f, frame * 16.0f, 16, 16, 16, 128);
 			g.setColor(1.0f, 1.0f, 1.0f, 1.0f);
 			com.mojang.blaze3d.systems.RenderSystem.disableBlend();
 			*///?}

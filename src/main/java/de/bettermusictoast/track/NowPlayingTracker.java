@@ -31,8 +31,19 @@ public final class NowPlayingTracker implements SoundEventListener {
 	private long settingsPreviewUntil;
 	private long vanillaToastShownAt = Long.MIN_VALUE;
 
+	//? if <1.20.3 {
+	/*// Before 1.20.3 listeners are not told how far a sound carries; this is how the sound engine
+	// works it out for them in 1.20.3+.
+	@Override
+	public void onPlaySound(SoundInstance sound, WeighedSoundEvents events) {
+		onPlaySound(sound, events, Math.max(sound.getVolume(), 1.0f) * (float) sound.getSound().getAttenuationDistance());
+	}
+
+	private void onPlaySound(SoundInstance sound, WeighedSoundEvents events, float range) {
+	*///?} else {
 	@Override
 	public void onPlaySound(SoundInstance sound, WeighedSoundEvents events, float range) {
+	//?}
 		SoundSource src = sound.getSource();
 		if (src == SoundSource.MUSIC) {
 			start(sound, false);

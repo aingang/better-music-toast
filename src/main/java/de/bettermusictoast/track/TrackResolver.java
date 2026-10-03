@@ -4,7 +4,9 @@ import java.util.Locale;
 //? if fabric {
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
-//?} else {
+//?} else if forge {
+/*import net.minecraftforge.fml.ModList;
+*///?} else {
 /*import net.neoforged.fml.ModList;
 *///?}
 import net.minecraft.client.resources.sounds.Sound;
@@ -38,9 +40,16 @@ public final class TrackResolver {
 		ItemStack icon = disc ? discItem(location.getNamespace(), fileName) : ItemStack.EMPTY;
 
 		Language language = Language.getInstance();
+		//? if >=1.21 {
 		String[] keys = disc
 				? new String[] {"jukebox_song." + location.getNamespace() + "." + fileName, location.toShortLanguageKey().replace('/', '.')}
 				: new String[] {location.toShortLanguageKey().replace('/', '.')};
+		//?} else {
+		/*// Before 1.21 jukebox songs are named in the disc's description, e.g. "C418 - cat".
+		String[] keys = disc
+				? new String[] {"item." + location.getNamespace() + ".music_disc_" + fileName + ".desc", location.toShortLanguageKey().replace('/', '.')}
+				: new String[] {location.toShortLanguageKey().replace('/', '.')};
+		*///?}
 		for (String key : keys) {
 			if (language.has(key)) {
 				return fromTranslation(language.getOrDefault(key), icon);
