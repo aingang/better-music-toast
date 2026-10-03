@@ -103,10 +103,17 @@ public final class BetterMusicToastClient {
 	public BetterMusicToastClient(IEventBus modBus, ModContainer container) {
 		config = ModConfig.load();
 
-		String category = "key.category." + MOD_ID + ".main";
+		// Key categories became objects in 1.21.9; before that a category is its translation key.
+		//? if >=1.21.9 {
+		KeyMapping.Category category = new KeyMapping.Category(Identifier.fromNamespaceAndPath(MOD_ID, "main"));
+		//?} else {
+		/^String category = "key.category." + MOD_ID + ".main";
+		^///?}
 		KeyMapping showAgain = new KeyMapping("key.bettermusictoast.show", InputConstants.UNKNOWN.getValue(), category);
 		KeyMapping openSettings = new KeyMapping("key.bettermusictoast.settings", InputConstants.UNKNOWN.getValue(), category);
 		modBus.addListener((RegisterKeyMappingsEvent event) -> {
+			//? if >=1.21.9
+			event.registerCategory(category);
 			event.register(showAgain);
 			event.register(openSettings);
 		});

@@ -8,7 +8,7 @@ You can choose where it shows up, how long it stays, and it moves out of the way
 
 - **Fabric:** Minecraft 1.21 – 26.3 with Fabric Loader and [Fabric API](https://modrinth.com/mod/fabric-api),
   [Mod Menu](https://modrinth.com/mod/modmenu) optional
-- **NeoForge:** Minecraft 1.21.1
+- **NeoForge:** Minecraft 1.21 – 26.3
 
 One jar per loader and Minecraft version range.
 

@@ -27,8 +27,14 @@ public abstract class AbstractSoundInstanceMixin {
 	protected SoundSource source;
 
 	/** Picks only C418 tracks for game music when "Music Selection: Classic" is set. */
+	// Mojang renamed resolve() to getOrResolve() in 26.3.
+	//? if >=26.3 {
+	/*@WrapOperation(method = "getOrResolve", at = @At(value = "INVOKE",
+			target = "Lnet/minecraft/client/sounds/WeighedSoundEvents;getSound(Lnet/minecraft/util/RandomSource;)Lnet/minecraft/client/resources/sounds/Sound;"))
+	*///?} else {
 	@WrapOperation(method = "resolve", at = @At(value = "INVOKE",
 			target = "Lnet/minecraft/client/sounds/WeighedSoundEvents;getSound(Lnet/minecraft/util/RandomSource;)Lnet/minecraft/client/resources/sounds/Sound;"))
+	//?}
 	private Sound bettermusictoast$pickMusicStyle(WeighedSoundEvents events, RandomSource random,
 			Operation<Sound> original, @Local(argsOnly = true) SoundManager soundManager) {
 		if (source != SoundSource.MUSIC || BetterMusicToastClient.config().musicStyle != ModConfig.MusicStyle.CLASSIC) {

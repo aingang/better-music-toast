@@ -6,8 +6,13 @@ plugins {
 stonecutter active "26.2"
 
 // Modrinth lists versions by upload time: upload the oldest Minecraft version first, one after
-// another, so the newest one ends up on top.
-stonecutter.versions.map { it.project }.zipWithNext { older, newer ->
+// another (Fabric, then NeoForge of the same version), so the newest one ends up on top.
+fun minecraftOrder(version: String) = version.split('.').map { it.toIntOrNull() ?: 0 }
+    .let { parts -> parts.getOrElse(0) { 0 } * 1_000_000 + parts.getOrElse(1) { 0 } * 1_000 + parts.getOrElse(2) { 0 } }
+stonecutter.versions
+    .sortedWith(compareBy({ minecraftOrder(it.version) }, { it.project.endsWith("-neoforge") }))
+    .map { it.project }
+    .zipWithNext { older, newer ->
     project(":$newer").tasks.matching { it.name == "publishModrinth" }.configureEach {
         mustRunAfter(":$older:publishModrinth")
     }
@@ -34,6 +39,12 @@ stonecutter parameters {
         // Mojang renamed ResourceLocation to Identifier in 1.21.11.
         string(current.parsed >= "1.21.11") {
             replace("ResourceLocation", "Identifier")
+        }
+
+        // NeoForge kept the method name ScreenEvent.Render.getGuiGraphics() in 26.1, so undo the
+        // rename above for it. Always on, so it never runs the other way round.
+        string(true) {
+            replace("getGuiGraphicsExtractor()", "getGuiGraphics()")
         }
     }
 }

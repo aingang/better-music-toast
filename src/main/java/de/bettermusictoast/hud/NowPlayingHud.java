@@ -14,7 +14,11 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.resources.Identifier;
 //? if >=1.21.6 {
+//? if fabric {
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
+//?} else {
+/*import net.neoforged.neoforge.client.gui.GuiLayer;
+*///?}
 import net.minecraft.client.renderer.RenderPipelines;
 import org.joml.Matrix3x2fStack;
 //?} else {
@@ -27,10 +31,14 @@ import net.minecraft.client.renderer.RenderType;
  * Draws the "now playing" panel: a compact, advancement-toast-like box with a light
  * background and a darker pixel border in the selected {@link ColorTheme}.
  */
-//? if >=1.21.6 {
+//? if fabric && >=1.21.6 {
 public final class NowPlayingHud implements HudElement {
 	private static final Identifier MUSIC_NOTES_SPRITE = Identifier.withDefaultNamespace("icon/music_notes");
-//?} else {
+//?} else if >=1.21.6 {
+/*// NeoForge draws HUD parts as GUI layers.
+public final class NowPlayingHud implements GuiLayer {
+	private static final Identifier MUSIC_NOTES_SPRITE = Identifier.withDefaultNamespace("icon/music_notes");
+*///?} else {
 /*// Before 1.21.6 the HUD is built from layers, and Minecraft has no music notes icon of its own yet,
 // so the mod ships the same icon.
 public final class NowPlayingHud implements LayeredDraw.Layer {
@@ -57,7 +65,8 @@ public final class NowPlayingHud implements LayeredDraw.Layer {
 
 	/** In-game HUD pass. With "show in menus" the screen pass takes over while a menu is open. */
 	@Override
-	//? if >=26.1 {
+	// NeoForge's GUI layers keep the name render() on every version.
+	//? if fabric && >=26.1 {
 	public void extractRenderState(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) {
 	//?} else {
 	/*public void render(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) {
