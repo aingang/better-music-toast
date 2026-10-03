@@ -65,6 +65,12 @@ publishMods {
     }
 }
 
+// "-Ponly=1.21.1,1.21.3" uploads just those version nodes (e.g. when adding new Minecraft versions).
+val publishOnly = providers.gradleProperty("only").orNull?.split(",")?.map { it.trim() }
+if (publishOnly != null && sc.current.version !in publishOnly) {
+    tasks.matching { it.name == "publishModrinth" }.configureEach { enabled = false }
+}
+
 java {
     targetCompatibility = requiredJava
     sourceCompatibility = requiredJava

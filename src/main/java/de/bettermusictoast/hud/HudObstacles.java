@@ -35,7 +35,11 @@ public final class HudObstacles {
 		// Advancement / recipe / system toasts (top right, slide in from the right).
 		for (Object entry : ((ToastManagerAccessor) McCompat.toastManager(mc)).bettermusictoast$getVisibleToasts()) {
 			ToastInstanceAccessor instance = (ToastInstanceAccessor) entry;
+			//? if >=1.21.2 {
 			float portion = instance.bettermusictoast$getVisiblePortion();
+			//?} else {
+			/*float portion = instance.bettermusictoast$getVisibility(net.minecraft.Util.getMillis());
+			*///?}
 			if (portion <= 0.0f) continue;
 			Toast toast = instance.bettermusictoast$getToast();
 			//? if >=1.21.6 {

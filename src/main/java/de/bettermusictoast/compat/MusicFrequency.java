@@ -69,7 +69,7 @@ public enum MusicFrequency implements OptionEnum, StringRepresentable {
 		Minecraft mc = Minecraft.getInstance();
 		MusicManagerAccessor music = (MusicManagerAccessor) mc.getMusicManager();
 		music.bettermusictoast$setNextSongDelay(
-				frequency.nextSongDelay(mc.getSituationalMusic().music(), music.bettermusictoast$getRandom()));
+				frequency.nextSongDelay(McCompat.situationalMusic(mc), music.bettermusictoast$getRandom()));
 	}
 
 	@Override

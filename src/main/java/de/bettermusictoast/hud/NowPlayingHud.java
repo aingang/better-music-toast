@@ -236,8 +236,18 @@ public final class NowPlayingHud implements LayeredDraw.Layer {
 		} else {
 			//? if >=1.21.6 {
 			g.blitSprite(RenderPipelines.GUI_TEXTURED, MUSIC_NOTES_SPRITE, ICON_X, iconY, 16, 16, argb(theme.icon, alpha));
-			//?} else {
+			//?} else if >=1.21.2 {
 			/*g.blitSprite(RenderType::guiTextured, MUSIC_NOTES_SPRITE, ICON_X, iconY, 16, 16, argb(theme.icon, alpha));
+			*///?} else {
+			/*// Before 1.21.2 sprites take no colour and are drawn without blending: tint and fade
+			// them through the shader colour, like vanilla did back then.
+			int tint = argb(theme.icon, alpha);
+			com.mojang.blaze3d.systems.RenderSystem.enableBlend();
+			g.setColor(((tint >> 16) & 0xFF) / 255.0f, ((tint >> 8) & 0xFF) / 255.0f, (tint & 0xFF) / 255.0f,
+					((tint >>> 24) & 0xFF) / 255.0f);
+			g.blitSprite(MUSIC_NOTES_SPRITE, ICON_X, iconY, 16, 16);
+			g.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+			com.mojang.blaze3d.systems.RenderSystem.disableBlend();
 			*///?}
 		}
 

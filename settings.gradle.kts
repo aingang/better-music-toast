@@ -19,7 +19,7 @@ stonecutter {
     create(rootProject) {
         // Each entry is the Minecraft version a jar is compiled against;
         // the Minecraft range it supports is set in stonecutter.properties.toml.
-        versions("1.21.5", "1.21.8","1.21.10", "1.21.11", "26.1.2", "26.2")
+        versions("1.21.1", "1.21.3", "1.21.5", "1.21.8", "1.21.10", "1.21.11", "26.1.2", "26.2")
         vcsVersion = "26.2"
     }
 }

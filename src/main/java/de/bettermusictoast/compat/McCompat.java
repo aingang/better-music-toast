@@ -7,6 +7,7 @@ import net.minecraft.client.Options;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.BossHealthOverlay;
 import net.minecraft.client.gui.components.OptionsList;
+//? if >=1.21.2
 import net.minecraft.client.gui.components.toasts.ToastManager;
 import net.minecraft.client.gui.screens.Screen;
 
@@ -38,13 +39,20 @@ public final class McCompat {
 		*///?}
 	}
 
+	//? if >=26.2 {
 	public static ToastManager toastManager(Minecraft mc) {
-		//? if >=26.2 {
 		return mc.gui.toastManager();
-		//?} else {
-		/*return mc.getToastManager();
-		*///?}
 	}
+	//?} else if >=1.21.2 {
+	/*public static ToastManager toastManager(Minecraft mc) {
+		return mc.getToastManager();
+	}
+	*///?} else {
+	/*// Before 1.21.2 the toast manager is called ToastComponent.
+	public static net.minecraft.client.gui.components.toasts.ToastComponent toastManager(Minecraft mc) {
+		return mc.getToasts();
+	}
+	*///?}
 
 	/** F1 (hidden HUD) or the F3 debug screen. */
 	public static boolean isHudHidden(Minecraft mc) {
@@ -83,6 +91,17 @@ public final class McCompat {
 	//?} else if >=1.21.6 {
 	/*public static OptionInstance<?> vanillaToastOption(Options options) {
 		return options.showNowPlayingToast();
+	}
+	*///?}
+
+	// The music the game wants right now; only needed for the Music Frequency option before 1.21.6.
+	//? if <1.21.4 {
+	/*public static net.minecraft.sounds.Music situationalMusic(Minecraft mc) {
+		return mc.getSituationalMusic();
+	}
+	*///?} else if <1.21.6 {
+	/*public static net.minecraft.sounds.Music situationalMusic(Minecraft mc) {
+		return mc.getSituationalMusic().music();
 	}
 	*///?}
 

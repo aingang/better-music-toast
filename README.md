@@ -6,7 +6,7 @@ You can choose where it shows up, how long it stays, and it moves out of the way
 
 ## Requirements
 
-- Minecraft 1.21.5 – 26.3 with Fabric Loader (one jar per version range)
+- Minecraft 1.21 – 26.3 with Fabric Loader (one jar per version range)
 - [Fabric API](https://modrinth.com/mod/fabric-api)
 - [Mod Menu](https://modrinth.com/mod/modmenu) (optional)
 

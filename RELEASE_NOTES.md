@@ -1,3 +1,2 @@
-- Fixed (Minecraft 1.21.6 and newer): in some languages (German, Italian, Polish, Swedish, Czech, Finnish and a few others) the song box showed artist and title in one line, and the Classic music style played other artists too. Minecraft writes "C418 – Sweden" with a longer dash in these languages, which the mod did not recognise.
-- Fixed (Minecraft 1.21.6 and newer): the border of the themed buttons stayed lit after coming back from the Better Music Toast settings, even without the mouse over it.
-- Minecraft 1.21.5: no changes, both fixes were already included.
+- Now also available for Minecraft 1.21 – 1.21.4. Same features as 1.6.2, except the options for Minecraft's own music toast, which only exists since 1.21.6.
+- Also brings two music features from Minecraft 1.21.6 to these versions: the Music Frequency option (Default / Frequent / Constant) in Music & Sounds, and music that keeps playing while the game is paused.
