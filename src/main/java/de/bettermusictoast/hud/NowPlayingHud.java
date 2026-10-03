@@ -43,7 +43,11 @@ public final class NowPlayingHud implements HudElement {
 
 	/** In-game HUD pass. With "show in menus" the screen pass takes over while a menu is open. */
 	@Override
+	//? if >=26.1 {
 	public void extractRenderState(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) {
+	//?} else {
+	/*public void render(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) {
+	*///?}
 		if (drawsOverScreen() && McCompat.screen(Minecraft.getInstance()) != null) {
 			return;
 		}
