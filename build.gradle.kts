@@ -55,8 +55,10 @@ loom {
     }
 }
 
-// Modrinth upload. The access token lives outside the project in ~/.gradle/gradle.properties
-// (modrinthToken=...). "gradlew publishMods -PdryRun" only shows what would be uploaded.
+// Modrinth and CurseForge upload. The access tokens live outside the project in
+// ~/.gradle/gradle.properties (modrinthToken=..., curseforgeToken=...).
+// "gradlew publishMods -PdryRun" only shows what would be uploaded; "publishModrinth" or
+// "publishCurseforge" instead of "publishMods" uploads to one site only.
 publishMods {
     file = loomx.modJar.flatMap { it.archiveFile }
     version = project.version.toString()
@@ -73,12 +75,22 @@ publishMods {
         requires("fabric-api")
         optional("modmenu")
     }
+
+    curseforge {
+        accessToken = providers.gradleProperty("curseforgeToken")
+        projectId = "1725223"
+        minecraftVersions.addAll(mcReleases)
+        client = true
+        server = false
+        requires("fabric-api")
+        optional("modmenu")
+    }
 }
 
 // "-Ponly=1.21.1,1.21.3" uploads just those version nodes (e.g. when adding new Minecraft versions).
 val publishOnly = providers.gradleProperty("only").orNull?.split(",")?.map { it.trim() }
 if (publishOnly != null && project.name !in publishOnly) {
-    tasks.matching { it.name == "publishModrinth" }.configureEach { enabled = false }
+    tasks.matching { it.name == "publishModrinth" || it.name == "publishCurseforge" }.configureEach { enabled = false }
 }
 
 java {

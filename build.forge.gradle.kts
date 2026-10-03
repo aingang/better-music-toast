@@ -57,7 +57,7 @@ java {
     }
 }
 
-// Modrinth upload, see build.gradle.kts.
+// Modrinth and CurseForge upload, see build.gradle.kts.
 publishMods {
     file = tasks.named<Jar>("reobfJar").flatMap { it.archiveFile }
     version = project.version.toString()
@@ -76,11 +76,19 @@ publishMods {
         projectId = "A7qcTXkk"
         minecraftVersions.addAll(mcReleases)
     }
+
+    curseforge {
+        accessToken = providers.gradleProperty("curseforgeToken")
+        projectId = "1725223"
+        minecraftVersions.addAll(mcReleases)
+        client = true
+        server = false
+    }
 }
 
 val publishOnly = providers.gradleProperty("only").orNull?.split(",")?.map { it.trim() }
 if (publishOnly != null && project.name !in publishOnly) {
-    tasks.matching { it.name == "publishModrinth" }.configureEach { enabled = false }
+    tasks.matching { it.name == "publishModrinth" || it.name == "publishCurseforge" }.configureEach { enabled = false }
 }
 
 tasks {

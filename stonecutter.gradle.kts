@@ -5,16 +5,18 @@ plugins {
 // The version whose code is "live" in src/; code for other versions sits in comments.
 stonecutter active "26.2"
 
-// Modrinth lists versions by upload time: upload the oldest Minecraft version first, one after
-// another (Fabric, then NeoForge of the same version), so the newest one ends up on top.
+// Modrinth and CurseForge list versions by upload time: upload the oldest Minecraft version first,
+// one after another (Fabric, then NeoForge of the same version), so the newest one ends up on top.
 fun minecraftOrder(version: String) = version.split('.').map { it.toIntOrNull() ?: 0 }
     .let { parts -> parts.getOrElse(0) { 0 } * 1_000_000 + parts.getOrElse(1) { 0 } * 1_000 + parts.getOrElse(2) { 0 } }
 stonecutter.versions
     .sortedWith(compareBy({ minecraftOrder(it.version) }, { it.project.endsWith("-neoforge") }, { it.project.endsWith("-forge") }))
     .map { it.project }
     .zipWithNext { older, newer ->
-    project(":$newer").tasks.matching { it.name == "publishModrinth" }.configureEach {
-        mustRunAfter(":$older:publishModrinth")
+    for (task in listOf("publishModrinth", "publishCurseforge")) {
+        project(":$newer").tasks.matching { it.name == task }.configureEach {
+            mustRunAfter(":$older:$task")
+        }
     }
 }
 

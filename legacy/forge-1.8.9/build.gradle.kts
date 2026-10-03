@@ -170,7 +170,7 @@ val remapJar by tasks.named<net.fabricmc.loom.task.RemapJarTask>("remapJar") {
 
 tasks.assemble.get().dependsOn(tasks.remapJar)
 
-// Modrinth upload, the same way as in the root project (token in the personal gradle.properties,
+// Modrinth and CurseForge upload, the same way as in the root project (token in the personal gradle.properties,
 // changelog from RELEASE_NOTES.md, "-PdryRun" to try it without uploading).
 publishMods {
     file = remapJar.archiveFile
@@ -185,5 +185,13 @@ publishMods {
         accessToken = providers.gradleProperty("modrinthToken")
         projectId = "A7qcTXkk"
         minecraftVersions.add(mcVersion)
+    }
+
+    curseforge {
+        accessToken = providers.gradleProperty("curseforgeToken")
+        projectId = "1725223"
+        minecraftVersions.add(mcVersion)
+        client = true
+        server = false
     }
 }

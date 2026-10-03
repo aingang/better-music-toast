@@ -1,1 +1,1 @@
-- New: Minecraft 1.8.9 on Forge, with the same look and features as on the newer versions, including Minecraft's Music Frequency option (in Music & Sounds) and music that keeps playing while the game is paused. The box moves out of the way of achievements, the boss bar, the jukebox "Now playing" message and item names.
+- First release on CurseForge, with the same files as version 1.6.4 on Modrinth: Fabric for Minecraft 1.20 – 26.3, NeoForge for Minecraft 1.20.6 and 1.21 – 26.3, Forge (and NeoForge) for Minecraft 1.20.1 and Forge for Minecraft 1.8.9.
