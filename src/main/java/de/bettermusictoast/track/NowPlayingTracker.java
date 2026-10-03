@@ -18,6 +18,7 @@ public final class NowPlayingTracker implements SoundEventListener {
 	/** A freshly started sound may not report as active right away. */
 	private static final long START_GRACE_MS = 1500;
 	private static final long PREVIEW_MS = 4000;
+	private static final long SETTINGS_PREVIEW_MS = 5000;
 
 	private SoundInstance instance;
 	private SoundSource source;
@@ -27,6 +28,7 @@ public final class NowPlayingTracker implements SoundEventListener {
 	/** Time the panel has actually been on screen; the timer pauses while it is blocked. */
 	private long shownMs;
 	private long previewUntil;
+	private long settingsPreviewUntil;
 	private long vanillaToastShownAt = Long.MIN_VALUE;
 
 	@Override
@@ -74,10 +76,13 @@ public final class NowPlayingTracker implements SoundEventListener {
 		if (track == null) {
 			return false;
 		}
+		ModConfig config = BetterMusicToastClient.config();
+		if (isSettingsPreview()) {
+			return config.enabled;
+		}
 		if (previewUntil != 0) {
 			return now() < previewUntil;
 		}
-		ModConfig config = BetterMusicToastClient.config();
 		if (!config.enabled || ended) {
 			return false;
 		}
@@ -88,7 +93,10 @@ public final class NowPlayingTracker implements SoundEventListener {
 	}
 
 	public void addShownTime(long ms) {
-		shownMs += ms;
+		// Looking at the settings preview should not use up the song's display time.
+		if (!isSettingsPreview()) {
+			shownMs += ms;
+		}
 	}
 
 	public TrackInfo track() {
@@ -121,6 +129,24 @@ public final class NowPlayingTracker implements SoundEventListener {
 		instance = null;
 		ended = false;
 		previewUntil = now() + PREVIEW_MS;
+	}
+
+	/**
+	 * Shows the panel at its configured position for a few seconds while the settings screen is
+	 * open, so changes are visible right away: the current song, or a sample if nothing plays.
+	 */
+	public void showSettingsPreview() {
+		if (track == null || ended || previewUntil != 0) {
+			track = new TrackInfo(I18n.get("bettermusictoast.preview.title"), I18n.get("bettermusictoast.preview.artist"), ItemStack.EMPTY);
+			instance = null;
+			ended = false;
+			previewUntil = now() + SETTINGS_PREVIEW_MS;
+		}
+		settingsPreviewUntil = now() + SETTINGS_PREVIEW_MS;
+	}
+
+	public boolean isSettingsPreview() {
+		return track != null && now() < settingsPreviewUntil;
 	}
 
 	public void onVanillaToastShown() {

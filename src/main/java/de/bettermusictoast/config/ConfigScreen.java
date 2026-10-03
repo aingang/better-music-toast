@@ -28,7 +28,7 @@ public final class ConfigScreen extends OptionsSubScreen {
 		this.list.addBig(bool("enabled", config.enabled, v -> config.enabled = v));
 		this.list.addBig(enumOption("position", ModConfig.Position.values(), config.position,
 				ModConfig.Position::translationKey, v -> config.position = v));
-		this.list.addBig(new ColorThemeButton(config));
+		this.list.addBig(new ColorThemeButton(config, this::showPreview));
 		this.list.addBig(enumOption("displayMode", ModConfig.DisplayMode.values(), config.displayMode,
 				ModConfig.DisplayMode::translationKey, v -> {
 					config.displayMode = v;
@@ -52,6 +52,19 @@ public final class ConfigScreen extends OptionsSubScreen {
 		// Moved here from the Music & Sounds screen, where our button takes its place.
 		this.list.addBig(this.options.musicToast());
 		updateVanillaToastButton();
+		showPreview();
+	}
+
+	/** Shows the song box at its configured position for a few seconds, so every change is visible. */
+	private void showPreview() {
+		BetterMusicToastClient.tracker().showSettingsPreview();
+	}
+
+	private <T> Consumer<T> withPreview(Consumer<T> setter) {
+		return value -> {
+			setter.accept(value);
+			showPreview();
+		};
 	}
 
 	/** The seconds only matter in timed mode. */
@@ -90,13 +103,13 @@ public final class ConfigScreen extends OptionsSubScreen {
 		return "bettermusictoast.option." + name;
 	}
 
-	private static OptionInstance<Boolean> bool(String name, boolean value, Consumer<Boolean> setter) {
+	private OptionInstance<Boolean> bool(String name, boolean value, Consumer<Boolean> setter) {
 		return OptionInstance.createBoolean(key(name),
 				OptionInstance.cachedConstantTooltip(Component.translatable(key(name) + ".tooltip")),
-				value, setter::accept);
+				value, withPreview(setter)::accept);
 	}
 
-	private static <E extends Enum<E>> OptionInstance<E> enumOption(String name, E[] values, E value,
+	private <E extends Enum<E>> OptionInstance<E> enumOption(String name, E[] values, E value,
 			Function<E, String> translationKey, Consumer<E> setter) {
 		Codec<E> codec = Codec.STRING.xmap(s -> Arrays.stream(values).filter(e -> e.name().equals(s)).findFirst().orElse(value), Enum::name);
 		return new OptionInstance<>(key(name),
@@ -104,7 +117,7 @@ public final class ConfigScreen extends OptionsSubScreen {
 				// Cycle buttons prepend the caption themselves.
 				(caption, v) -> Component.translatable(translationKey.apply(v)),
 				new OptionInstance.Enum<>(Arrays.asList(values), codec),
-				value, setter::accept);
+				value, withPreview(setter)::accept);
 	}
 
 	/** Slider over the sizes that stay pixel-sharp at the current GUI scale. */
@@ -116,7 +129,7 @@ public final class ConfigScreen extends OptionsSubScreen {
 						Component.literal(Math.round(pixels * 100.0f / guiScale) + "%")),
 				new OptionInstance.IntRange(ModConfig.minSizePixels(guiScale), ModConfig.maxSizePixels(guiScale)),
 				config.sizePixels(guiScale),
-				pixels -> config.sizePercent = Math.round(pixels * 100.0f / guiScale));
+				withPreview((Integer pixels) -> config.sizePercent = Math.round(pixels * 100.0f / guiScale))::accept);
 	}
 
 	private OptionInstance<Integer> duration() {
@@ -124,6 +137,6 @@ public final class ConfigScreen extends OptionsSubScreen {
 				OptionInstance.cachedConstantTooltip(Component.translatable(key("duration") + ".tooltip")),
 				(caption, v) -> Options.genericValueLabel(caption, Component.translatable("bettermusictoast.seconds", v)),
 				new OptionInstance.IntRange(2, 30),
-				config.durationSeconds, v -> config.durationSeconds = v);
+				config.durationSeconds, withPreview((Integer v) -> config.durationSeconds = v)::accept);
 	}
 }

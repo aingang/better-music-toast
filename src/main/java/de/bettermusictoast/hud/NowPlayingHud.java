@@ -43,7 +43,7 @@ public final class NowPlayingHud implements HudElement {
 	/** In-game HUD pass. With "show in menus" the screen pass takes over while a menu is open. */
 	@Override
 	public void extractRenderState(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) {
-		if (BetterMusicToastClient.config().showInMenus && Minecraft.getInstance().gui.screen() != null) {
+		if (drawsOverScreen() && Minecraft.getInstance().gui.screen() != null) {
 			return;
 		}
 		render(graphics, false);
@@ -51,9 +51,14 @@ public final class NowPlayingHud implements HudElement {
 
 	/** Drawn on top of any open menu (pause menu, inventory, title screen, ...) when enabled. */
 	public void extractOverScreen(GuiGraphicsExtractor graphics) {
-		if (BetterMusicToastClient.config().showInMenus) {
+		if (drawsOverScreen()) {
 			render(graphics, true);
 		}
+	}
+
+	/** "Show in menus", or the short preview while the settings screen is open. */
+	private static boolean drawsOverScreen() {
+		return BetterMusicToastClient.config().showInMenus || BetterMusicToastClient.tracker().isSettingsPreview();
 	}
 
 	private void render(GuiGraphicsExtractor graphics, boolean overScreen) {

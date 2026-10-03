@@ -10,6 +10,7 @@ import net.minecraft.client.resources.sounds.AbstractSoundInstance;
 import net.minecraft.client.resources.sounds.Sound;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.client.sounds.WeighedSoundEvents;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import org.spongepowered.asm.mixin.Final;
@@ -23,6 +24,10 @@ public abstract class AbstractSoundInstanceMixin {
 	@Final
 	protected SoundSource source;
 
+	@Shadow
+	@Final
+	protected Identifier identifier;
+
 	/** Picks only C418 tracks for game music when "Music Selection: Classic" is set. */
 	@WrapOperation(method = "resolve", at = @At(value = "INVOKE",
 			target = "Lnet/minecraft/client/sounds/WeighedSoundEvents;getSound(Lnet/minecraft/util/RandomSource;)Lnet/minecraft/client/resources/sounds/Sound;"))
@@ -31,6 +36,6 @@ public abstract class AbstractSoundInstanceMixin {
 		if (source != SoundSource.MUSIC || BetterMusicToastClient.config().musicStyle != ModConfig.MusicStyle.CLASSIC) {
 			return original.call(events, random);
 		}
-		return MusicStyleFilter.pickClassic(events, e -> original.call(e, random), soundManager);
+		return MusicStyleFilter.pickClassic(identifier, events, e -> original.call(e, random), soundManager);
 	}
 }

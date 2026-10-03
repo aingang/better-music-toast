@@ -3,13 +3,13 @@ package de.bettermusictoast.mixin;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import de.bettermusictoast.config.ConfigScreen;
+import de.bettermusictoast.config.ThemedButton;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.OptionInstance;
 import net.minecraft.client.Options;
 import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.OptionsList;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
@@ -48,12 +48,12 @@ public abstract class SoundOptionsScreenMixin {
 		}
 	}
 
-	private Button createSettingsButton() {
+	/** Drawn in the selected colour theme, so it doubles as a small preview of the song box. */
+	private ThemedButton createSettingsButton() {
 		Screen parent = (Screen) (Object) this;
-		return Button.builder(Component.translatable("bettermusictoast.soundOptions.button"),
-						button -> Minecraft.getInstance().gui.setScreen(new ConfigScreen(parent)))
-				.width(150)
-				.tooltip(Tooltip.create(Component.translatable("bettermusictoast.soundOptions.button.tooltip")))
-				.build();
+		ThemedButton button = new ThemedButton(150, Component.translatable("bettermusictoast.soundOptions.button"),
+				() -> Minecraft.getInstance().gui.setScreen(new ConfigScreen(parent)));
+		button.setTooltip(Tooltip.create(Component.translatable("bettermusictoast.soundOptions.button.tooltip")));
+		return button;
 	}
 }

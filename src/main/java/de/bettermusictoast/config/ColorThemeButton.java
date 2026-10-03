@@ -1,28 +1,24 @@
 package de.bettermusictoast.config;
 
-import de.bettermusictoast.hud.NowPlayingHud;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import org.joml.Matrix3x2fStack;
 
 /** Cycles through the colour themes and draws itself in the selected theme, like a small preview. */
-public final class ColorThemeButton extends AbstractButton {
+public final class ColorThemeButton extends ThemedButton {
 	private static final Component CAPTION = Component.translatable("bettermusictoast.option.colorTheme");
 
 	private final ModConfig config;
+	private final Runnable onChange;
 
-	public ColorThemeButton(ModConfig config) {
-		super(0, 0, 310, 20, Component.empty());
+	public ColorThemeButton(ModConfig config, Runnable onChange) {
+		super(310, Component.empty(), () -> {
+		});
 		this.config = config;
+		this.onChange = onChange;
 		refresh();
 	}
 
@@ -31,33 +27,13 @@ public final class ColorThemeButton extends AbstractButton {
 		ColorTheme[] themes = ColorTheme.values();
 		config.colorTheme = themes[(config.colorTheme.ordinal() + 1) % themes.length];
 		refresh();
+		onChange.run();
 	}
 
 	private void refresh() {
 		ColorTheme theme = config.colorTheme;
 		setMessage(Options.genericValueLabel(CAPTION, Component.translatable(theme.translationKey())));
 		setTooltip(Tooltip.create(tooltip(theme)));
-	}
-
-	@Override
-	protected void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-		ColorTheme theme = config.colorTheme;
-		int border = isHoveredOrFocused() ? ColorTheme.mix(theme.border, 0xFFFFFF, 0.35f) : theme.border;
-		Font font = Minecraft.getInstance().font;
-		Component message = getMessage();
-
-		Matrix3x2fStack pose = graphics.pose();
-		pose.pushMatrix();
-		pose.translate(getX(), getY());
-		NowPlayingHud.drawFrame(graphics, getWidth(), getHeight(), theme, border, 1.0f);
-		graphics.text(font, message, (getWidth() - font.width(message)) / 2, (getHeight() - 8) / 2,
-				NowPlayingHud.argb(theme.title, 1.0f), false);
-		pose.popMatrix();
-	}
-
-	@Override
-	protected void updateWidgetNarration(NarrationElementOutput output) {
-		defaultButtonNarrationText(output);
 	}
 
 	/**
