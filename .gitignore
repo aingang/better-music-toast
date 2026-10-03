@@ -32,6 +32,10 @@ bin/
 
 run/
 
+# neoforge
+
+run-neoforge/
+
 # java
 
 hs_err_*.log

@@ -6,20 +6,24 @@ You can choose where it shows up, how long it stays, and it moves out of the way
 
 ## Requirements
 
-- Minecraft 1.21 – 26.3 with Fabric Loader (one jar per version range)
-- [Fabric API](https://modrinth.com/mod/fabric-api)
-- [Mod Menu](https://modrinth.com/mod/modmenu) (optional)
+- **Fabric:** Minecraft 1.21 – 26.3 with Fabric Loader and [Fabric API](https://modrinth.com/mod/fabric-api),
+  [Mod Menu](https://modrinth.com/mod/modmenu) optional
+- **NeoForge:** Minecraft 1.21.1
+
+One jar per loader and Minecraft version range.
 
 Client-side only, not needed on servers.
 
 ## Settings
 
-Options → Music & Sounds → **Better Music Toast**, or through Mod Menu.
+Options → Music & Sounds → **Better Music Toast**, or through Mod Menu (Fabric) or the Mods list (NeoForge).
 Settings are saved in `config/bettermusictoast.json`.
 
 ## Building
 
-The project uses [Stonecutter](https://stonecutter.kikugie.dev/) to build one jar per Minecraft version from a single codebase.
+The project uses [Stonecutter](https://stonecutter.kikugie.dev/) to build one jar per mod loader and Minecraft version
+from a single codebase: Fabric versions use `build.gradle.kts`, NeoForge versions (`<version>-neoforge`) use
+`build.neoforge.gradle.kts`, and the code picks the loader with `//? if fabric` / `//? if neoforge`.
 Versions, supported Minecraft ranges and the mod version are set in `stonecutter.properties.toml`.
 
 ```

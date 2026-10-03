@@ -14,6 +14,9 @@ stonecutter.versions.map { it.project }.zipWithNext { older, newer ->
 }
 
 stonecutter parameters {
+    // "//? if fabric {" / "//? if neoforge {" pick the code for the mod loader being built.
+    constants.match(if (current.project.endsWith("-neoforge")) "neoforge" else "fabric", "fabric", "neoforge")
+
     // Names Mojang changed in 26.1 (render... -> extract...). The source uses the new names;
     // older versions get the old ones written back automatically.
     replacements {

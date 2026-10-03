@@ -1,2 +1,2 @@
-- Now also available for Minecraft 1.21 – 1.21.4. Same features as 1.6.2, except the options for Minecraft's own music toast, which only exists since 1.21.6.
-- Also brings two music features from Minecraft 1.21.6 to these versions: the Music Frequency option (Default / Frequent / Constant) in Music & Sounds, and music that keeps playing while the game is paused.
+- Better Music Toast is now also available for NeoForge (Minecraft 1.21.1), with the same features as on Fabric: the song box, all settings and colour themes, Classic music, Minecraft's Music Frequency option and music that keeps playing while the game is paused.
+- The settings open from the Mods list (Config button), or from Options → Music & Sounds → Better Music Toast.

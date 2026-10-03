@@ -67,7 +67,7 @@ publishMods {
 
 // "-Ponly=1.21.1,1.21.3" uploads just those version nodes (e.g. when adding new Minecraft versions).
 val publishOnly = providers.gradleProperty("only").orNull?.split(",")?.map { it.trim() }
-if (publishOnly != null && sc.current.version !in publishOnly) {
+if (publishOnly != null && project.name !in publishOnly) {
     tasks.matching { it.name == "publishModrinth" }.configureEach { enabled = false }
 }
 
@@ -99,6 +99,8 @@ tasks {
 
         // Song names, the music notes icon and the Music Frequency option that Minecraft itself
         // only has since 1.21.6.
+        // NeoForge-only files.
+        exclude("META-INF/neoforge.mods.toml", "META-INF/accesstransformer.cfg")
         if (sc.current.parsed >= "1.21.6") {
             exclude(
                 "assets/minecraft/lang/**",

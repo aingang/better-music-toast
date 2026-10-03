@@ -1,8 +1,12 @@
 package de.bettermusictoast.track;
 
 import java.util.Locale;
+//? if fabric {
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
+//?} else {
+/*import net.neoforged.fml.ModList;
+*///?}
 import net.minecraft.client.resources.sounds.Sound;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.client.sounds.SoundManager;
@@ -78,10 +82,16 @@ public final class TrackResolver {
 		if (namespace.equals(Identifier.DEFAULT_NAMESPACE)) {
 			return null;
 		}
+		//? if fabric {
 		return FabricLoader.getInstance().getModContainer(namespace)
 				.map(ModContainer::getMetadata)
 				.map(meta -> meta.getName())
 				.orElse(namespace);
+		//?} else {
+		/*return ModList.get().getModContainerById(namespace)
+				.map(mod -> mod.getModInfo().getDisplayName())
+				.orElse(namespace);
+		*///?}
 	}
 
 	private static String prettify(String fileName) {

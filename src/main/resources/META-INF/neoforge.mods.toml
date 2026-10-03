@@ -1,0 +1,27 @@
+modLoader = "javafml"
+loaderVersion = "[1,)"
+license = "MIT"
+issueTrackerURL = "https://github.com/aingang/better-music-toast/issues"
+
+[[mods]]
+modId = "bettermusictoast"
+version = "${version}"
+displayName = "Better Music Toast"
+authors = "aingang"
+description = '''Shows which Minecraft song is currently playing in a compact, configurable HUD notification.'''
+logoFile = "assets/bettermusictoast/icon.png"
+# Client-side only: servers neither need nor check for it.
+displayTest = "IGNORE_ALL_VERSION"
+
+[[mixins]]
+config = "bettermusictoast.mixins.json"
+<% if (access_transformer) { %>
+[[accessTransformers]]
+file = "META-INF/accesstransformer.cfg"
+<% } %>
+[[dependencies.bettermusictoast]]
+modId = "minecraft"
+type = "required"
+versionRange = "${minecraft}"
+ordering = "NONE"
+side = "CLIENT"

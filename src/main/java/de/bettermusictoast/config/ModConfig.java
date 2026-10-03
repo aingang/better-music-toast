@@ -8,16 +8,26 @@ import java.io.Reader;
 import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
+//? if fabric {
 import net.fabricmc.loader.api.FabricLoader;
+//?} else {
+/*import net.neoforged.fml.loading.FMLPaths;
+*///?}
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public final class ModConfig {
 	private static final Logger LOGGER = LoggerFactory.getLogger("bettermusictoast");
 	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+	//? if fabric {
 	private static final Path PATH = FabricLoader.getInstance().getConfigDir().resolve("bettermusictoast.json");
 	/** Settings file from before the mod was renamed (Now Playing Toast). */
 	private static final Path LEGACY_PATH = FabricLoader.getInstance().getConfigDir().resolve("nowplayingtoast.json");
+	//?} else {
+	/*private static final Path PATH = FMLPaths.CONFIGDIR.get().resolve("bettermusictoast.json");
+	// The mod was only renamed before it came to NeoForge, but an old file does no harm.
+	private static final Path LEGACY_PATH = FMLPaths.CONFIGDIR.get().resolve("nowplayingtoast.json");
+	*///?}
 
 	public enum Position {
 		TOP_LEFT, TOP_CENTER, TOP_RIGHT, ABOVE_HOTBAR;
