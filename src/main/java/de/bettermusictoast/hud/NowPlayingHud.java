@@ -1,6 +1,7 @@
 package de.bettermusictoast.hud;
 
 import de.bettermusictoast.BetterMusicToastClient;
+import de.bettermusictoast.config.ColorTheme;
 import de.bettermusictoast.config.ModConfig;
 import de.bettermusictoast.config.ModConfig.Position;
 import de.bettermusictoast.track.NowPlayingTracker;
@@ -16,19 +17,11 @@ import net.minecraft.resources.Identifier;
 import org.joml.Matrix3x2fStack;
 
 /**
- * Draws the "now playing" panel: a compact, advancement-toast-like box with a beige
- * background and a brown pixel border.
+ * Draws the "now playing" panel: a compact, advancement-toast-like box with a light
+ * background and a darker pixel border in the selected {@link ColorTheme}.
  */
 public final class NowPlayingHud implements HudElement {
 	private static final Identifier MUSIC_NOTES_SPRITE = Identifier.withDefaultNamespace("icon/music_notes");
-
-	private static final int COLOR_BORDER = 0x4A2E16;
-	private static final int COLOR_FILL = 0xE9D8B0;
-	private static final int COLOR_HIGHLIGHT = 0xF8EED4;
-	private static final int COLOR_SHADE = 0xC8AE80;
-	private static final int COLOR_TITLE = 0x3B2410;
-	private static final int COLOR_ARTIST = 0x7A5432;
-	private static final int COLOR_ICON = 0x6B4626;
 
 	private static final int SCREEN_MARGIN = 4;
 	private static final int OBSTACLE_GAP = 2;
@@ -165,7 +158,7 @@ public final class NowPlayingHud implements HudElement {
 		pose.translate(Math.round((x + dx) * guiScale) / (float) guiScale,
 				Math.round((currentY + dy) * guiScale) / (float) guiScale);
 		pose.scale(scale, scale);
-		drawPanel(graphics, font, track, title, artist, width, height, alpha);
+		drawPanel(graphics, font, track, title, artist, width, height, alpha, config.colorTheme);
 		pose.popMatrix();
 	}
 
@@ -194,13 +187,38 @@ public final class NowPlayingHud implements HudElement {
 	}
 
 	static void drawPanel(GuiGraphicsExtractor g, Font font, TrackInfo track, String title, String artist,
-			int w, int h, float alpha) {
-		int border = argb(COLOR_BORDER, alpha);
-		int highlight = argb(COLOR_HIGHLIGHT, alpha);
-		int shade = argb(COLOR_SHADE, alpha);
+			int w, int h, float alpha, ColorTheme theme) {
+		drawFrame(g, w, h, theme, theme.border, alpha);
+
+		// Divider between icon and text.
+		g.fill(TEXT_X - 4, 5, TEXT_X - 3, h - 5, argb(theme.shade, alpha));
+
+		int iconY = (h - 16) / 2;
+		if (!track.icon().isEmpty() && alpha > 0.6f) {
+			g.item(track.icon(), ICON_X, iconY);
+		} else {
+			g.blitSprite(RenderPipelines.GUI_TEXTURED, MUSIC_NOTES_SPRITE, ICON_X, iconY, 16, 16, argb(theme.icon, alpha));
+		}
+
+		if (alpha < 0.05f) {
+			return;
+		}
+		if (artist == null) {
+			g.text(font, title, TEXT_X, (h - 8) / 2, argb(theme.title, alpha), false);
+		} else {
+			g.text(font, title, TEXT_X, 5, argb(theme.title, alpha), false);
+			g.text(font, artist, TEXT_X, 15, argb(theme.artist, alpha), false);
+		}
+	}
+
+	/** Background, bevel and pixel-rounded frame at (0, 0), shared with the theme button in the settings. */
+	public static void drawFrame(GuiGraphicsExtractor g, int w, int h, ColorTheme theme, int borderColor, float alpha) {
+		int border = argb(borderColor, alpha);
+		int highlight = argb(theme.highlight, alpha);
+		int shade = argb(theme.shade, alpha);
 
 		// Body.
-		g.fill(1, 1, w - 1, h - 1, argb(COLOR_FILL, alpha));
+		g.fill(1, 1, w - 1, h - 1, argb(theme.fill, alpha));
 
 		// Inner bevel, like vanilla buttons and toasts.
 		g.fill(2, 1, w - 2, 2, highlight);
@@ -208,7 +226,7 @@ public final class NowPlayingHud implements HudElement {
 		g.fill(2, h - 2, w - 2, h - 1, shade);
 		g.fill(w - 2, 2, w - 1, h - 2, shade);
 
-		// Brown frame with cut corners for the pixel-rounded look.
+		// Frame with cut corners for the pixel-rounded look.
 		g.fill(1, 0, w - 1, 1, border);
 		g.fill(1, h - 1, w - 1, h, border);
 		g.fill(0, 1, 1, h - 1, border);
@@ -217,26 +235,6 @@ public final class NowPlayingHud implements HudElement {
 		g.fill(w - 2, 1, w - 1, 2, border);
 		g.fill(1, h - 2, 2, h - 1, border);
 		g.fill(w - 2, h - 2, w - 1, h - 1, border);
-
-		// Divider between icon and text.
-		g.fill(TEXT_X - 4, 5, TEXT_X - 3, h - 5, shade);
-
-		int iconY = (h - 16) / 2;
-		if (!track.icon().isEmpty() && alpha > 0.6f) {
-			g.item(track.icon(), ICON_X, iconY);
-		} else {
-			g.blitSprite(RenderPipelines.GUI_TEXTURED, MUSIC_NOTES_SPRITE, ICON_X, iconY, 16, 16, argb(COLOR_ICON, alpha));
-		}
-
-		if (alpha < 0.05f) {
-			return;
-		}
-		if (artist == null) {
-			g.text(font, title, TEXT_X, (h - 8) / 2, argb(COLOR_TITLE, alpha), false);
-		} else {
-			g.text(font, title, TEXT_X, 5, argb(COLOR_TITLE, alpha), false);
-			g.text(font, artist, TEXT_X, 15, argb(COLOR_ARTIST, alpha), false);
-		}
 	}
 
 	private static String fit(Font font, String text) {
@@ -247,7 +245,7 @@ public final class NowPlayingHud implements HudElement {
 		return font.plainSubstrByWidth(text, MAX_TEXT_WIDTH - font.width(ellipsis)).trim() + ellipsis;
 	}
 
-	private static int argb(int rgb, float alpha) {
+	public static int argb(int rgb, float alpha) {
 		int a = Math.round(Math.clamp(alpha, 0.0f, 1.0f) * 255.0f);
 		return (a << 24) | (rgb & 0xFFFFFF);
 	}

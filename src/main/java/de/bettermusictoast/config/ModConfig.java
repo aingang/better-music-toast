@@ -65,6 +65,7 @@ public final class ModConfig {
 	public boolean hideVanillaToast = true;
 	public boolean showInMenus = false;
 	public MusicStyle musicStyle = MusicStyle.MIXED;
+	public ColorTheme colorTheme = ColorTheme.CLASSIC;
 
 	public static ModConfig load() {
 		Path source = Files.exists(PATH) ? PATH : LEGACY_PATH;
@@ -127,6 +128,7 @@ public final class ModConfig {
 		if (displayMode == null) displayMode = defaults.displayMode;
 		if (avoidMode == null) avoidMode = defaults.avoidMode;
 		if (musicStyle == null) musicStyle = defaults.musicStyle;
+		if (colorTheme == null) colorTheme = defaults.colorTheme;
 		if (sizePercent == null) {
 			sizePercent = switch (size == null ? "NORMAL" : size) {
 				case "SMALL" -> 75;

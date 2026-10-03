@@ -16,6 +16,7 @@ import net.minecraft.network.chat.Component;
 /** Settings screen built from vanilla option widgets, so it looks like the regular options menus. */
 public final class ConfigScreen extends OptionsSubScreen {
 	private final ModConfig config;
+	private OptionInstance<Integer> durationOption;
 
 	public ConfigScreen(Screen parent) {
 		super(parent, Minecraft.getInstance().options, Component.translatable("bettermusictoast.config.title"));
@@ -27,9 +28,15 @@ public final class ConfigScreen extends OptionsSubScreen {
 		this.list.addBig(bool("enabled", config.enabled, v -> config.enabled = v));
 		this.list.addBig(enumOption("position", ModConfig.Position.values(), config.position,
 				ModConfig.Position::translationKey, v -> config.position = v));
+		this.list.addBig(new ColorThemeButton(config));
 		this.list.addBig(enumOption("displayMode", ModConfig.DisplayMode.values(), config.displayMode,
-				ModConfig.DisplayMode::translationKey, v -> config.displayMode = v));
-		this.list.addSmall(duration(), size());
+				ModConfig.DisplayMode::translationKey, v -> {
+					config.displayMode = v;
+					updateDurationSlider();
+				}));
+		this.durationOption = duration();
+		this.list.addSmall(durationOption, size());
+		updateDurationSlider();
 		this.list.addBig(enumOption("avoidMode", ModConfig.AvoidMode.values(), config.avoidMode,
 				ModConfig.AvoidMode::translationKey, v -> config.avoidMode = v));
 		this.list.addSmall(
@@ -45,6 +52,17 @@ public final class ConfigScreen extends OptionsSubScreen {
 		// Moved here from the Music & Sounds screen, where our button takes its place.
 		this.list.addBig(this.options.musicToast());
 		updateVanillaToastButton();
+	}
+
+	/** The seconds only matter in timed mode. */
+	private void updateDurationSlider() {
+		if (this.list == null || this.durationOption == null) {
+			return;
+		}
+		AbstractWidget slider = this.list.findOption(this.durationOption);
+		if (slider != null) {
+			slider.active = config.displayMode == ModConfig.DisplayMode.TIMED;
+		}
 	}
 
 	/** Vanilla's music toast settings are irrelevant (and greyed out) while it is hidden. */
