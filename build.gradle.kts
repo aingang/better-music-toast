@@ -1,11 +1,14 @@
 plugins {
     // Applies the right Loom variant for the Minecraft version being built.
     id("dev.kikugie.loom-back-compat")
+    // Uploads the jars to Modrinth ("gradlew publishMods").
+    id("me.modmuss50.mod-publish-plugin") version "2.2.1"
 }
 
 // Read once here: inside task blocks property() would look at the task instead of the project.
 val modVersion = property("mod.version") as String
 val mcCompat = property("mod.mc_compat").toString()
+val mcReleases = property("mod.mc_releases").toString().split(",").map { it.trim() }
 version = "$modVersion+${property("mod.mc_label")}"
 base.archivesName = property("mod.archive") as String
 
@@ -39,6 +42,26 @@ loom {
     // Before 1.21.6 the mod adds Minecraft's "Music Frequency" option itself (see MusicFrequency).
     if (sc.current.parsed < "1.21.6") {
         accessWidenerPath = rootProject.file("src/main/resources/bettermusictoast.accesswidener")
+    }
+}
+
+// Modrinth upload. The access token lives outside the project in ~/.gradle/gradle.properties
+// (modrinthToken=...). "gradlew publishMods -PdryRun" only shows what would be uploaded.
+publishMods {
+    file = loomx.modJar.flatMap { it.archiveFile }
+    version = project.version.toString()
+    displayName = project.version.toString()
+    changelog = rootProject.file("RELEASE_NOTES.md").readText().trim()
+    type = STABLE
+    modLoaders.add("fabric")
+    dryRun = providers.gradleProperty("dryRun").isPresent
+
+    modrinth {
+        accessToken = providers.gradleProperty("modrinthToken")
+        projectId = "A7qcTXkk"
+        minecraftVersions.addAll(mcReleases)
+        requires("fabric-api")
+        optional("modmenu")
     }
 }
 

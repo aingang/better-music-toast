@@ -95,6 +95,10 @@ public final class MusicStyleFilter {
 		}
 		String key = sound.getLocation().toShortLanguageKey().replace('/', '.');
 		Language language = Language.getInstance();
-		return language.has(key) && language.getOrDefault(key).startsWith(CLASSIC_ARTIST + " - ");
+		if (!language.has(key)) {
+			return false;
+		}
+		String[] parts = TrackResolver.splitArtist(language.getOrDefault(key));
+		return parts != null && parts[0].equals(CLASSIC_ARTIST);
 	}
 }

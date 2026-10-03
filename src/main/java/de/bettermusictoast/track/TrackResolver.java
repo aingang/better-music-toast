@@ -17,6 +17,9 @@ import net.minecraft.world.item.ItemStack;
  * {@code "jukebox_song.minecraft.cat": "C418 - cat"}, so we look those up first.
  */
 public final class TrackResolver {
+	/** Dashes between artist and title; translations differ, e.g. German uses "–" and Polish "—". */
+	private static final String[] SEPARATORS = {" - ", " – ", " — "};
+
 	private TrackResolver() {
 	}
 
@@ -45,11 +48,25 @@ public final class TrackResolver {
 	}
 
 	private static TrackInfo fromTranslation(String text, ItemStack icon) {
-		int separator = text.indexOf(" - ");
-		if (separator > 0) {
-			return new TrackInfo(text.substring(separator + 3).trim(), text.substring(0, separator).trim(), icon);
+		String[] parts = splitArtist(text);
+		return parts != null ? new TrackInfo(parts[1], parts[0], icon) : new TrackInfo(text, null, icon);
+	}
+
+	/** Splits "Artist - Title" into {artist, title}, or returns null if the text names no artist. */
+	static String[] splitArtist(String text) {
+		int best = -1;
+		String separator = null;
+		for (String candidate : SEPARATORS) {
+			int index = text.indexOf(candidate);
+			if (index > 0 && (best < 0 || index < best)) {
+				best = index;
+				separator = candidate;
+			}
 		}
-		return new TrackInfo(text, null, icon);
+		if (separator == null) {
+			return null;
+		}
+		return new String[] {text.substring(0, best).trim(), text.substring(best + separator.length()).trim()};
 	}
 
 	private static ItemStack discItem(String namespace, String fileName) {

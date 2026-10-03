@@ -28,6 +28,15 @@ gradlew buildAndCollect
 
 All jars end up in `build/libs/<mod version>/`.
 
+Releases are uploaded to Modrinth with [mod-publish-plugin](https://github.com/modmuss50/mod-publish-plugin), using
+the text in `RELEASE_NOTES.md` as changelog. The access token is read from `modrinthToken` in
+`~/.gradle/gradle.properties`, outside the project.
+
+```
+gradlew publishMods -PdryRun
+gradlew publishMods
+```
+
 ## License
 
 MIT, see [LICENSE](LICENSE).
