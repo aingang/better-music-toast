@@ -2,6 +2,8 @@ package de.bettermusictoast.compat;
 
 import de.bettermusictoast.mixin.HudAccessor;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.OptionInstance;
+import net.minecraft.client.Options;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.BossHealthOverlay;
 import net.minecraft.client.gui.components.OptionsList;
@@ -67,6 +69,18 @@ public final class McCompat {
 		return (HudAccessor) mc.gui.hud;
 		//?} else {
 		/*return (HudAccessor) mc.gui;
+		*///?}
+	}
+
+	/**
+	 * Vanilla's music toast setting: a three-way choice since 1.21.11, a plain on/off switch
+	 * ("Show Music Toast") in 1.21.6 – 1.21.10.
+	 */
+	public static OptionInstance<?> vanillaToastOption(Options options) {
+		//? if >=1.21.11 {
+		return options.musicToast();
+		//?} else {
+		/*return options.showNowPlayingToast();
 		*///?}
 	}
 

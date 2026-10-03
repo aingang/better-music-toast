@@ -29,7 +29,7 @@ public abstract class SoundOptionsScreenMixin {
 			target = "Lnet/minecraft/client/gui/components/OptionsList;addSmall([Lnet/minecraft/client/OptionInstance;)V"))
 	private void bettermusictoast$replaceMusicToastButton(OptionsList list, OptionInstance<?>[] options, Operation<Void> original) {
 		Options gameOptions = Minecraft.getInstance().options;
-		OptionInstance<?> musicToast = gameOptions.musicToast();
+		OptionInstance<?> musicToast = McCompat.vanillaToastOption(gameOptions);
 
 		List<AbstractWidget> widgets = new ArrayList<>();
 		boolean replaced = false;

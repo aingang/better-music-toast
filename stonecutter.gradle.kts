@@ -19,5 +19,10 @@ stonecutter parameters {
             replace("keybinding.v1.KeyBindingHelper", "keymapping.v1.KeyMappingHelper")
             replace("KeyBindingHelper.registerKeyBinding", "KeyMappingHelper.registerKeyMapping")
         }
+
+        // Mojang renamed ResourceLocation to Identifier in 1.21.11.
+        string(current.parsed >= "1.21.11") {
+            replace("ResourceLocation", "Identifier")
+        }
     }
 }

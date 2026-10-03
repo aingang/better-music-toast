@@ -51,7 +51,7 @@ public final class ConfigScreen extends OptionsSubScreen {
 			updateVanillaToastButton();
 		}));
 		// Moved here from the Music & Sounds screen, where our button takes its place.
-		this.list.addBig(this.options.musicToast());
+		this.list.addBig(McCompat.vanillaToastOption(this.options));
 		updateVanillaToastButton();
 		showPreview();
 	}
@@ -84,7 +84,7 @@ public final class ConfigScreen extends OptionsSubScreen {
 		if (this.list == null) {
 			return;
 		}
-		AbstractWidget button = this.list.findOption(this.options.musicToast());
+		AbstractWidget button = this.list.findOption(McCompat.vanillaToastOption(this.options));
 		if (button != null) {
 			button.active = !config.hideVanillaToast;
 		}

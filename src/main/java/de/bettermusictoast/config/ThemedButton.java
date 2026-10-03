@@ -25,8 +25,13 @@ public class ThemedButton extends AbstractButton {
 		action.run();
 	}
 
+	// Before 1.21.11 buttons draw themselves entirely in renderWidget.
 	@Override
+	//? if >=1.21.11 {
 	protected void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+	//?} else {
+	/*protected void renderWidget(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+	*///?}
 		ColorTheme theme = BetterMusicToastClient.config().colorTheme;
 		int border = isHoveredOrFocused() ? ColorTheme.mix(theme.border, 0xFFFFFF, 0.35f) : theme.border;
 		Font font = Minecraft.getInstance().font;
