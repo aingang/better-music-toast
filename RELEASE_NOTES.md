@@ -1,2 +1,1 @@
-- New: Minecraft 1.20 – 1.20.6 on Fabric, Forge (and NeoForge) for Minecraft 1.20.1 and NeoForge for Minecraft 1.20.6, with the same features as on the newer versions, including Minecraft's Music Frequency option and music that keeps playing while the game is paused.
-- Changed: the Size setting is now a button that steps through the sizes, like Minecraft's GUI Scale button (click for the next size, shift-click for the previous one), instead of a slider.
+- New: Minecraft 1.8.9 on Forge, with the same look and features as on the newer versions, including Minecraft's Music Frequency option (in Music & Sounds) and music that keeps playing while the game is paused. The box moves out of the way of achievements, the boss bar, the jukebox "Now playing" message and item names.

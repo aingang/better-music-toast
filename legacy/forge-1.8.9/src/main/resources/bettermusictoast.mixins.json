@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.7",
+  "package": "de.bettermusictoast.mixin",
+  "refmap": "bettermusictoast.refmap.json",
+  "compatibilityLevel": "JAVA_8",
+  "client": [
+    "GuiAchievementAccessor",
+    "GuiIngameAccessor",
+    "MinecraftMixin",
+    "MusicTickerMixin",
+    "SoundHandlerAccessor",
+    "SoundManagerMixin"
+  ]
+}
