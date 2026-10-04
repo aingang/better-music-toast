@@ -11,6 +11,18 @@ import net.minecraftforge.fml.loading.FMLEnvironment;
 @Mod(BetterMusicToastClient.MOD_ID)
 public final class BetterMusicToastForge {
 	public BetterMusicToastForge() {
+		// Before 1.19 mods.toml has no displayTest yet: the same "client-only, any server" mark in code.
+		//? if >=1.18.2 && <1.19 {
+		/^net.minecraftforge.fml.ModLoadingContext.get().registerExtensionPoint(
+				net.minecraftforge.fml.IExtensionPoint.DisplayTest.class,
+				net.minecraftforge.fml.IExtensionPoint.DisplayTest.IGNORE_ALL_VERSION);
+		^///?} else if <1.18.2 {
+		/^// What DisplayTest.IGNORE_ALL_VERSION (only since 1.18.2) stands for.
+		net.minecraftforge.fml.ModLoadingContext.get().registerExtensionPoint(
+				net.minecraftforge.fml.IExtensionPoint.DisplayTest.class,
+				() -> new net.minecraftforge.fml.IExtensionPoint.DisplayTest(
+						() -> net.minecraftforge.network.NetworkConstants.IGNORESERVERONLY, (remote, isServer) -> true));
+		^///?}
 		if (FMLEnvironment.dist == Dist.CLIENT) {
 			BetterMusicToastClient.initForge(FMLJavaModLoadingContext.get().getModEventBus());
 		}

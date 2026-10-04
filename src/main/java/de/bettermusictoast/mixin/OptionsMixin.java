@@ -14,7 +14,10 @@ public abstract class OptionsMixin {
 	// Loads and saves the option in options.txt under the name Minecraft 1.21.6+ uses.
 	@Inject(method = "processOptions", at = @At("TAIL"))
 	private void bettermusictoast$processMusicFrequency(Options.FieldAccess access, CallbackInfo ci) {
+		//? if >=1.19 {
 		access.process("musicFrequency", MusicFrequency.option());
+		//?} else
+		/^MusicFrequency.process(access);^/
 	}
 }
 *///?}

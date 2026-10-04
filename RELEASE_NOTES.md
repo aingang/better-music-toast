@@ -1,2 +1,2 @@
-- New: Minecraft 1.19 – 1.19.4 on Fabric and Forge, with the same box, colour themes and settings as on newer versions, including the Music Frequency option and music that keeps playing while the game is paused.
-- Fixed: on Minecraft 1.19 – 1.20.4 the game could crash when a song ended ("OutOfMemoryError" in the sound engine). Minecraft's music decoder up to 1.20.4 kept growing its buffer after the end of a song, and the longer music buffer of this mod made that happen often enough to crash.
+- New: Minecraft 1.18 – 1.18.2 on Fabric and Forge, with the same box, colour themes and settings as on newer versions, including the Music Frequency option and music that keeps playing while the game is paused. On Forge 1.18.2, Forge 40.1.60 or newer is needed.
+- Fixed: on Fabric for Minecraft 1.19 – 1.19.1 the game refused to start with "requires fabric-api, which is missing" although Fabric API was installed (Fabric API for these versions still uses its old mod id).

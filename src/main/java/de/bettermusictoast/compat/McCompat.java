@@ -2,6 +2,7 @@ package de.bettermusictoast.compat;
 
 import de.bettermusictoast.mixin.HudAccessor;
 import net.minecraft.client.Minecraft;
+//? if >=1.19
 import net.minecraft.client.OptionInstance;
 import net.minecraft.client.Options;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -104,6 +105,19 @@ public final class McCompat {
 	*///?} else if <1.21.6 {
 	/*public static net.minecraft.sounds.Music situationalMusic(Minecraft mc) {
 		return mc.getSituationalMusic().music();
+	}
+	*///?}
+
+	//? if <1.19 {
+	/*/^* "Caption: value", like Options.genericValueLabel in 1.19+ (see the replacement in stonecutter.gradle.kts). ^/
+	public static net.minecraft.network.chat.Component genericValueLabel(net.minecraft.network.chat.Component caption,
+			net.minecraft.network.chat.Component value) {
+		return new net.minecraft.network.chat.TranslatableComponent("options.generic_value", caption, value);
+	}
+
+	/^* Like Identifier.toShortLanguageKey in 1.19+: the path alone for Minecraft's own ids. ^/
+	public static String shortLanguageKey(net.minecraft.resources.Identifier id) {
+		return id.getNamespace().equals("minecraft") ? id.getPath() : id.getNamespace() + "." + id.getPath();
 	}
 	*///?}
 

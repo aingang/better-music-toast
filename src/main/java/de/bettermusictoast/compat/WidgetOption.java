@@ -1,7 +1,7 @@
 package de.bettermusictoast.compat;
 
 // Only before 1.21, where Minecraft's option lists can only hold options, not other buttons.
-//? if <1.21 {
+//? if >=1.19 && <1.21 {
 /*import com.mojang.serialization.Codec;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -57,6 +57,28 @@ public final class WidgetOption {
 					}
 				}, false, value -> {
 				});
+	}
+}
+*///?} else if <1.19 {
+/*import net.minecraft.client.Option;
+import net.minecraft.client.Options;
+import net.minecraft.client.gui.components.AbstractWidget;
+
+// Before 1.19 options are subclasses of Option, so one that hands out the button is enough.
+public final class WidgetOption {
+	private WidgetOption() {
+	}
+
+	public static Option of(AbstractWidget widget) {
+		return new Option("") {
+			@Override
+			public AbstractWidget createButton(Options options, int x, int y, int width) {
+				widget.x = x;
+				widget.y = y;
+				widget.setWidth(width);
+				return widget;
+			}
+		};
 	}
 }
 *///?}

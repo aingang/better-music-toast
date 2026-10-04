@@ -22,9 +22,11 @@ import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 //?} else if forge {
 /*import net.minecraft.client.Minecraft;
+//? if >=1.19 {
 import net.minecraftforge.client.ConfigScreenHandler;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
+//?}
 import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
@@ -135,10 +137,18 @@ public final class BetterMusicToastClient {
 		String category = "key.category." + MOD_ID + ".main";
 		KeyMapping showAgain = new KeyMapping("key.bettermusictoast.show", InputConstants.UNKNOWN.getValue(), category);
 		KeyMapping openSettings = new KeyMapping("key.bettermusictoast.settings", InputConstants.UNKNOWN.getValue(), category);
+		//? if >=1.19 {
 		modBus.addListener((RegisterKeyMappingsEvent event) -> {
 			event.register(showAgain);
 			event.register(openSettings);
 		});
+		//?} else {
+		/^// Before 1.19 key mappings are registered during client setup.
+		modBus.addListener((FMLClientSetupEvent event) -> event.enqueueWork(() -> {
+			net.minecraftforge.client.ClientRegistry.registerKeyBinding(showAgain);
+			net.minecraftforge.client.ClientRegistry.registerKeyBinding(openSettings);
+		}));
+		^///?}
 
 		modBus.addListener((FMLClientSetupEvent event) ->
 				event.enqueueWork(() -> Minecraft.getInstance().getSoundManager().addListener(TRACKER)));
@@ -163,18 +173,31 @@ public final class BetterMusicToastClient {
 		modBus.addListener((RegisterGuiOverlaysEvent event) -> event.registerAboveAll("now_playing",
 				(gui, graphics, partialTick, width, height) -> hud.render(graphics, partialTick)));
 		MinecraftForge.EVENT_BUS.addListener((ScreenEvent.Render.Post event) -> hud.extractOverScreen(event.getGuiGraphics()));
-		//?} else {
+		//?} else if >=1.19 {
 		/^// Before 1.20 the HUD and menus draw with a PoseStack, wrapped for the box (see compat.GuiGraphics).
 		modBus.addListener((RegisterGuiOverlaysEvent event) -> event.registerAboveAll("now_playing",
 				(gui, pose, partialTick, width, height) ->
 						hud.render(new de.bettermusictoast.compat.GuiGraphicsExtractor(pose), partialTick)));
 		MinecraftForge.EVENT_BUS.addListener((ScreenEvent.Render.Post event) ->
 				hud.extractOverScreen(new de.bettermusictoast.compat.GuiGraphicsExtractor(event.getPoseStack())));
+		^///?} else {
+		/^// Before 1.19 HUD parts are added to Forge's overlay registry during client setup.
+		modBus.addListener((FMLClientSetupEvent event) -> event.enqueueWork(() ->
+				net.minecraftforge.client.gui.OverlayRegistry.registerOverlayTop("Better Music Toast",
+						(gui, pose, partialTick, width, height) ->
+								hud.render(new de.bettermusictoast.compat.GuiGraphicsExtractor(pose), partialTick))));
+		MinecraftForge.EVENT_BUS.addListener((ScreenEvent.DrawScreenEvent.Post event) ->
+				hud.extractOverScreen(new de.bettermusictoast.compat.GuiGraphicsExtractor(event.getPoseStack())));
 		^///?}
 
 		// Settings button in Forge's own mod list (Mod Menu does this on Fabric).
+		//? if >=1.19 {
 		ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class,
 				() -> new ConfigScreenHandler.ConfigScreenFactory((mc, parent) -> new ConfigScreen(parent)));
+		//?} else {
+		/^ModLoadingContext.get().registerExtensionPoint(net.minecraftforge.client.ConfigGuiHandler.ConfigGuiFactory.class,
+				() -> new net.minecraftforge.client.ConfigGuiHandler.ConfigGuiFactory((mc, parent) -> new ConfigScreen(parent)));
+		^///?}
 	}
 	*///?} else {
 	/*// NeoForge: the same setup as on Fabric, through NeoForge's events.

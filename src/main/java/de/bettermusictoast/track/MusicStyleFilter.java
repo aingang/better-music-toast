@@ -109,7 +109,10 @@ public final class MusicStyleFilter {
 		if (sound == null || sound == SoundManager.EMPTY_SOUND) {
 			return false;
 		}
+		//? if >=1.19 {
 		String key = sound.getLocation().toShortLanguageKey().replace('/', '.');
+		//?} else
+		/*String key = de.bettermusictoast.compat.McCompat.shortLanguageKey(sound.getLocation()).replace('/', '.');*/
 		Language language = Language.getInstance();
 		if (!language.has(key)) {
 			return false;

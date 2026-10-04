@@ -26,9 +26,16 @@ public abstract class MinecraftMixin {
 	private MusicManager musicManager;
 
 	// Pausing keeps music (and menu clicks) playing, like 1.21.6+.
+	//? if forge && <1.18.2 {
+	/^// Forge 1.18 – 1.18.1 cannot load MixinExtras (no jar-in-jar yet), so a plain redirect does the same there.
+	@org.spongepowered.asm.mixin.injection.Redirect(method = "pauseGame", at = @At(value = "INVOKE",
+			target = "Lnet/minecraft/client/sounds/SoundManager;pause()V"))
+	private void bettermusictoast$keepMusicPlaying(SoundManager soundManager) {
+	^///?} else {
 	@WrapOperation(method = "pauseGame", at = @At(value = "INVOKE",
 			target = "Lnet/minecraft/client/sounds/SoundManager;pause()V"))
 	private void bettermusictoast$keepMusicPlaying(SoundManager soundManager, Operation<Void> original) {
+	//?}
 		((PausesAllButMusic) ((SoundManagerAccessor) soundManager).bettermusictoast$getSoundEngine())
 				.bettermusictoast$pauseAllButMusic();
 	}

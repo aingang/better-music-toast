@@ -52,9 +52,16 @@ public final class TrackResolver {
 				: new String[] {location.toShortLanguageKey().replace('/', '.')};
 		//?} else {
 		/*// Before 1.21 jukebox songs are named in the disc's description, e.g. "C418 - cat".
+		//? if >=1.19 {
 		String[] keys = disc
 				? new String[] {"item." + location.getNamespace() + ".music_disc_" + fileName + ".desc", location.toShortLanguageKey().replace('/', '.')}
 				: new String[] {location.toShortLanguageKey().replace('/', '.')};
+		//?} else {
+		/^String shortKey = de.bettermusictoast.compat.McCompat.shortLanguageKey(location).replace('/', '.');
+		String[] keys = disc
+				? new String[] {"item." + location.getNamespace() + ".music_disc_" + fileName + ".desc", shortKey}
+				: new String[] {shortKey};
+		^///?}
 		*///?}
 		for (String key : keys) {
 			if (language.has(key)) {

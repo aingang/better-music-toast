@@ -48,7 +48,10 @@ public final class MusicFrequencyButton extends ThemedButton {
 	private void cycle(int step) {
 		MusicFrequency[] values = MusicFrequency.values();
 		int next = Math.floorMod(MusicFrequency.current().ordinal() + step, values.length);
+		//? if >=1.19 {
 		MusicFrequency.option().set(values[next]);
+		//?} else
+		/^MusicFrequency.set(values[next]);^/
 		refresh();
 	}
 

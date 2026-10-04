@@ -57,6 +57,15 @@ stonecutter parameters {
             )
         }
 
+        // Before 1.19 texts are created with their classes' constructors, and the "Caption: value" label
+        // helper only exists on the option classes (see McCompat.genericValueLabel).
+        string(current.parsed < "1.19") {
+            replace("Component.translatable(", "new net.minecraft.network.chat.TranslatableComponent(")
+            replace("Component.literal(", "new net.minecraft.network.chat.TextComponent(")
+            replace("Component.empty()", "new net.minecraft.network.chat.TextComponent(\"\")")
+            replace("Options.genericValueLabel(", "de.bettermusictoast.compat.McCompat.genericValueLabel(")
+        }
+
         // Math.clamp only exists since Java 21 (Minecraft 1.20.5); older versions use Minecraft's own.
         string(current.parsed >= "1.20.5") {
             replace("Mth.clamp(", "Math.clamp(")

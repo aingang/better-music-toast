@@ -8,6 +8,7 @@ import de.bettermusictoast.config.ThemedButton;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.Minecraft;
+//? if >=1.19
 import net.minecraft.client.OptionInstance;
 import net.minecraft.client.Options;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -30,8 +31,10 @@ public abstract class SoundOptionsScreenMixin {
 //?} else {
 /*@Mixin(SoundOptionsScreen.class)
 public abstract class SoundOptionsScreenMixin extends Screen {
+	//? if >=1.19 {
 	@org.spongepowered.asm.mixin.Shadow
 	private AbstractWidget directionalAudioButton;
+	//?}
 
 	@org.spongepowered.asm.mixin.Unique
 	private final List<ThemedButton> bettermusictoast$row = new ArrayList<>();
@@ -43,10 +46,11 @@ public abstract class SoundOptionsScreenMixin extends Screen {
 	/^*
 	 * Before 1.19.3 the screen places its buttons itself, without an option list. The row 1.21.6+ has
 	 * below Show Subtitles / Directional Audio (Music Frequency and our button) goes where the Done
-	 * button was, and Done moves down one row.
+	 * button was, and Done moves down one row (before 1.19 see makeRoom).
 	 ^/
 	@org.spongepowered.asm.mixin.injection.Inject(method = "init", at = @At("TAIL"))
 	private void bettermusictoast$addRow(org.spongepowered.asm.mixin.injection.callback.CallbackInfo ci) {
+		//? if >=1.19 {
 		int y = directionalAudioButton.y + 22;
 		for (net.minecraft.client.gui.components.events.GuiEventListener child : children()) {
 			if (child instanceof net.minecraft.client.gui.components.Button done
@@ -54,6 +58,9 @@ public abstract class SoundOptionsScreenMixin extends Screen {
 				done.y += 22;
 			}
 		}
+		//?} else {
+		/^int y = bettermusictoast$makeRoom();
+		^///?}
 		ThemedButton frequency = new de.bettermusictoast.config.MusicFrequencyButton();
 		frequency.x = width / 2 - 155;
 		frequency.y = y;
@@ -66,6 +73,50 @@ public abstract class SoundOptionsScreenMixin extends Screen {
 		addRenderableWidget(frequency);
 		addRenderableWidget(settings);
 	}
+
+	//? if <1.19 {
+	/^// Before 1.19 there is no Directional Audio: Show Subtitles sits alone in the middle below Device,
+	// while the slot next to the last volume slider (Voice/Speech) stays empty. Show Subtitles moves into
+	// that slot and our row takes its place, so the screen keeps its two-column grid and Done stays where
+	// it is. Returns the height of our row.
+	@org.spongepowered.asm.mixin.Unique
+	private int bettermusictoast$makeRoom() {
+		net.minecraft.client.gui.components.Button done = null;
+		for (net.minecraft.client.gui.components.events.GuiEventListener child : children()) {
+			if (child instanceof net.minecraft.client.gui.components.Button button
+					&& button.getMessage() == net.minecraft.network.chat.CommonComponents.GUI_DONE) {
+				done = button;
+			}
+		}
+		if (done == null) {
+			return height / 6 - 12 + 22 * 8;
+		}
+		int subtitlesY = done.y - 22;
+		int slotX = width / 2 + 5;
+		int slotY = subtitlesY - 44;
+		AbstractWidget subtitles = null;
+		boolean slotFree = true;
+		for (net.minecraft.client.gui.components.events.GuiEventListener child : children()) {
+			if (child instanceof AbstractWidget widget && widget != done) {
+				if (widget.y == subtitlesY) {
+					subtitles = widget;
+				}
+				if (widget.y == slotY && widget.x == slotX) {
+					slotFree = false;
+				}
+			}
+		}
+		if (subtitles != null && slotFree) {
+			subtitles.x = slotX;
+			subtitles.y = slotY;
+			return subtitlesY;
+		}
+		// Laid out differently (e.g. by another mod): our row goes where Done was, and Done one row lower.
+		int y = done.y;
+		done.y += 22;
+		return y;
+	}
+	^///?}
 
 	// The screen only shows the tooltip of Directional Audio itself, so show ours as well.
 	@org.spongepowered.asm.mixin.injection.Inject(method = "render", at = @At("TAIL"))

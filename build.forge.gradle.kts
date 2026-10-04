@@ -16,19 +16,25 @@ base.archivesName = property("mod.archive") as String
 val requiredJava = JavaVersion.VERSION_17
 // Read straight from src/ instead of the default location, which Stonecutter only generates later.
 val accessTransformer = rootProject.file(
-    if (sc.current.parsed < "1.20") "src/main/resources/META-INF/accesstransformer-1.19.cfg"
-    else "src/main/resources/META-INF/accesstransformer-1.20.cfg"
+    when {
+        sc.current.parsed < "1.19" -> "src/main/resources/META-INF/accesstransformer-1.18.cfg"
+        sc.current.parsed < "1.20" -> "src/main/resources/META-INF/accesstransformer-1.19.cfg"
+        else -> "src/main/resources/META-INF/accesstransformer-1.20.cfg"
+    }
 )
-// Forge's major version (41 = 1.19, ..., 47 = 1.20.1) is the minimum the jar asks for, unless the
-// jar also covers an older Minecraft version (mod.forge_min).
-val forgeMajor = findProperty("mod.forge_min")?.toString()
+// The lowest Forge the jar asks for: Forge's major version (41 = 1.19, ..., 47 = 1.20.1), unless the
+// jar also covers an older Minecraft version or needs a later build (mod.forge_min).
+val forgeMin = findProperty("mod.forge_min")?.toString()
     ?: property("deps.forge").toString().substringAfter('-').substringBefore('.')
+// Forge's language loader (javafml) only carries the major version.
+val forgeLoader = forgeMin.substringBefore('.')
 // Resource pack format of the Minecraft version (pack.mcmeta), so Forge loads the mod's resources.
 val packFormat = when {
     sc.current.parsed >= "1.20" -> 15
     sc.current.parsed >= "1.19.4" -> 13
     sc.current.parsed >= "1.19.3" -> 12
-    else -> 9
+    sc.current.parsed >= "1.19" -> 9
+    else -> 8
 }
 
 legacyForge {
@@ -56,10 +62,13 @@ mixin {
 
 dependencies {
     annotationProcessor("org.spongepowered:mixin:0.8.5:processor")
-    // Forge 1.20.1 does not ship MixinExtras, so it goes inside the jar.
+    // Forge does not ship MixinExtras, so it goes inside the jar. Forge only loads jars inside jars
+    // since 1.18.2 (40.1.60); for 1.18 – 1.18.1 the mixins use plain redirects instead.
     compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.4.1")!!)
-    implementation("io.github.llamalad7:mixinextras-forge:0.4.1")
-    jarJar("io.github.llamalad7:mixinextras-forge:0.4.1")
+    if (sc.current.parsed >= "1.18.2") {
+        implementation("io.github.llamalad7:mixinextras-forge:0.4.1")
+        jarJar("io.github.llamalad7:mixinextras-forge:0.4.1")
+    }
 }
 
 java {
@@ -121,7 +130,8 @@ tasks {
             "options_list" to (sc.current.parsed < "1.19.3"),
             // Before 1.20.5 music is decoded by OggAudioStream, which needs a fix (see OggAudioStreamMixin).
             "stb_audio" to (sc.current.parsed < "1.20.5"),
-            "forge_major" to forgeMajor,
+            "forge_min" to forgeMin,
+            "forge_loader" to forgeLoader,
             "pack_format" to packFormat,
         )
         inputs.properties(props)
