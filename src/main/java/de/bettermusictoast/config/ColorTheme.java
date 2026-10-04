@@ -25,6 +25,9 @@ public enum ColorTheme {
 			new ColorName("淡卵色", "Usutamago-iro", "Pale Lemon Yellow"));
 
 	/** A colour as named in the book: kanji, reading and the English name. */
+	// Before 1.17 the jar targets Java 8, where Jabel turns records into plain classes.
+	//? if <1.17
+	/*@com.github.bsideup.jabel.Desugar*/
 	public record ColorName(String kanji, String romaji, String english) {
 	}
 

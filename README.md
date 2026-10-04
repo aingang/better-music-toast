@@ -6,10 +6,11 @@ You can choose where it shows up, how long it stays, and it moves out of the way
 
 ## Requirements
 
-- **Fabric:** Minecraft 1.18 – 26.3 with Fabric Loader and [Fabric API](https://modrinth.com/mod/fabric-api),
+- **Fabric:** Minecraft 1.16 – 1.16.5 and 1.18 – 26.3 with Fabric Loader and [Fabric API](https://modrinth.com/mod/fabric-api),
   [Mod Menu](https://modrinth.com/mod/modmenu) optional
 - **NeoForge:** Minecraft 1.20.1, 1.20.6 and 1.21 – 26.3
-- **Forge:** Minecraft 1.8.9, 1.18 – 1.19.4 and 1.20.1 (on 1.18.2 Forge 40.1.60 or newer)
+- **Forge:** Minecraft 1.8.9, 1.16.1 – 1.16.5, 1.18 – 1.19.4 and 1.20.1 (on 1.16.1 Forge 32.0.72 or newer,
+  on 1.18.2 Forge 40.1.60 or newer)
 
 One jar per loader and Minecraft version range.
 
@@ -41,6 +42,18 @@ running on Java 17 or 21. It shares the mod version, the texts and the pictures 
 cd legacy/forge-1.8.9
 gradlew build
 ```
+
+Forge before 1.17 cannot be set up by ModDevGradle. For Forge 1.16.x the Stonecutter project only writes the
+sources (`gradlew :1.16.5-forge:stonecutterGenerate`), and the Gradle 8 build in `legacy/forge-1.16`
+(Essential's Loom fork) compiles them, one version per run:
+
+```
+cd legacy/forge-1.16
+gradlew build "-Pmc=1.16.5"
+```
+
+The 1.16 jars target Java 8 like Minecraft 1.16 itself; the code is compiled with JDK 17 and
+[Jabel](https://github.com/bsideup/jabel) turns the newer syntax into Java 8 bytecode.
 
 Releases are uploaded to Modrinth with [mod-publish-plugin](https://github.com/modmuss50/mod-publish-plugin), using
 the text in `RELEASE_NOTES.md` as changelog. The access token is read from `modrinthToken` in

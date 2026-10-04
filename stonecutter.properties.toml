@@ -15,6 +15,24 @@ loomx.loom_version = "1.18-SNAPSHOT"
 
 # Fabric
 
+# 1.16 and 1.16.1 predate the text and option-screen rework of 1.16.2 (see the "<1.16.2" conditions).
+# Compiled against the Fabric API of their time: its screen events only came with later 1.16 builds.
+["1.16.1"]
+mod.mc_label = "1.16-1.16.1"
+mod.mc_compat = ">=1.16 <=1.16.1"
+mod.mc_releases = "1.16, 1.16.1"
+
+deps.fabric_api = "0.18.0+build.387-1.16.1"
+deps.modmenu = "1.16.23"
+
+["1.16.5"]
+mod.mc_label = "1.16.2-1.16.5"
+mod.mc_compat = ">=1.16.2 <=1.16.5"
+mod.mc_releases = "1.16.2, 1.16.3, 1.16.4, 1.16.5"
+
+deps.fabric_api = "0.42.0+1.16"
+deps.modmenu = "1.16.23"
+
 ["1.18.2"]
 mod.mc_label = "1.18-1.18.2"
 mod.mc_compat = ">=1.18 <=1.18.2"
@@ -243,6 +261,25 @@ mod.mc_releases = "26.3"
 deps.neoforge = "26.3.0.46-beta"
 
 # Forge (only for the versions where it still matters)
+
+# Forge before 1.17 is compiled by legacy/forge-1.16 (see build.forge-legacy.gradle.kts).
+# Forge 1.16.1 ships Mixin only since 32.0.72.
+["1.16.1-forge"]
+mod.mc_label = "1.16.1"
+mod.mc_compat = "[1.16.1]"
+mod.mc_releases = "1.16.1"
+mod.forge_min = "32.0.72"
+
+deps.forge = "1.16.1-32.0.108"
+
+# Also runs on 1.16.2 – 1.16.4 (Forge 33 – 35; every one of them ships Mixin).
+["1.16.5-forge"]
+mod.mc_label = "1.16.2-1.16.5"
+mod.mc_compat = "[1.16.2,1.16.5]"
+mod.mc_releases = "1.16.2, 1.16.3, 1.16.4, 1.16.5"
+mod.forge_min = "33"
+
+deps.forge = "1.16.5-36.2.42"
 
 # Also runs on 1.18 (Forge 38). Forge 1.18 – 1.18.1 cannot load jars inside jars, so this jar does
 # without MixinExtras (see the "forge && <1.18.2" conditions in the mixins).

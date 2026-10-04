@@ -1,2 +1,3 @@
-- New: Minecraft 1.18 – 1.18.2 on Fabric and Forge, with the same box, colour themes and settings as on newer versions, including the Music Frequency option and music that keeps playing while the game is paused. On Forge 1.18.2, Forge 40.1.60 or newer is needed.
-- Fixed: on Fabric for Minecraft 1.19 – 1.19.1 the game refused to start with "requires fabric-api, which is missing" although Fabric API was installed (Fabric API for these versions still uses its old mod id).
+- New: Minecraft 1.16 – 1.16.5 on Fabric and Forge (Forge starts with 1.16.1, the first version Forge exists for), with the same box, colour themes and settings as on newer versions, including the Music Frequency option and music that keeps playing while the game is paused. Runs on Java 8 like Minecraft 1.16 itself.
+- On Forge 1.16.1, Forge 32.0.72 or newer is needed.
+- On 1.16 the Music Frequency is saved in config/bettermusictoast.json, because Minecraft 1.16 removes unknown entries from options.txt.

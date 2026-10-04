@@ -17,11 +17,19 @@ import net.fabricmc.loader.api.FabricLoader;
 *///?}
 //? if <1.20.5
 /*import net.minecraft.util.Mth;*/
+//? if >=1.17 {
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+//?} else {
+/*import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+*///?}
 
 public final class ModConfig {
+	//? if >=1.17 {
 	private static final Logger LOGGER = LoggerFactory.getLogger("bettermusictoast");
+	//?} else
+	/*private static final Logger LOGGER = LogManager.getLogger("bettermusictoast");*/
 	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 	//? if fabric {
 	private static final Path PATH = FabricLoader.getInstance().getConfigDir().resolve("bettermusictoast.json");
@@ -80,6 +88,9 @@ public final class ModConfig {
 	public boolean showInMenus = false;
 	public MusicStyle musicStyle = MusicStyle.MIXED;
 	public ColorTheme colorTheme = ColorTheme.CLASSIC;
+	// Before 1.17 options.txt drops entries it does not know, so the Music Frequency is kept here.
+	//? if <1.17
+	/*public de.bettermusictoast.compat.MusicFrequency musicFrequency = de.bettermusictoast.compat.MusicFrequency.DEFAULT;*/
 
 	public static ModConfig load() {
 		Path source = Files.exists(PATH) ? PATH : LEGACY_PATH;
@@ -143,6 +154,8 @@ public final class ModConfig {
 		if (avoidMode == null) avoidMode = defaults.avoidMode;
 		if (musicStyle == null) musicStyle = defaults.musicStyle;
 		if (colorTheme == null) colorTheme = defaults.colorTheme;
+		//? if <1.17
+		/*if (musicFrequency == null) musicFrequency = defaults.musicFrequency;*/
 		if (sizePercent == null) {
 			sizePercent = switch (size == null ? "NORMAL" : size) {
 				case "SMALL" -> 75;

@@ -70,11 +70,16 @@ public abstract class SoundOptionsScreenMixin extends Screen {
 		bettermusictoast$row.clear();
 		bettermusictoast$row.add(frequency);
 		bettermusictoast$row.add(settings);
+		//? if >=1.17 {
 		addRenderableWidget(frequency);
 		addRenderableWidget(settings);
+		//?} else {
+		/^addButton(frequency);
+		addButton(settings);
+		^///?}
 	}
 
-	//? if <1.19 {
+	//? if >=1.17 && <1.19 {
 	/^// Before 1.19 there is no Directional Audio: Show Subtitles sits alone in the middle below Device,
 	// while the slot next to the last volume slider (Voice/Speech) stays empty. Show Subtitles moves into
 	// that slot and our row takes its place, so the screen keeps its two-column grid and Done stays where
@@ -116,6 +121,56 @@ public abstract class SoundOptionsScreenMixin extends Screen {
 		done.y += 22;
 		return y;
 	}
+	^///?} else if <1.17 {
+	/^// Before 1.17 the same grid with 24 pixels per row and no Device button: Show Subtitles sits alone in the
+	// middle below the volume sliders, while the slot next to the last slider (Voice/Speech) stays empty.
+	// Show Subtitles moves into that slot and our row takes its place; Done stays where it is.
+	// Returns the height of our row.
+	@org.spongepowered.asm.mixin.Unique
+	private int bettermusictoast$makeRoom() {
+		int left = width / 2 - 155;
+		int right = width / 2 + 5;
+		AbstractWidget subtitles = null;
+		AbstractWidget lonely = null;
+		for (net.minecraft.client.gui.components.events.GuiEventListener child : children()) {
+			if (!(child instanceof AbstractWidget widget)) {
+				continue;
+			}
+			if (widget.x == width / 2 - 75 && widget.getWidth() == 150) {
+				subtitles = widget;
+			}
+			if (widget.x == left && widget.getWidth() == 150 && !bettermusictoast$occupied(right, widget.y)
+					&& (lonely == null || widget.y > lonely.y)) {
+				lonely = widget;
+			}
+		}
+		if (subtitles != null && lonely != null && lonely.y < subtitles.y) {
+			int y = subtitles.y;
+			subtitles.x = right;
+			subtitles.y = lonely.y;
+			return y;
+		}
+		// Laid out differently (e.g. by another mod): our row goes where Done was, and Done one row lower.
+		for (net.minecraft.client.gui.components.events.GuiEventListener child : children()) {
+			if (child instanceof net.minecraft.client.gui.components.Button done
+					&& done.getMessage() == net.minecraft.network.chat.CommonComponents.GUI_DONE) {
+				int y = done.y;
+				done.y += 24;
+				return y;
+			}
+		}
+		return height / 6 + 168;
+	}
+
+	@org.spongepowered.asm.mixin.Unique
+	private boolean bettermusictoast$occupied(int x, int y) {
+		for (net.minecraft.client.gui.components.events.GuiEventListener child : children()) {
+			if (child instanceof AbstractWidget widget && widget.x == x && widget.y == y) {
+				return true;
+			}
+		}
+		return false;
+	}
 	^///?}
 
 	// The screen only shows the tooltip of Directional Audio itself, so show ours as well.
@@ -124,7 +179,10 @@ public abstract class SoundOptionsScreenMixin extends Screen {
 			float partialTick, org.spongepowered.asm.mixin.injection.callback.CallbackInfo ci) {
 		for (ThemedButton button : bettermusictoast$row) {
 			if (button.isMouseOver(mouseX, mouseY)) {
+				//? if >=1.17 {
 				renderTooltip(pose, button.getTooltip(), mouseX, mouseY);
+				//?} else
+				/^button.getTooltip().ifPresent(lines -> renderTooltip(pose, lines, mouseX, mouseY));^/
 			}
 		}
 	}

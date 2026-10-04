@@ -1,0 +1,5 @@
+accessWidener v2 named
+
+# Only used for Minecraft 1.16 – 1.16.5.
+# Toasts to move out of the way of: the visible toasts are an array of this package-private class:
+accessible class net/minecraft/client/gui/components/toasts/ToastComponent$ToastInstance

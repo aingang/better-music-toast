@@ -9,6 +9,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 //?} else
 /*import de.bettermusictoast.compat.GuiGraphicsExtractor;*/
 import net.minecraft.client.gui.components.AbstractButton;
+//? if >=1.17
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 //? if >=1.21.9
 import net.minecraft.client.input.InputWithModifiers;
@@ -19,13 +20,19 @@ import org.joml.Matrix3x2fStack;
 /** A button drawn like the song box itself, in the currently selected colour theme. */
 //? if >=1.19.3 {
 public class ThemedButton extends AbstractButton {
-//?} else {
+//?} else if >=1.16.2 {
 /*// Before 1.19.3 buttons have no tooltip of their own; option screens ask widgets that are a TooltipAccessor.
 public class ThemedButton extends AbstractButton implements net.minecraft.client.gui.components.TooltipAccessor {
+*///?} else {
+/*// Before 1.16.2 there is no TooltipAccessor; the mod's screens ask these buttons for their tooltip directly.
+public class ThemedButton extends AbstractButton {
 *///?}
 	private final Runnable action;
-	//? if <1.19.3
-	/*private java.util.List<net.minecraft.util.FormattedCharSequence> tooltip = java.util.List.of();*/
+	//? if >=1.17 && <1.19.3 {
+	/*private java.util.List<net.minecraft.util.FormattedCharSequence> tooltip = java.util.List.of();
+	*///?} else if <1.17 {
+	/*private java.util.List<net.minecraft.util.FormattedCharSequence> tooltip = java.util.Collections.emptyList();
+	*///?}
 
 	public ThemedButton(int width, Component message, Runnable action) {
 		super(0, 0, width, 20, message);
@@ -38,10 +45,17 @@ public class ThemedButton extends AbstractButton implements net.minecraft.client
 		tooltip = Minecraft.getInstance().font.split(text, 170);
 	}
 
+	//? if >=1.17 {
 	@Override
 	public java.util.List<net.minecraft.util.FormattedCharSequence> getTooltip() {
 		return tooltip;
 	}
+	//?} else {
+	/^// Before 1.17 option screens ask for an Optional.
+	public java.util.Optional<java.util.List<net.minecraft.util.FormattedCharSequence>> getTooltip() {
+		return java.util.Optional.of(tooltip);
+	}
+	^///?}
 	*///?}
 
 	// Since 1.21.9 the click also reports which key or mouse button triggered it.
@@ -114,6 +128,8 @@ public class ThemedButton extends AbstractButton implements net.minecraft.client
 		*///?}
 	}
 
+	// Before 1.17 there is no narration output yet; buttons narrate their message on their own.
+	//? if >=1.17 {
 	@Override
 	//? if >=1.19.3 {
 	protected void updateWidgetNarration(NarrationElementOutput output) {
@@ -121,4 +137,5 @@ public class ThemedButton extends AbstractButton implements net.minecraft.client
 	/*public void updateNarration(NarrationElementOutput output) {*/
 		defaultButtonNarrationText(output);
 	}
+	//?}
 }

@@ -37,7 +37,7 @@ public enum MusicFrequency implements StringRepresentable {
 	public static final Codec<MusicFrequency> CODEC = StringRepresentable.fromEnum(MusicFrequency::values);
 
 	private static OptionInstance<MusicFrequency> option;
-	//?} else {
+	//?} else if >=1.17 {
 	/^private static MusicFrequency value = DEFAULT;
 	^///?}
 
@@ -83,7 +83,7 @@ public enum MusicFrequency implements StringRepresentable {
 	public static MusicFrequency current() {
 		return option().get();
 	}
-	//?} else {
+	//?} else if >=1.17 {
 	/^public static MusicFrequency current() {
 		return value;
 	}
@@ -101,6 +101,24 @@ public enum MusicFrequency implements StringRepresentable {
 
 	private static MusicFrequency byName(String name) {
 		return Arrays.stream(values()).filter(f -> f.name().equals(name)).findFirst().orElse(DEFAULT);
+	}
+
+	// The value's name, like OptionEnum.getCaption in 1.19+.
+	public Component getCaption() {
+		return Component.translatable(key);
+	}
+	^///?} else {
+	/^// Before 1.17 options.txt drops entries it does not know, so the choice is kept in the mod's settings.
+	public static MusicFrequency current() {
+		return de.bettermusictoast.BetterMusicToastClient.config().musicFrequency;
+	}
+
+	// Sets a new choice from the settings button.
+	public static void set(MusicFrequency frequency) {
+		de.bettermusictoast.config.ModConfig config = de.bettermusictoast.BetterMusicToastClient.config();
+		config.musicFrequency = frequency;
+		config.save();
+		apply(frequency);
 	}
 
 	// The value's name, like OptionEnum.getCaption in 1.19+.

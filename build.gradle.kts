@@ -15,12 +15,17 @@ base.archivesName = property("mod.archive") as String
 val requiredJava: JavaVersion = when {
     sc.current.parsed >= "26.1" -> JavaVersion.VERSION_25
     sc.current.parsed >= "1.20.5" -> JavaVersion.VERSION_21
-    else -> JavaVersion.VERSION_17
+    sc.current.parsed >= "1.17" -> JavaVersion.VERSION_17
+    // Minecraft 1.16 runs on Java 8. The code is still written in today's Java and compiled with JDK 17;
+    // Jabel turns the newer syntax into Java 8 bytecode (see the java block below).
+    else -> JavaVersion.VERSION_1_8
 }
+val legacyJava = requiredJava == JavaVersion.VERSION_1_8
 
 // Before 1.21.6 the mod adds Minecraft's "Music Frequency" option itself (see MusicFrequency);
 // before 1.21 it also puts its own buttons into vanilla option lists (see WidgetOption).
 val accessWidener: String? = when {
+    sc.current.parsed < "1.17" -> "bettermusictoast-1.16.accesswidener"
     sc.current.parsed < "1.19" -> "bettermusictoast-1.18.accesswidener"
     sc.current.parsed < "1.19.3" -> "bettermusictoast-1.19.accesswidener"
     sc.current.parsed < "1.20.1" -> "bettermusictoast-1.20.0.accesswidener"
@@ -45,6 +50,12 @@ dependencies {
     // Without its own dependencies: only its API is needed, and some versions pull in libraries
     // from repositories we do not use.
     modCompileOnly("com.terraformersmc:modmenu:${property("deps.modmenu")}") { isTransitive = false }
+
+    if (legacyJava) {
+        annotationProcessor("com.github.bsideup.jabel:jabel-javac-plugin:1.0.0")
+        // For its @Desugar annotation on records.
+        compileOnly("com.github.bsideup.jabel:jabel-javac-plugin:1.0.0")
+    }
 }
 
 loom {
@@ -96,17 +107,29 @@ if (publishOnly != null && project.name !in publishOnly) {
 }
 
 java {
-    targetCompatibility = requiredJava
-    sourceCompatibility = requiredJava
+    if (legacyJava) {
+        // Today's syntax with JDK 17; javac's --release 8 below keeps the API and bytecode at Java 8.
+        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_17
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(17)
+        }
+    } else {
+        targetCompatibility = requiredJava
+        sourceCompatibility = requiredJava
 
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(requiredJava.majorVersion)
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(requiredJava.majorVersion)
+        }
     }
 }
 
 tasks {
     withType<JavaCompile>().configureEach {
         options.encoding = "UTF-8"
+        if (legacyJava) {
+            options.release = 8
+        }
     }
 
     processResources {
@@ -120,12 +143,16 @@ tasks {
             // Only Forge needs a mixin refmap.
             "refmap" to false,
             // Before 1.19.3 the settings screen reaches the option list through an accessor.
-            "options_list" to (sc.current.parsed < "1.19.3"),
+            "options_list" to (sc.current.parsed >= "1.16.2" && sc.current.parsed < "1.19.3"),
             // Before 1.20.5 music is decoded by OggAudioStream, which needs a fix (see OggAudioStreamMixin).
             "stb_audio" to (sc.current.parsed < "1.20.5"),
             // Fabric API's mod id was "fabric" up to its 1.19.1 builds; later builds are "fabric-api" and
             // still provide "fabric", so the old id fits every Fabric API of these Minecraft versions.
             "fabric_api_id" to (if (sc.current.parsed < "1.19.3") "fabric" else "fabric-api"),
+            // Before 1.17 the Music Frequency is not saved in options.txt (see MusicFrequency).
+            "options_file" to (sc.current.parsed >= "1.17"),
+            // Before 1.17 not every Fabric API has screen events; GameRendererMixin draws over menus instead.
+            "screen_mixin" to (sc.current.parsed < "1.17"),
         )
         inputs.properties(props)
         filesMatching(listOf("fabric.mod.json", "*.mixins.json")) { expand(props) }
@@ -145,6 +172,15 @@ tasks {
         // Names for C418's numbered music files (calm1, hal1, ...), renamed by Minecraft in 1.20.3.
         if (sc.current.parsed >= "1.20.3") {
             exclude("assets/bettermusictoast_old_music/**")
+        }
+        // Fabric API before 1.16.2 lets files in mod jars replace Minecraft's own (our song names
+        // would replace its English texts), so these texts move to a folder of their own. Translation
+        // keys work the same from every folder.
+        if (sc.current.parsed < "1.16.2") {
+            filesMatching("assets/minecraft/lang/**") {
+                path = path.replace("assets/minecraft/", "assets/bettermusictoast_vanilla/")
+            }
+            includeEmptyDirs = false
         }
 
         // Registers the access widener in fabric.mod.json, right before "mixins".

@@ -101,6 +101,8 @@ tasks {
             "options_list" to false,
             // NeoForge only exists from 1.20.6 on, which no longer uses OggAudioStream.
             "stb_audio" to false,
+            "options_file" to true,
+            "screen_mixin" to false,
         )
         inputs.properties(props)
         filesMatching(listOf("META-INF/neoforge.mods.toml", "*.mixins.json")) { expand(props) }

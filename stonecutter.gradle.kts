@@ -10,6 +10,8 @@ stonecutter active "26.2"
 fun minecraftOrder(version: String) = version.split('.').map { it.toIntOrNull() ?: 0 }
     .let { parts -> parts.getOrElse(0) { 0 } * 1_000_000 + parts.getOrElse(1) { 0 } * 1_000 + parts.getOrElse(2) { 0 } }
 stonecutter.versions
+    // Forge before 1.17 is uploaded from legacy/forge-1.16; these nodes have no upload tasks.
+    .filter { project(":${it.project}").buildFile.name != "build.forge-legacy.gradle.kts" }
     .sortedWith(compareBy({ minecraftOrder(it.version) }, { it.project.endsWith("-neoforge") }, { it.project.endsWith("-forge") }))
     .map { it.project }
     .zipWithNext { older, newer ->
@@ -64,6 +66,11 @@ stonecutter parameters {
             replace("Component.literal(", "new net.minecraft.network.chat.TextComponent(")
             replace("Component.empty()", "new net.minecraft.network.chat.TextComponent(\"\")")
             replace("Options.genericValueLabel(", "de.bettermusictoast.compat.McCompat.genericValueLabel(")
+        }
+
+        // Before 1.16.2 tooltips and wrapped text are lists of FormattedText (FormattedCharSequence came later).
+        string(current.parsed < "1.16.2") {
+            replace("net.minecraft.util.FormattedCharSequence", "net.minecraft.network.chat.FormattedText")
         }
 
         // Math.clamp only exists since Java 21 (Minecraft 1.20.5); older versions use Minecraft's own.

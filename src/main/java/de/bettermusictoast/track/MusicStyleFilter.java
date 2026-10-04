@@ -48,9 +48,16 @@ public final class MusicStyleFilter {
 	//?} else {
 	/*// The same songs under the numbered file names C418's music had before 1.20.3:
 	// hal1 Subwoofer Lullaby, hal2 Living Mice, nuance2 Oxygène, nuance1 Key, piano3 Mice on Venus.
+	//? if >=1.17 {
 	private static final Map<String, Set<String>> CUSTOM_POOLS = Map.of(
 			"music.overworld.swamp", Set.of("hal1", "hal2", "nuance2", "nuance1", "piano3"),
 			"music.overworld.deep_dark", Set.of("hal1", "hal2", "nuance1", "nuance2"));
+	//?} else {
+	/^// Java 8 (before 1.17) has no Map.of / Set.of; Minecraft ships Guava's immutable collections.
+	private static final Map<String, Set<String>> CUSTOM_POOLS = com.google.common.collect.ImmutableMap.of(
+			"music.overworld.swamp", com.google.common.collect.ImmutableSet.of("hal1", "hal2", "nuance2", "nuance1", "piano3"),
+			"music.overworld.deep_dark", com.google.common.collect.ImmutableSet.of("hal1", "hal2", "nuance1", "nuance2"));
+	^///?}
 	*///?}
 
 	private MusicStyleFilter() {

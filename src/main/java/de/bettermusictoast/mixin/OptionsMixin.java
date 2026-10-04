@@ -1,7 +1,8 @@
 package de.bettermusictoast.mixin;
 
-// Only for the "Music Frequency" option the mod adds before 1.21.6 (see MusicFrequency).
-//? if <1.21.6 {
+// Only for the "Music Frequency" option the mod adds before 1.21.6 (see MusicFrequency). Before 1.17
+// options.txt has no processOptions; the choice is kept in the mod's settings there.
+//? if >=1.17 && <1.21.6 {
 /*import de.bettermusictoast.compat.MusicFrequency;
 import net.minecraft.client.Options;
 import org.spongepowered.asm.mixin.Mixin;

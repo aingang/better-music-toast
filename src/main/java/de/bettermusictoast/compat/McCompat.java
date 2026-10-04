@@ -112,7 +112,12 @@ public final class McCompat {
 	/*/^* "Caption: value", like Options.genericValueLabel in 1.19+ (see the replacement in stonecutter.gradle.kts). ^/
 	public static net.minecraft.network.chat.Component genericValueLabel(net.minecraft.network.chat.Component caption,
 			net.minecraft.network.chat.Component value) {
+		//? if >=1.16.2 {
 		return new net.minecraft.network.chat.TranslatableComponent("options.generic_value", caption, value);
+		//?} else {
+		/^// 1.16.1 has no "options.generic_value" text yet; its own options build "Caption: value" like this.
+		return new net.minecraft.network.chat.TextComponent("").append(caption).append(": ").append(value);
+		^///?}
 	}
 
 	/^* Like Identifier.toShortLanguageKey in 1.19+: the path alone for Minecraft's own ids. ^/

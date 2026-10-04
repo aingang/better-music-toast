@@ -19,6 +19,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
 *///?} else {
 /*import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 *///?}
+//? if >=1.17
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 //?} else if forge {
 /*import net.minecraft.client.Minecraft;
@@ -27,6 +28,7 @@ import net.minecraftforge.client.ConfigScreenHandler;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 //?}
+//? if >=1.17
 import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
@@ -77,6 +79,17 @@ public final class BetterMusicToastClient {
 		return TRACKER;
 	}
 
+	//? if fabric && <1.17 {
+	/*private static NowPlayingHud overScreenHud;
+
+	/^* Draws the box over the open menu (see GameRendererMixin). ^/
+	public static void drawOverScreen(com.mojang.blaze3d.vertex.PoseStack pose) {
+		if (overScreenHud != null) {
+			overScreenHud.extractOverScreen(new de.bettermusictoast.compat.GuiGraphicsExtractor(pose));
+		}
+	}
+	*///?}
+
 	//? if fabric {
 	@Override
 	public void onInitializeClient() {
@@ -123,10 +136,13 @@ public final class BetterMusicToastClient {
 		//? if >=1.20 {
 		ScreenEvents.AFTER_INIT.register((client, screen, width, height) ->
 				ScreenEvents.afterExtract(screen).register((s, graphics, mouseX, mouseY, delta) -> hud.extractOverScreen(graphics)));
-		//?} else {
+		//?} else if >=1.17 {
 		/*ScreenEvents.AFTER_INIT.register((client, screen, width, height) ->
 				ScreenEvents.afterExtract(screen).register((s, pose, mouseX, mouseY, delta) ->
 						hud.extractOverScreen(new de.bettermusictoast.compat.GuiGraphicsExtractor(pose))));
+		*///?} else {
+		/*// Before 1.17 GameRendererMixin draws the box over menus.
+		overScreenHud = hud;
 		*///?}
 	}
 	//?} else if forge {
@@ -142,16 +158,33 @@ public final class BetterMusicToastClient {
 			event.register(showAgain);
 			event.register(openSettings);
 		});
-		//?} else {
+		//?} else if >=1.17 {
 		/^// Before 1.19 key mappings are registered during client setup.
 		modBus.addListener((FMLClientSetupEvent event) -> event.enqueueWork(() -> {
 			net.minecraftforge.client.ClientRegistry.registerKeyBinding(showAgain);
 			net.minecraftforge.client.ClientRegistry.registerKeyBinding(openSettings);
 		}));
+		^///?} else if >=1.16.2 {
+		/^// Before 1.17 the registry lives in FML's client package.
+		modBus.addListener((FMLClientSetupEvent event) -> event.enqueueWork(() -> {
+			net.minecraftforge.fml.client.registry.ClientRegistry.registerKeyBinding(showAgain);
+			net.minecraftforge.fml.client.registry.ClientRegistry.registerKeyBinding(openSettings);
+		}));
+		^///?} else {
+		/^// Before 1.16.2 work for the main thread goes through FML's DeferredWorkQueue.
+		modBus.addListener((FMLClientSetupEvent event) -> net.minecraftforge.fml.DeferredWorkQueue.runLater(() -> {
+			net.minecraftforge.fml.client.registry.ClientRegistry.registerKeyBinding(showAgain);
+			net.minecraftforge.fml.client.registry.ClientRegistry.registerKeyBinding(openSettings);
+		}));
 		^///?}
 
+		//? if >=1.16.2 {
 		modBus.addListener((FMLClientSetupEvent event) ->
 				event.enqueueWork(() -> Minecraft.getInstance().getSoundManager().addListener(TRACKER)));
+		//?} else {
+		/^modBus.addListener((FMLClientSetupEvent event) -> net.minecraftforge.fml.DeferredWorkQueue.runLater(
+				() -> Minecraft.getInstance().getSoundManager().addListener(TRACKER)));
+		^///?}
 
 		MinecraftForge.EVENT_BUS.addListener((TickEvent.ClientTickEvent event) -> {
 			if (event.phase != TickEvent.Phase.END) {
@@ -180,7 +213,7 @@ public final class BetterMusicToastClient {
 						hud.render(new de.bettermusictoast.compat.GuiGraphicsExtractor(pose), partialTick)));
 		MinecraftForge.EVENT_BUS.addListener((ScreenEvent.Render.Post event) ->
 				hud.extractOverScreen(new de.bettermusictoast.compat.GuiGraphicsExtractor(event.getPoseStack())));
-		^///?} else {
+		^///?} else if >=1.17 {
 		/^// Before 1.19 HUD parts are added to Forge's overlay registry during client setup.
 		modBus.addListener((FMLClientSetupEvent event) -> event.enqueueWork(() ->
 				net.minecraftforge.client.gui.OverlayRegistry.registerOverlayTop("Better Music Toast",
@@ -188,15 +221,27 @@ public final class BetterMusicToastClient {
 								hud.render(new de.bettermusictoast.compat.GuiGraphicsExtractor(pose), partialTick))));
 		MinecraftForge.EVENT_BUS.addListener((ScreenEvent.DrawScreenEvent.Post event) ->
 				hud.extractOverScreen(new de.bettermusictoast.compat.GuiGraphicsExtractor(event.getPoseStack())));
+		^///?} else {
+		/^// Before 1.17 there is no overlay registry: the box is drawn after the whole HUD.
+		MinecraftForge.EVENT_BUS.addListener((net.minecraftforge.client.event.RenderGameOverlayEvent.Post event) -> {
+			if (event.getType() == net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType.ALL) {
+				hud.render(new de.bettermusictoast.compat.GuiGraphicsExtractor(event.getMatrixStack()), event.getPartialTicks());
+			}
+		});
+		MinecraftForge.EVENT_BUS.addListener((net.minecraftforge.client.event.GuiScreenEvent.DrawScreenEvent.Post event) ->
+				hud.extractOverScreen(new de.bettermusictoast.compat.GuiGraphicsExtractor(event.getMatrixStack())));
 		^///?}
 
 		// Settings button in Forge's own mod list (Mod Menu does this on Fabric).
 		//? if >=1.19 {
 		ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class,
 				() -> new ConfigScreenHandler.ConfigScreenFactory((mc, parent) -> new ConfigScreen(parent)));
-		//?} else {
+		//?} else if >=1.17 {
 		/^ModLoadingContext.get().registerExtensionPoint(net.minecraftforge.client.ConfigGuiHandler.ConfigGuiFactory.class,
 				() -> new net.minecraftforge.client.ConfigGuiHandler.ConfigGuiFactory((mc, parent) -> new ConfigScreen(parent)));
+		^///?} else {
+		/^ModLoadingContext.get().registerExtensionPoint(net.minecraftforge.fml.ExtensionPoint.CONFIGGUIFACTORY,
+				() -> (mc, parent) -> new ConfigScreen(parent));
 		^///?}
 	}
 	*///?} else {

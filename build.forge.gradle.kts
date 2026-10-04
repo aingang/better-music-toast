@@ -127,9 +127,13 @@ tasks {
             "vanilla_toast" to false,
             "refmap" to true,
             // Before 1.19.3 the settings screen reaches the option list through an accessor.
-            "options_list" to (sc.current.parsed < "1.19.3"),
+            "options_list" to (sc.current.parsed >= "1.16.2" && sc.current.parsed < "1.19.3"),
             // Before 1.20.5 music is decoded by OggAudioStream, which needs a fix (see OggAudioStreamMixin).
             "stb_audio" to (sc.current.parsed < "1.20.5"),
+            // Before 1.17 the Music Frequency is not saved in options.txt (see MusicFrequency).
+            "options_file" to (sc.current.parsed >= "1.17"),
+            // Forge draws over menus through its own screen event.
+            "screen_mixin" to false,
             "forge_min" to forgeMin,
             "forge_loader" to forgeLoader,
             "pack_format" to packFormat,

@@ -104,7 +104,10 @@ public final class TrackResolver {
 	}
 
 	private static String modName(String namespace) {
+		//? if >=1.17 {
 		if (namespace.equals(Identifier.DEFAULT_NAMESPACE)) {
+		//?} else
+		/*if (namespace.equals("minecraft")) {*/
 			return null;
 		}
 		//? if fabric {
@@ -123,9 +126,16 @@ public final class TrackResolver {
 		StringBuilder result = new StringBuilder();
 		for (String word : fileName.split("[_\\-]+")) {
 			if (word.isEmpty()) continue;
+			// StringBuilder.isEmpty only exists since Java 15; before 1.17 the jar targets Java 8.
+			//? if >=1.17 {
 			if (!result.isEmpty()) result.append(' ');
+			//?} else
+			/*if (result.length() > 0) result.append(' ');*/
 			result.append(word.substring(0, 1).toUpperCase(Locale.ROOT)).append(word.substring(1));
 		}
+		//? if >=1.17 {
 		return result.isEmpty() ? fileName : result.toString();
+		//?} else
+		/*return result.length() == 0 ? fileName : result.toString();*/
 	}
 }

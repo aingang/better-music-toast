@@ -49,7 +49,7 @@ public final class GuiGraphicsExtractor {
 	public void renderItem(ItemStack stack, int x, int y) {
 		//? if >=1.19.4 {
 		Minecraft.getInstance().getItemRenderer().renderAndDecorateItem(pose, stack, x, y);
-		//?} else {
+		//?} else if >=1.17 {
 		/^// Before 1.19.4 items are drawn with the global model-view matrix, so apply ours to it.
 		PoseStack modelView = RenderSystem.getModelViewStack();
 		modelView.pushPose();
@@ -58,16 +58,28 @@ public final class GuiGraphicsExtractor {
 		Minecraft.getInstance().getItemRenderer().renderAndDecorateItem(stack, x, y);
 		modelView.popPose();
 		RenderSystem.applyModelViewMatrix();
+		^///?} else {
+		/^// Before 1.17 the GUI still draws with OpenGL's fixed matrix stack, so apply ours to it.
+		RenderSystem.pushMatrix();
+		RenderSystem.multMatrix(pose.last().pose());
+		Minecraft.getInstance().getItemRenderer().renderAndDecorateItem(stack, x, y);
+		RenderSystem.popMatrix();
 		^///?}
 	}
 
 	public void setColor(float red, float green, float blue, float alpha) {
+		//? if >=1.17 {
 		RenderSystem.setShaderColor(red, green, blue, alpha);
+		//?} else
+		/^RenderSystem.color4f(red, green, blue, alpha);^/
 	}
 
 	public void blit(Identifier texture, int x, int y, float u, float v, int width, int height,
 			int textureWidth, int textureHeight) {
+		//? if >=1.17 {
 		RenderSystem.setShaderTexture(0, texture);
+		//?} else
+		/^Minecraft.getInstance().getTextureManager().bind(texture);^/
 		GuiComponent.blit(pose, x, y, u, v, width, height, textureWidth, textureHeight);
 	}
 }
