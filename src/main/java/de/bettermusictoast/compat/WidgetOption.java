@@ -20,6 +20,7 @@ public final class WidgetOption {
 	public static OptionInstance<Boolean> of(AbstractWidget widget) {
 		return new OptionInstance<>("", OptionInstance.noTooltip(), (caption, value) -> Component.empty(),
 				new OptionInstance.ValueSet<Boolean>() {
+					//? if >=1.19.3 {
 					@Override
 					public Function<OptionInstance<Boolean>, AbstractWidget> createButton(
 							OptionInstance.TooltipSupplier<Boolean> tooltip, Options options, int x, int y, int width,
@@ -31,6 +32,19 @@ public final class WidgetOption {
 							return widget;
 						};
 					}
+					//?} else {
+					/^// Before 1.19.3 there is no change callback, and the position is a pair of public fields.
+					@Override
+					public Function<OptionInstance<Boolean>, AbstractWidget> createButton(
+							OptionInstance.TooltipSupplier<Boolean> tooltip, Options options, int x, int y, int width) {
+						return option -> {
+							widget.x = x;
+							widget.y = y;
+							widget.setWidth(width);
+							return widget;
+						};
+					}
+					^///?}
 
 					@Override
 					public Optional<Boolean> validateValue(Boolean value) {

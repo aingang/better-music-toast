@@ -1,6 +1,6 @@
 {
 	"pack": {
 		"description": "Better Music Toast resources",
-		"pack_format": 15
+		"pack_format": ${pack_format}
 	}
 }

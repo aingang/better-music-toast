@@ -97,6 +97,10 @@ tasks {
             "access_transformer" to needsAccessTransformer,
             // Only Forge needs a mixin refmap.
             "refmap" to false,
+            // Only before 1.19.3, which NeoForge does not exist for.
+            "options_list" to false,
+            // NeoForge only exists from 1.20.6 on, which no longer uses OggAudioStream.
+            "stb_audio" to false,
         )
         inputs.properties(props)
         filesMatching(listOf("META-INF/neoforge.mods.toml", "*.mixins.json")) { expand(props) }

@@ -12,7 +12,10 @@ import java.util.List;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+//? if >=1.20 {
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+//?} else
+/*import de.bettermusictoast.compat.GuiGraphicsExtractor;*/
 import net.minecraft.resources.Identifier;
 //? if <1.20.5
 /*import net.minecraft.util.Mth;*/

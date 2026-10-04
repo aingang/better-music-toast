@@ -12,6 +12,7 @@ import net.minecraft.client.OptionInstance;
 import net.minecraft.client.Options;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.OptionsList;
+//? if >=1.19.3
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 //? if >=1.21 {
@@ -23,8 +24,62 @@ import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
+//? if >=1.19.3 {
 @Mixin(SoundOptionsScreen.class)
 public abstract class SoundOptionsScreenMixin {
+//?} else {
+/*@Mixin(SoundOptionsScreen.class)
+public abstract class SoundOptionsScreenMixin extends Screen {
+	@org.spongepowered.asm.mixin.Shadow
+	private AbstractWidget directionalAudioButton;
+
+	@org.spongepowered.asm.mixin.Unique
+	private final List<ThemedButton> bettermusictoast$row = new ArrayList<>();
+
+	private SoundOptionsScreenMixin(Component title) {
+		super(title);
+	}
+
+	/^*
+	 * Before 1.19.3 the screen places its buttons itself, without an option list. The row 1.21.6+ has
+	 * below Show Subtitles / Directional Audio (Music Frequency and our button) goes where the Done
+	 * button was, and Done moves down one row.
+	 ^/
+	@org.spongepowered.asm.mixin.injection.Inject(method = "init", at = @At("TAIL"))
+	private void bettermusictoast$addRow(org.spongepowered.asm.mixin.injection.callback.CallbackInfo ci) {
+		int y = directionalAudioButton.y + 22;
+		for (net.minecraft.client.gui.components.events.GuiEventListener child : children()) {
+			if (child instanceof net.minecraft.client.gui.components.Button done
+					&& done.getMessage() == net.minecraft.network.chat.CommonComponents.GUI_DONE) {
+				done.y += 22;
+			}
+		}
+		ThemedButton frequency = new de.bettermusictoast.config.MusicFrequencyButton();
+		frequency.x = width / 2 - 155;
+		frequency.y = y;
+		ThemedButton settings = createSettingsButton();
+		settings.x = width / 2 + 5;
+		settings.y = y;
+		bettermusictoast$row.clear();
+		bettermusictoast$row.add(frequency);
+		bettermusictoast$row.add(settings);
+		addRenderableWidget(frequency);
+		addRenderableWidget(settings);
+	}
+
+	// The screen only shows the tooltip of Directional Audio itself, so show ours as well.
+	@org.spongepowered.asm.mixin.injection.Inject(method = "render", at = @At("TAIL"))
+	private void bettermusictoast$renderTooltips(com.mojang.blaze3d.vertex.PoseStack pose, int mouseX, int mouseY,
+			float partialTick, org.spongepowered.asm.mixin.injection.callback.CallbackInfo ci) {
+		for (ThemedButton button : bettermusictoast$row) {
+			if (button.isMouseOver(mouseX, mouseY)) {
+				renderTooltip(pose, button.getTooltip(), mouseX, mouseY);
+			}
+		}
+	}
+*///?}
+
+	//? if >=1.19.3 {
 	/**
 	 * Replaces vanilla's "Music Toast" button with one that opens our settings. The vanilla
 	 * option itself lives on in our settings screen, so nothing is lost.
@@ -74,13 +129,17 @@ public abstract class SoundOptionsScreenMixin {
 		}
 		//?}
 	}
+	//?}
 
 	/** Drawn in the selected colour theme, so it doubles as a small preview of the song box. */
 	private ThemedButton createSettingsButton() {
 		Screen parent = (Screen) (Object) this;
 		ThemedButton button = new ThemedButton(150, Component.translatable("bettermusictoast.soundOptions.button"),
 				() -> McCompat.setScreen(Minecraft.getInstance(), new ConfigScreen(parent)));
+		//? if >=1.19.3 {
 		button.setTooltip(Tooltip.create(Component.translatable("bettermusictoast.soundOptions.button.tooltip")));
+		//?} else
+		/*button.setTooltipText(Component.translatable("bettermusictoast.soundOptions.button.tooltip"));*/
 		return button;
 	}
 }

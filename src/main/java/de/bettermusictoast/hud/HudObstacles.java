@@ -33,8 +33,16 @@ public final class HudObstacles {
 		Font font = mc.font;
 
 		// Advancement / recipe / system toasts (top right, slide in from the right).
+		//? if >=1.19.1 {
 		for (Object entry : ((ToastManagerAccessor) McCompat.toastManager(mc)).bettermusictoast$getVisibleToasts()) {
 			ToastInstanceAccessor instance = (ToastInstanceAccessor) entry;
+		//?} else {
+		/*// 1.19 keeps them in a fixed array of slots; the slot is the position in it.
+		Object[] slots = ((ToastManagerAccessor) McCompat.toastManager(mc)).bettermusictoast$getVisibleSlots();
+		for (int slot = 0; slot < slots.length; slot++) {
+			if (slots[slot] == null) continue;
+			ToastInstanceAccessor instance = (ToastInstanceAccessor) slots[slot];
+		*///?}
 			//? if >=1.21.2 {
 			float portion = instance.bettermusictoast$getVisiblePortion();
 			//?} else {
@@ -48,7 +56,10 @@ public final class HudObstacles {
 			//?} else {
 			/*// Same placement vanilla's ToastInstance.render uses before 1.21.6.
 			int x = (int) (screenWidth - toast.width() * portion);
+			//? if >=1.19.1 {
 			int y = instance.bettermusictoast$getFirstSlotIndex() * 32;
+			//?} else
+			/^int y = slot * 32;^/
 			*///?}
 			result.add(new Rect(x, y, toast.width(), toast.height()));
 		}

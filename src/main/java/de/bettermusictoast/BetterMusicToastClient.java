@@ -110,12 +110,22 @@ public final class BetterMusicToastClient {
 		/*// Before 1.21.6 Fabric adds HUD parts as layers; addLayer puts ours on top, like addLast.
 		HudLayerRegistrationCallback.EVENT.register(layers ->
 				layers.addLayer(IdentifiedLayer.of(Identifier.fromNamespaceAndPath(MOD_ID, "now_playing"), hud)));
-		*///?} else {
+		*///?} else if >=1.20 {
 		/*// Before 1.21.4 Fabric has no HUD layers yet; this callback draws after the whole HUD.
 		HudRenderCallback.EVENT.register(hud::render);
+		*///?} else {
+		/*// Before 1.20 the HUD and menus draw with a PoseStack, wrapped for the box (see compat.GuiGraphics).
+		HudRenderCallback.EVENT.register((pose, partialTick) ->
+				hud.render(new de.bettermusictoast.compat.GuiGraphicsExtractor(pose), partialTick));
 		*///?}
+		//? if >=1.20 {
 		ScreenEvents.AFTER_INIT.register((client, screen, width, height) ->
 				ScreenEvents.afterExtract(screen).register((s, graphics, mouseX, mouseY, delta) -> hud.extractOverScreen(graphics)));
+		//?} else {
+		/*ScreenEvents.AFTER_INIT.register((client, screen, width, height) ->
+				ScreenEvents.afterExtract(screen).register((s, pose, mouseX, mouseY, delta) ->
+						hud.extractOverScreen(new de.bettermusictoast.compat.GuiGraphicsExtractor(pose))));
+		*///?}
 	}
 	//?} else if forge {
 	/*// Forge: the same setup as on Fabric, through Forge's events.
@@ -149,9 +159,18 @@ public final class BetterMusicToastClient {
 
 		// On top of every other HUD part, like addLast on Fabric.
 		NowPlayingHud hud = new NowPlayingHud();
+		//? if >=1.20 {
 		modBus.addListener((RegisterGuiOverlaysEvent event) -> event.registerAboveAll("now_playing",
 				(gui, graphics, partialTick, width, height) -> hud.render(graphics, partialTick)));
 		MinecraftForge.EVENT_BUS.addListener((ScreenEvent.Render.Post event) -> hud.extractOverScreen(event.getGuiGraphics()));
+		//?} else {
+		/^// Before 1.20 the HUD and menus draw with a PoseStack, wrapped for the box (see compat.GuiGraphics).
+		modBus.addListener((RegisterGuiOverlaysEvent event) -> event.registerAboveAll("now_playing",
+				(gui, pose, partialTick, width, height) ->
+						hud.render(new de.bettermusictoast.compat.GuiGraphicsExtractor(pose), partialTick)));
+		MinecraftForge.EVENT_BUS.addListener((ScreenEvent.Render.Post event) ->
+				hud.extractOverScreen(new de.bettermusictoast.compat.GuiGraphicsExtractor(event.getPoseStack())));
+		^///?}
 
 		// Settings button in Forge's own mod list (Mod Menu does this on Fabric).
 		ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class,

@@ -2,6 +2,7 @@ package de.bettermusictoast.config;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Options;
+//? if >=1.19.3
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -32,7 +33,10 @@ public final class ColorThemeButton extends ThemedButton {
 	private void refresh() {
 		ColorTheme theme = config.colorTheme;
 		setMessage(Options.genericValueLabel(CAPTION, Component.translatable(theme.translationKey())));
+		//? if >=1.19.3 {
 		setTooltip(Tooltip.create(tooltip(theme)));
+		//?} else
+		/*setTooltipText(tooltip(theme));*/
 	}
 
 	/**

@@ -30,6 +30,10 @@ public final class ConfigScreen extends SimpleOptionsSubScreen {
 *///?}
 	private final ModConfig config;
 	private OptionInstance<Integer> durationOption;
+	//? if <1.19.3 {
+	/*// Before 1.19.3 the list of SimpleOptionsSubScreen is private; this field stands in for it.
+	private net.minecraft.client.gui.components.OptionsList list;
+	*///?}
 
 	public ConfigScreen(Screen parent) {
 		//? if >=1.21 {
@@ -45,6 +49,8 @@ public final class ConfigScreen extends SimpleOptionsSubScreen {
 	/*@Override
 	protected void init() {
 		super.init();
+		//? if <1.19.3
+		/^this.list = ((de.bettermusictoast.mixin.SimpleOptionsSubScreenAccessor) (Object) this).bettermusictoast$getList();^/
 		addOptions();
 	}
 

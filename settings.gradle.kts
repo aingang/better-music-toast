@@ -22,12 +22,12 @@ stonecutter {
         // Fabric jars are named after the version, NeoForge jars get a "-neoforge" suffix
         // and their own build script.
         val minecraft = listOf("1.21.1", "1.21.3", "1.21.5", "1.21.8", "1.21.10", "1.21.11", "26.1.2", "26.2", "26.3")
-        // Fabric only (NeoForge and Forge for 1.20.x are set up separately).
-        versions("1.20", "1.20.1", "1.20.2", "1.20.4", "1.20.6")
+        // Fabric only (NeoForge and Forge for 1.19.x / 1.20.x are set up separately).
+        versions("1.19", "1.19.2", "1.19.3", "1.19.4", "1.20", "1.20.1", "1.20.2", "1.20.4", "1.20.6")
         versions(minecraft)
         (listOf("1.20.6") + minecraft).forEach { version("$it-neoforge", it).buildscript("build.neoforge.gradle.kts") }
         // Forge only for the versions where it still matters.
-        listOf("1.20.1").forEach { version("$it-forge", it).buildscript("build.forge.gradle.kts") }
+        listOf("1.19", "1.19.2", "1.19.3", "1.19.4", "1.20.1").forEach { version("$it-forge", it).buildscript("build.forge.gradle.kts") }
         vcsVersion = "26.2"
     }
 }

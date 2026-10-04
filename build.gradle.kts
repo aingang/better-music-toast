@@ -21,6 +21,7 @@ val requiredJava: JavaVersion = when {
 // Before 1.21.6 the mod adds Minecraft's "Music Frequency" option itself (see MusicFrequency);
 // before 1.21 it also puts its own buttons into vanilla option lists (see WidgetOption).
 val accessWidener: String? = when {
+    sc.current.parsed < "1.19.3" -> "bettermusictoast-1.19.accesswidener"
     sc.current.parsed < "1.20.1" -> "bettermusictoast-1.20.0.accesswidener"
     sc.current.parsed < "1.21" -> "bettermusictoast-1.20.accesswidener"
     sc.current.parsed < "1.21.6" -> "bettermusictoast.accesswidener"
@@ -117,6 +118,10 @@ tasks {
             "vanilla_toast" to (sc.current.parsed >= "1.21.6"),
             // Only Forge needs a mixin refmap.
             "refmap" to false,
+            // Before 1.19.3 the settings screen reaches the option list through an accessor.
+            "options_list" to (sc.current.parsed < "1.19.3"),
+            // Before 1.20.5 music is decoded by OggAudioStream, which needs a fix (see OggAudioStreamMixin).
+            "stb_audio" to (sc.current.parsed < "1.20.5"),
         )
         inputs.properties(props)
         filesMatching(listOf("fabric.mod.json", "*.mixins.json")) { expand(props) }

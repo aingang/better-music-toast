@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[47,)"
+loaderVersion = "[${forge_major},)"
 license = "MIT"
 issueTrackerURL = "https://github.com/aingang/better-music-toast/issues"
 
@@ -16,7 +16,7 @@ displayTest = "IGNORE_ALL_VERSION"
 [[dependencies.bettermusictoast]]
 modId = "forge"
 mandatory = true
-versionRange = "[47,)"
+versionRange = "[${forge_major},)"
 ordering = "NONE"
 side = "CLIENT"
 

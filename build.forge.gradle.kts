@@ -15,7 +15,21 @@ base.archivesName = property("mod.archive") as String
 
 val requiredJava = JavaVersion.VERSION_17
 // Read straight from src/ instead of the default location, which Stonecutter only generates later.
-val accessTransformer = rootProject.file("src/main/resources/META-INF/accesstransformer-1.20.cfg")
+val accessTransformer = rootProject.file(
+    if (sc.current.parsed < "1.20") "src/main/resources/META-INF/accesstransformer-1.19.cfg"
+    else "src/main/resources/META-INF/accesstransformer-1.20.cfg"
+)
+// Forge's major version (41 = 1.19, ..., 47 = 1.20.1) is the minimum the jar asks for, unless the
+// jar also covers an older Minecraft version (mod.forge_min).
+val forgeMajor = findProperty("mod.forge_min")?.toString()
+    ?: property("deps.forge").toString().substringAfter('-').substringBefore('.')
+// Resource pack format of the Minecraft version (pack.mcmeta), so Forge loads the mod's resources.
+val packFormat = when {
+    sc.current.parsed >= "1.20" -> 15
+    sc.current.parsed >= "1.19.4" -> 13
+    sc.current.parsed >= "1.19.3" -> 12
+    else -> 9
+}
 
 legacyForge {
     version = property("deps.forge").toString()
@@ -103,15 +117,22 @@ tasks {
             "java" to "JAVA_${requiredJava.majorVersion}",
             "vanilla_toast" to false,
             "refmap" to true,
+            // Before 1.19.3 the settings screen reaches the option list through an accessor.
+            "options_list" to (sc.current.parsed < "1.19.3"),
+            // Before 1.20.5 music is decoded by OggAudioStream, which needs a fix (see OggAudioStreamMixin).
+            "stb_audio" to (sc.current.parsed < "1.20.5"),
+            "forge_major" to forgeMajor,
+            "pack_format" to packFormat,
         )
         inputs.properties(props)
-        filesMatching(listOf("META-INF/mods.toml", "*.mixins.json")) { expand(props) }
+        filesMatching(listOf("META-INF/mods.toml", "*.mixins.json", "pack.mcmeta")) { expand(props) }
 
         // Files of the other loaders.
         exclude("fabric.mod.json", "*.accesswidener", "META-INF/neoforge.mods.toml", "META-INF/accesstransformer.cfg")
-        // pack.mcmeta (only Forge needs it, to load the mod's resources) is pack format 15 = 1.20.1.
-        // Forge reads META-INF/accesstransformer.cfg.
-        rename("accesstransformer-1.20.cfg", "accesstransformer.cfg")
+        // Forge reads META-INF/accesstransformer.cfg; the other version's file is left out.
+        val accessTransformerName = accessTransformer.name
+        exclude { it.name.startsWith("accesstransformer-") && it.name != accessTransformerName }
+        rename(accessTransformerName, "accesstransformer.cfg")
         // Names for C418's numbered music files, only needed before 1.20.3.
         if (sc.current.parsed >= "1.20.3") {
             exclude("assets/bettermusictoast_old_music/**")

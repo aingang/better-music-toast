@@ -4,6 +4,7 @@ package de.bettermusictoast.config;
 //? if <1.21.6 {
 /*import de.bettermusictoast.compat.MusicFrequency;
 import net.minecraft.client.Options;
+//? if >=1.19.3
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -16,7 +17,10 @@ public final class MusicFrequencyButton extends ThemedButton {
 	public MusicFrequencyButton() {
 		super(150, Component.empty(), () -> {
 		});
+		//? if >=1.19.3 {
 		setTooltip(Tooltip.create(Component.translatable("options.music_frequency.tooltip")));
+		//?} else
+		/^setTooltipText(Component.translatable("options.music_frequency.tooltip"));^/
 		refresh();
 	}
 

@@ -27,8 +27,11 @@ public interface ToastInstanceAccessor {
 	@Accessor("toast")
 	Toast bettermusictoast$getToast();
 
+	// 1.19 has no index: the slot is the position in ToastComponent's array (see HudObstacles).
+	//? if >=1.19.1 {
 	@Accessor("index")
 	int bettermusictoast$getFirstSlotIndex();
+	//?}
 
 	@Invoker("getVisibility")
 	float bettermusictoast$getVisibility(long now);

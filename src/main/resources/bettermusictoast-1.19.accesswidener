@@ -1,0 +1,10 @@
+accessWidener v2 named
+
+# Only used for Minecraft 1.19 – 1.19.2 (1.19.3 – 1.20 use bettermusictoast-1.20.0.accesswidener).
+# The backported "Music Frequency" option is saved in options.txt; Options.FieldAccess has
+# no OptionAccess parent yet:
+accessible class net/minecraft/client/Options$FieldAccess
+# The mod's buttons are placed in vanilla option lists as options (see WidgetOption):
+accessible class net/minecraft/client/OptionInstance$ValueSet
+# Toasts to move out of the way of: in 1.19 the visible toasts are an array of this package-private class:
+accessible class net/minecraft/client/gui/components/toasts/ToastComponent$ToastInstance

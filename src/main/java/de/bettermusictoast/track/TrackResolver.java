@@ -12,7 +12,10 @@ import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.client.resources.sounds.Sound;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.client.sounds.SoundManager;
+//? if >=1.19.3 {
 import net.minecraft.core.registries.BuiltInRegistries;
+//?} else
+/*import net.minecraft.core.Registry;*/
 import net.minecraft.locale.Language;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
@@ -31,7 +34,10 @@ public final class TrackResolver {
 
 	public static TrackInfo resolve(SoundInstance instance, boolean disc) {
 		Sound sound = instance.getSound();
+		//? if >=1.19.4 {
 		if (sound == null || sound == SoundManager.EMPTY_SOUND || sound == SoundManager.INTENTIONALLY_EMPTY_SOUND) {
+		//?} else
+		/*if (sound == null || sound == SoundManager.EMPTY_SOUND) {*/
 			return null;
 		}
 
@@ -84,7 +90,10 @@ public final class TrackResolver {
 
 	private static ItemStack discItem(String namespace, String fileName) {
 		Identifier id = Identifier.fromNamespaceAndPath(namespace, "music_disc_" + fileName);
+		//? if >=1.19.3 {
 		return BuiltInRegistries.ITEM.getOptional(id).map(ItemStack::new).orElse(ItemStack.EMPTY);
+		//?} else
+		/*return Registry.ITEM.getOptional(id).map(ItemStack::new).orElse(ItemStack.EMPTY);*/
 	}
 
 	private static String modName(String namespace) {

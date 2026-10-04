@@ -175,7 +175,10 @@ public final class NowPlayingTracker implements SoundEventListener {
 		if (vanillaToastShownAt == Long.MIN_VALUE) {
 			return false;
 		}
+		//? if >=1.19.4 {
 		double multiplier = Minecraft.getInstance().options.notificationDisplayTime().get();
+		//?} else
+		/*double multiplier = 1.0;*/
 		return now() - vanillaToastShownAt < 5000 * multiplier + 700;
 	}
 

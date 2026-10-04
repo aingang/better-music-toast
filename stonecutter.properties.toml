@@ -1,7 +1,7 @@
 # Mod settings shared by every jar.
 mod.id = "bettermusictoast"
 mod.archive = "better-music-toast"
-mod.version = "1.6.4"
+mod.version = "1.6.5"
 
 deps.fabric_loader = "0.19.5"
 loomx.loom_version = "1.18-SNAPSHOT"
@@ -14,6 +14,39 @@ loomx.loom_version = "1.18-SNAPSHOT"
 #   mod.mc_releases -> versions to tick on Modrinth, comma-separated
 
 # Fabric
+
+# 1.19 keeps its toasts in a fixed array of slots (1.19.1 added a slot index), so it needs its own jar.
+["1.19"]
+mod.mc_label = "1.19"
+mod.mc_compat = "1.19"
+mod.mc_releases = "1.19"
+
+deps.fabric_api = "0.58.0+1.19"
+deps.modmenu = "4.0.0"
+
+["1.19.2"]
+mod.mc_label = "1.19.1-1.19.2"
+mod.mc_compat = ">=1.19.1 <=1.19.2"
+mod.mc_releases = "1.19.1, 1.19.2"
+
+deps.fabric_api = "0.77.0+1.19.2"
+deps.modmenu = "4.1.2"
+
+["1.19.3"]
+mod.mc_label = "1.19.3"
+mod.mc_compat = "1.19.3"
+mod.mc_releases = "1.19.3"
+
+deps.fabric_api = "0.76.1+1.19.3"
+deps.modmenu = "5.1.0"
+
+["1.19.4"]
+mod.mc_label = "1.19.4"
+mod.mc_compat = "1.19.4"
+mod.mc_releases = "1.19.4"
+
+deps.fabric_api = "0.87.2+1.19.4"
+deps.modmenu = "6.3.1"
 
 ["1.20"]
 mod.mc_label = "1.20"
@@ -202,6 +235,36 @@ mod.mc_releases = "26.3"
 deps.neoforge = "26.3.0.46-beta"
 
 # Forge (only for the versions where it still matters)
+
+["1.19-forge"]
+mod.mc_label = "1.19"
+mod.mc_compat = "[1.19]"
+mod.mc_releases = "1.19"
+
+deps.forge = "1.19-41.1.0"
+
+# Also runs on 1.19.1 (Forge 42), so it asks for Forge 42 or newer.
+["1.19.2-forge"]
+mod.mc_label = "1.19.1-1.19.2"
+mod.mc_compat = "[1.19.1,1.19.2]"
+mod.mc_releases = "1.19.1, 1.19.2"
+mod.forge_min = "42"
+
+deps.forge = "1.19.2-43.5.2"
+
+["1.19.3-forge"]
+mod.mc_label = "1.19.3"
+mod.mc_compat = "[1.19.3]"
+mod.mc_releases = "1.19.3"
+
+deps.forge = "1.19.3-44.1.23"
+
+["1.19.4-forge"]
+mod.mc_label = "1.19.4"
+mod.mc_compat = "[1.19.4]"
+mod.mc_releases = "1.19.4"
+
+deps.forge = "1.19.4-45.4.5"
 
 ["1.20.1-forge"]
 mod.mc_label = "1.20.1"

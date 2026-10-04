@@ -36,6 +36,16 @@ run/
 
 run-neoforge/
 
+# forge
+
+run-forge/
+
+# secrets (tokens belong in ~/.gradle/gradle.properties, never in the repo)
+
+local.properties
+*.token
+.env
+
 # java
 
 hs_err_*.log

@@ -1,1 +1,2 @@
-- First release on CurseForge, with the same files as version 1.6.4 on Modrinth: Fabric for Minecraft 1.20 – 26.3, NeoForge for Minecraft 1.20.6 and 1.21 – 26.3, Forge (and NeoForge) for Minecraft 1.20.1 and Forge for Minecraft 1.8.9.
+- New: Minecraft 1.19 – 1.19.4 on Fabric and Forge, with the same box, colour themes and settings as on newer versions, including the Music Frequency option and music that keeps playing while the game is paused.
+- Fixed: on Minecraft 1.19 – 1.20.4 the game could crash when a song ended ("OutOfMemoryError" in the sound engine). Minecraft's music decoder up to 1.20.4 kept growing its buffer after the end of a song, and the longer music buffer of this mod made that happen often enough to crash.
