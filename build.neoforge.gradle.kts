@@ -103,6 +103,7 @@ tasks {
             "stb_audio" to false,
             "options_file" to true,
             "screen_mixin" to false,
+            "forge_hud_mixin" to false,
         )
         inputs.properties(props)
         filesMatching(listOf("META-INF/neoforge.mods.toml", "*.mixins.json")) { expand(props) }

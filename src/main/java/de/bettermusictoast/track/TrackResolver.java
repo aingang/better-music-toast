@@ -115,7 +115,12 @@ public final class TrackResolver {
 				.map(ModContainer::getMetadata)
 				.map(meta -> meta.getName())
 				.orElse(namespace);
-		//?} else {
+		//?} else if forge && >=26.1 {
+		/*// Since 26.1 Forge's mod list is static.
+		return ModList.getModContainerById(namespace)
+				.map(mod -> mod.getModInfo().getDisplayName())
+				.orElse(namespace);
+		*///?} else {
 		/*return ModList.get().getModContainerById(namespace)
 				.map(mod -> mod.getModInfo().getDisplayName())
 				.orElse(namespace);

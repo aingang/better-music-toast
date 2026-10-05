@@ -19,6 +19,7 @@ val accessTransformer = rootProject.file(
     when {
         sc.current.parsed < "1.19" -> "src/main/resources/META-INF/accesstransformer-1.18.cfg"
         sc.current.parsed < "1.20" -> "src/main/resources/META-INF/accesstransformer-1.19.cfg"
+        sc.current.parsed < "1.20.1" -> "src/main/resources/META-INF/accesstransformer-1.20.0.cfg"
         else -> "src/main/resources/META-INF/accesstransformer-1.20.cfg"
     }
 )
@@ -134,6 +135,7 @@ tasks {
             "options_file" to (sc.current.parsed >= "1.17"),
             // Forge draws over menus through its own screen event.
             "screen_mixin" to false,
+            "forge_hud_mixin" to false,
             "forge_min" to forgeMin,
             "forge_loader" to forgeLoader,
             "pack_format" to packFormat,

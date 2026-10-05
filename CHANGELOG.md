@@ -5,6 +5,7 @@ All versions of Better Music Toast (called "Now Playing Toast" before 1.2.1), ne
 ## 1.6.7
 - Changed: Better Music Toast now has its own license ("All Rights Reserved"). Playing it, reading its code, showing it in videos and putting it in any modpack are allowed without asking. Re-uploading the mod or publishing modified versions needs permission. See [LICENSE](LICENSE).
 - Released for every supported Minecraft version at once. No gameplay changes.
+- New (added later in 1.6.7): Forge for Minecraft 1.20 and 1.20.2 – 26.3, NeoForge for Minecraft 1.20.2 – 1.20.5.
 
 ## 1.6.6
 - New: Minecraft 1.16 – 1.16.5 on Fabric and Forge (Forge from 1.16.1), running on Java 8 like Minecraft 1.16 itself.

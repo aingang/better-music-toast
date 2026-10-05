@@ -29,7 +29,12 @@ public final class BetterMusicToastForge {
 						() -> net.minecraftforge.fml.network.FMLNetworkConstants.IGNORESERVERONLY, (remote, isServer) -> true));
 		^///?}
 		if (FMLEnvironment.dist == Dist.CLIENT) {
-			BetterMusicToastClient.initForge(FMLJavaModLoadingContext.get().getModEventBus());
+			// Since 1.21.6 (EventBus 7) the mod's events live in a group of buses instead of one bus.
+			//? if >=1.21.6 {
+			BetterMusicToastClient.initForge(FMLJavaModLoadingContext.get().getModBusGroup());
+			//?} else {
+			/^BetterMusicToastClient.initForge(FMLJavaModLoadingContext.get().getModEventBus());
+			^///?}
 		}
 	}
 }

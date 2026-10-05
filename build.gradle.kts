@@ -153,6 +153,8 @@ tasks {
             "options_file" to (sc.current.parsed >= "1.17"),
             // Before 1.17 not every Fabric API has screen events; GameRendererMixin draws over menus instead.
             "screen_mixin" to (sc.current.parsed < "1.17"),
+            // Only Forge 1.21.6 – 1.21.8 draws the box through a mixin of its own (see ForgeGuiMixin).
+            "forge_hud_mixin" to false,
         )
         inputs.properties(props)
         filesMatching(listOf("fabric.mod.json", "*.mixins.json")) { expand(props) }

@@ -131,6 +131,7 @@ tasks.processResources {
         "stb_audio" to true,
         "options_file" to false,
         "screen_mixin" to false,
+        "forge_hud_mixin" to false,
         "forge_min" to forgeMin,
         "forge_loader" to forgeLoader,
         "pack_format" to packFormat,

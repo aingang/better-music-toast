@@ -23,16 +23,22 @@ import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 //?} else if forge {
 /*import net.minecraft.client.Minecraft;
-//? if >=1.19 {
+//? if >=1.20.6 {
 import net.minecraftforge.client.ConfigScreenHandler;
+import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
+//?} else if >=1.19 {
+/^import net.minecraftforge.client.ConfigScreenHandler;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
-//?}
+^///?}
 //? if >=1.17
 import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
+//? if >=1.21.6 {
+import net.minecraftforge.eventbus.api.bus.BusGroup;
+//?} else
+/^import net.minecraftforge.eventbus.api.IEventBus;^/
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 *///?} else {
@@ -57,8 +63,11 @@ public final class BetterMusicToastClient implements ClientModInitializer {
 //?} else if forge {
 /*// On Forge the @Mod entry point is BetterMusicToastForge, which only calls initForge on the client.
 public final class BetterMusicToastClient {
-*///?} else {
+*///?} else if >=1.20.6 {
 /*@Mod(value = BetterMusicToastClient.MOD_ID, dist = Dist.CLIENT)
+public final class BetterMusicToastClient {
+*///?} else {
+/*// NeoForge 1.20.5 cannot mark a mod as client-only yet, so BetterMusicToastNeoForge is the entry point.
 public final class BetterMusicToastClient {
 *///?}
 	public static final String MOD_ID = "bettermusictoast";
@@ -87,6 +96,15 @@ public final class BetterMusicToastClient {
 		if (overScreenHud != null) {
 			overScreenHud.extractOverScreen(new de.bettermusictoast.compat.GuiGraphicsExtractor(pose));
 		}
+	}
+	*///?}
+
+	//? if forge && >=1.20.6 && <1.21.9 {
+	/*private static NowPlayingHud forgeHud;
+
+	/^* The box for ForgeGuiMixin, which draws it after the HUD. ^/
+	public static NowPlayingHud forgeHud() {
+		return forgeHud;
 	}
 	*///?}
 
@@ -146,19 +164,40 @@ public final class BetterMusicToastClient {
 		*///?}
 	}
 	//?} else if forge {
-	/*// Forge: the same setup as on Fabric, through Forge's events.
-	public static void initForge(IEventBus modBus) {
+	/*// Forge: the same setup as on Fabric, through Forge's events. Since 1.21.6 (EventBus 7) every
+	// event type has a bus of its own, and the mod's buses come as a group.
+	//? if >=1.21.6 {
+	public static void initForge(BusGroup modBus) {
+	//?} else {
+	/^public static void initForge(IEventBus modBus) {
+	^///?}
 		config = ModConfig.load();
 
-		String category = "key.category." + MOD_ID + ".main";
+		// Key categories became objects in 1.21.9; before that a category is its translation key.
+		//? if >=1.21.9 {
+		KeyMapping.Category category = KeyMapping.Category.register(Identifier.fromNamespaceAndPath(MOD_ID, "main"));
+		//?} else {
+		/^String category = "key.category." + MOD_ID + ".main";
+		^///?}
 		KeyMapping showAgain = new KeyMapping("key.bettermusictoast.show", InputConstants.UNKNOWN.getValue(), category);
 		KeyMapping openSettings = new KeyMapping("key.bettermusictoast.settings", InputConstants.UNKNOWN.getValue(), category);
-		//? if >=1.19 {
-		modBus.addListener((RegisterKeyMappingsEvent event) -> {
+		// Since 26.1 client events have one static bus each, no longer one per mod.
+		//? if >=26.1 {
+		RegisterKeyMappingsEvent.BUS.addListener(event -> {
 			event.register(showAgain);
 			event.register(openSettings);
 		});
-		//?} else if >=1.17 {
+		//?} else if >=1.21.6 {
+		/^RegisterKeyMappingsEvent.getBus(modBus).addListener(event -> {
+			event.register(showAgain);
+			event.register(openSettings);
+		});
+		^///?} else if >=1.19 {
+		/^modBus.addListener((RegisterKeyMappingsEvent event) -> {
+			event.register(showAgain);
+			event.register(openSettings);
+		});
+		^///?} else if >=1.17 {
 		/^// Before 1.19 key mappings are registered during client setup.
 		modBus.addListener((FMLClientSetupEvent event) -> event.enqueueWork(() -> {
 			net.minecraftforge.client.ClientRegistry.registerKeyBinding(showAgain);
@@ -178,15 +217,42 @@ public final class BetterMusicToastClient {
 		}));
 		^///?}
 
-		//? if >=1.16.2 {
-		modBus.addListener((FMLClientSetupEvent event) ->
+		//? if >=1.21.6 {
+		FMLClientSetupEvent.getBus(modBus).addListener(event ->
 				event.enqueueWork(() -> Minecraft.getInstance().getSoundManager().addListener(TRACKER)));
-		//?} else {
+		//?} else if >=1.16.2 {
+		/^modBus.addListener((FMLClientSetupEvent event) ->
+				event.enqueueWork(() -> Minecraft.getInstance().getSoundManager().addListener(TRACKER)));
+		^///?} else {
 		/^modBus.addListener((FMLClientSetupEvent event) -> net.minecraftforge.fml.DeferredWorkQueue.runLater(
 				() -> Minecraft.getInstance().getSoundManager().addListener(TRACKER)));
 		^///?}
 
-		MinecraftForge.EVENT_BUS.addListener((TickEvent.ClientTickEvent event) -> {
+		// Since 1.20.6 the end of a client tick is an event of its own (Post).
+		//? if >=1.21.6 {
+		TickEvent.ClientTickEvent.Post.BUS.addListener(event -> {
+			Minecraft client = Minecraft.getInstance();
+			TRACKER.tick();
+			while (showAgain.consumeClick()) {
+				TRACKER.reshow();
+			}
+			while (openSettings.consumeClick()) {
+				McCompat.setScreen(client, new ConfigScreen(McCompat.screen(client)));
+			}
+		});
+		//?} else if >=1.20.6 {
+		/^MinecraftForge.EVENT_BUS.addListener((TickEvent.ClientTickEvent.Post event) -> {
+			Minecraft client = Minecraft.getInstance();
+			TRACKER.tick();
+			while (showAgain.consumeClick()) {
+				TRACKER.reshow();
+			}
+			while (openSettings.consumeClick()) {
+				McCompat.setScreen(client, new ConfigScreen(McCompat.screen(client)));
+			}
+		});
+		^///?} else {
+		/^MinecraftForge.EVENT_BUS.addListener((TickEvent.ClientTickEvent event) -> {
 			if (event.phase != TickEvent.Phase.END) {
 				return;
 			}
@@ -199,14 +265,31 @@ public final class BetterMusicToastClient {
 				McCompat.setScreen(client, new ConfigScreen(McCompat.screen(client)));
 			}
 		});
+		^///?}
 
 		// On top of every other HUD part, like addLast on Fabric.
 		NowPlayingHud hud = new NowPlayingHud();
-		//? if >=1.20 {
-		modBus.addListener((RegisterGuiOverlaysEvent event) -> event.registerAboveAll("now_playing",
+		//? if >=26.1 {
+		net.minecraftforge.client.event.AddGuiOverlayLayersEvent.BUS.addListener(event -> event.getLayeredDraw()
+				.add(Identifier.fromNamespaceAndPath(MOD_ID, "now_playing"), hud::render));
+		ScreenEvent.Render.Post.BUS.addListener(event -> hud.extractOverScreen(event.getGuiGraphics()));
+		//?} else if >=1.21.9 {
+		/^net.minecraftforge.client.event.AddGuiOverlayLayersEvent.getBus(modBus).addListener(event -> event.getLayeredDraw()
+				.add(Identifier.fromNamespaceAndPath(MOD_ID, "now_playing"), hud::render));
+		ScreenEvent.Render.Post.BUS.addListener(event -> hud.extractOverScreen(event.getGuiGraphics()));
+		^///?} else if >=1.21.6 {
+		/^// From 1.20.6 to 1.21.8 not every Forge build can add HUD parts (Forge 1.21, 1.21.6 and 1.21.7
+		// cannot at all), so ForgeGuiMixin draws the box after the HUD.
+		forgeHud = hud;
+		ScreenEvent.Render.Post.BUS.addListener(event -> hud.extractOverScreen(event.getGuiGraphics()));
+		^///?} else if >=1.20.6 {
+		/^forgeHud = hud;
+		MinecraftForge.EVENT_BUS.addListener((ScreenEvent.Render.Post event) -> hud.extractOverScreen(event.getGuiGraphics()));
+		^///?} else if >=1.20 {
+		/^modBus.addListener((RegisterGuiOverlaysEvent event) -> event.registerAboveAll("now_playing",
 				(gui, graphics, partialTick, width, height) -> hud.render(graphics, partialTick)));
 		MinecraftForge.EVENT_BUS.addListener((ScreenEvent.Render.Post event) -> hud.extractOverScreen(event.getGuiGraphics()));
-		//?} else if >=1.19 {
+		^///?} else if >=1.19 {
 		/^// Before 1.20 the HUD and menus draw with a PoseStack, wrapped for the box (see compat.GuiGraphics).
 		modBus.addListener((RegisterGuiOverlaysEvent event) -> event.registerAboveAll("now_playing",
 				(gui, pose, partialTick, width, height) ->

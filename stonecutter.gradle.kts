@@ -10,7 +10,7 @@ stonecutter active "26.2"
 fun minecraftOrder(version: String) = version.split('.').map { it.toIntOrNull() ?: 0 }
     .let { parts -> parts.getOrElse(0) { 0 } * 1_000_000 + parts.getOrElse(1) { 0 } * 1_000 + parts.getOrElse(2) { 0 } }
 stonecutter.versions
-    // Forge before 1.17 is uploaded from legacy/forge-1.16; these nodes have no upload tasks.
+    // Forge before 1.17 and after 1.20.1 is uploaded from the builds in legacy/; these nodes have no upload tasks.
     .filter { project(":${it.project}").buildFile.name != "build.forge-legacy.gradle.kts" }
     .sortedWith(compareBy({ minecraftOrder(it.version) }, { it.project.endsWith("-neoforge") }, { it.project.endsWith("-forge") }))
     .map { it.project }
@@ -24,7 +24,11 @@ stonecutter.versions
 
 stonecutter parameters {
     // "//? if fabric {" / "//? if neoforge {" / "//? if forge {" pick the code for the mod loader being built.
+    // NeoForge before 1.20.5 still has Forge's API under NeoForge's names, so those versions build the
+    // Forge code, with the names rewritten below.
+    val oldNeoForge = current.project.endsWith("-neoforge") && current.parsed < "1.20.5"
     val loader = when {
+        oldNeoForge -> "forge"
         current.project.endsWith("-neoforge") -> "neoforge"
         current.project.endsWith("-forge") -> "forge"
         else -> "fabric"
@@ -76,6 +80,16 @@ stonecutter parameters {
         // Math.clamp only exists since Java 21 (Minecraft 1.20.5); older versions use Minecraft's own.
         string(current.parsed >= "1.20.5") {
             replace("Mth.clamp(", "Math.clamp(")
+        }
+
+        // Forge's names as NeoForge before 1.20.5 has them (see oldNeoForge above). One way only: the way
+        // back ("(?!)" never matches) must not touch the real NeoForge code of every other version.
+        // So never make one of these nodes the active version.
+        regex(oldNeoForge) {
+            replace("net\\.minecraftforge\\.(fml|api)\\.", "net.neoforged.\$1.", "(?!)1", "-")
+            replace("net\\.minecraftforge\\.eventbus\\.api\\.", "net.neoforged.bus.api.", "(?!)2", "-")
+            replace("net\\.minecraftforge\\.(client|common|event)\\.", "net.neoforged.neoforge.\$1.", "(?!)3", "-")
+            replace("\\bMinecraftForge\\b", "NeoForge", "(?!)4", "-")
         }
 
         // NeoForge kept the method name ScreenEvent.Render.getGuiGraphics() in 26.1, so undo the

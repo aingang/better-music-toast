@@ -22,7 +22,7 @@ import net.minecraft.resources.Identifier;
 //? if >=1.21.6 {
 //? if fabric {
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
-//?} else {
+//?} else if neoforge {
 /*import net.neoforged.neoforge.client.gui.GuiLayer;
 *///?}
 import net.minecraft.client.renderer.RenderPipelines;
@@ -42,9 +42,13 @@ import net.minecraft.client.renderer.RenderType;
 //? if fabric && >=1.21.6 {
 public final class NowPlayingHud implements HudElement {
 	private static final Identifier MUSIC_NOTES_SPRITE = Identifier.withDefaultNamespace("icon/music_notes");
-//?} else if >=1.21.6 {
+//?} else if neoforge && >=1.21.6 {
 /*// NeoForge draws HUD parts as GUI layers.
 public final class NowPlayingHud implements GuiLayer {
+	private static final Identifier MUSIC_NOTES_SPRITE = Identifier.withDefaultNamespace("icon/music_notes");
+*///?} else if >=1.21.6 {
+/*// Forge takes HUD parts as lambdas (see BetterMusicToastClient).
+public final class NowPlayingHud {
 	private static final Identifier MUSIC_NOTES_SPRITE = Identifier.withDefaultNamespace("icon/music_notes");
 *///?} else if >=1.21 {
 /*// Before 1.21.6 the HUD is built from layers, and Minecraft has no music notes icon of its own yet,
@@ -81,7 +85,9 @@ public final class NowPlayingHud {
 	//? if fabric && >=26.1 {
 	@Override
 	public void extractRenderState(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) {
-	//?} else if >=1.21 {
+	//?} else if forge && >=1.21.6 {
+	/*public void render(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) {
+	*///?} else if >=1.21 {
 	/*@Override
 	public void render(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) {
 	*///?} else {
