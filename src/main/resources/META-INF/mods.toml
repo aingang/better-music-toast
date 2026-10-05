@@ -1,6 +1,6 @@
 modLoader = "javafml"
 loaderVersion = "[${forge_loader},)"
-license = "MIT"
+license = "All Rights Reserved (modpacks allowed, see LICENSE)"
 issueTrackerURL = "https://github.com/aingang/better-music-toast/issues"
 
 [[mods]]

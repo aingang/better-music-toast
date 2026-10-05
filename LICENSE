@@ -1,21 +1,38 @@
-MIT License
+Better Music Toast
+Copyright (c) 2026 aingang. All rights reserved.
 
-Copyright (c) 2026 aingang
+This license applies to Better Music Toast version 1.6.7 and later, including its source code,
+compiled files, textures and texts ("the Mod"), unless stated otherwise below.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+ALLOWED, without asking for permission:
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+1. Playing: You may download the Mod from its official pages (Modrinth, CurseForge) and use it.
+2. Modpacks: You may include the unmodified, official files of the Mod in any modpack, public or
+   private, free or not, on any platform. You do not need to ask. A link to the Mod's project page
+   is appreciated but not required.
+3. Reading the code: You may read and study the source code to learn from it.
+4. Videos and screenshots: You may show the Mod in videos, streams and pictures.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+NOT ALLOWED without prior written permission from the author:
+
+5. Uploading or distributing the Mod or its source code anywhere outside of a modpack (for example
+   re-uploading it to another site, or under another name).
+6. Publishing modified versions, ports, forks or other works based on the Mod's source code, or
+   copying parts of the source code into other projects.
+7. Claiming the Mod or any part of it as your own work.
+
+Contributions: The source code is published on GitHub. Forking it on GitHub to propose changes to
+this project (pull requests) is allowed; this does not allow publishing the fork in any other way.
+
+Third-party content: Minecraft's song names, texts and the music notes icon that the Mod ships for
+older Minecraft versions belong to Mojang and are not covered by this license.
+
+Versions of the Mod released before 1.6.7 were published under the MIT License.
+
+THE MOD IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED. IN NO EVENT SHALL THE
+AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY ARISING FROM THE USE OF THE MOD.
+
+Better Music Toast is not an official Minecraft product and is not approved by or associated with
+Mojang or Microsoft.
+
+For permission requests, contact aingang via GitHub: https://github.com/aingang/better-music-toast

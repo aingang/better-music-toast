@@ -66,7 +66,8 @@ gradlew publishMods
 
 ## License
 
-MIT, see [LICENSE](LICENSE).
+All rights reserved, see [LICENSE](LICENSE). Modpacks may include the mod without asking. Versions
+before 1.6.7 were released under the MIT License.
 
 Minecraft only added song names, the music notes icon and the Music Frequency option in 1.21.6. The jars
 for older versions bring these themselves: the song names and option texts as Mojang wrote them, and the

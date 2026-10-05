@@ -141,6 +141,7 @@ tasks.processResources {
 
 tasks.withType<org.gradle.jvm.tasks.Jar> {
     archiveBaseName.set("better-music-toast")
+    from(rootDir.resolve("../../LICENSE"))
     manifest.attributes(
         "FMLCorePluginContainsFMLMod" to "true",
         "ForceLoadAsMod" to "true",

@@ -7,7 +7,7 @@
 	"authors": [
 		"aingang"
 	],
-	"license": "MIT",
+	"license": "LicenseRef-All-Rights-Reserved",
 	"icon": "assets/bettermusictoast/icon.png",
 	"environment": "client",
 	"entrypoints": {
