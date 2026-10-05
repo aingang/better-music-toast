@@ -92,6 +92,14 @@ public final class NowPlayingTracker {
 	/** Called every client tick. */
 	public void tick() {
 		resolvePending();
+		checkEnded();
+	}
+
+	/**
+	 * Notices when the song has stopped. Also called while drawing: loading a world stops all sounds
+	 * and may draw a loading screen without ticking, so the box would keep the old song.
+	 */
+	public void checkEnded() {
 		if (instance != null && !ended && now() - startedAt > START_GRACE_MS
 				&& !Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(instance)) {
 			ended = true;

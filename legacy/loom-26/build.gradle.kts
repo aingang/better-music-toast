@@ -107,7 +107,7 @@ tasks.processResources {
 
     exclude("fabric.mod.json", "*.accesswidener", "META-INF/neoforge.mods.toml", "META-INF/accesstransformer*.cfg")
     // Names for C418's numbered music files and the texts / icon Minecraft itself ships since 1.21.6.
-    exclude("assets/bettermusictoast_old_music/**", "assets/minecraft/lang/**", "assets/bettermusictoast/textures/gui/sprites/**")
+    exclude("assets/bettermusictoast_old_music/**", "assets/minecraft/lang/**", "assets/bettermusictoast/textures/gui/sprites/music_notes.png*")
 }
 
 // The finished jar goes to build/libs/<mod version>/ in the repository root, next to the other versions.

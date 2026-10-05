@@ -1,7 +1,7 @@
 # Mod settings shared by every jar.
 mod.id = "bettermusictoast"
 mod.archive = "better-music-toast"
-mod.version = "1.6.7"
+mod.version = "1.6.8"
 
 deps.fabric_loader = "0.19.5"
 loomx.loom_version = "1.18-SNAPSHOT"

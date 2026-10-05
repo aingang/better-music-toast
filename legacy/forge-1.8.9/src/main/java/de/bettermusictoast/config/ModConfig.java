@@ -52,6 +52,8 @@ public final class ModConfig {
 	public DisplayMode displayMode = DisplayMode.TIMED;
 	public int durationSeconds = 6;
 	public AvoidMode avoidMode = AvoidMode.MOVE;
+	/** Whether the music notes icon in the box is animated; off shows a still frame. */
+	public boolean animateIcon = true;
 	/** Requested box size in percent; snapped to a sharp step for the current GUI scale. */
 	public Integer sizePercent;
 	/** Pre-1.3 setting (SMALL / NORMAL / LARGE), only read to migrate old configs. */

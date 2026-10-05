@@ -34,17 +34,10 @@ final class HudObstacles {
 		if (achievement.bettermusictoast$getAchievement() != null && shownAt != 0L && mc.thePlayer != null) {
 			double progress = (Minecraft.getSystemTime() - shownAt) / 3000.0;
 			boolean visible = achievement.bettermusictoast$isPermanent() || progress >= 0.0 && progress <= 1.0;
+			// The whole spot counts from the first frame of the slide-in to the last of the slide-out, so
+			// the panel is already out of the way when the pop-up arrives instead of being pushed by it.
 			if (visible) {
-				progress = Math.min(progress, achievement.bettermusictoast$isPermanent() ? 0.5 : 1.0);
-				double slide = progress * 2.0;
-				if (slide > 1.0) slide = 2.0 - slide;
-				slide = Math.max(0.0, 1.0 - slide * 4.0);
-				slide *= slide;
-				slide *= slide;
-				int y = -(int) (slide * 36.0);
-				if (y > -32) {
-					result.add(new Rect(screenWidth - 160, y, 160, 32));
-				}
+				result.add(new Rect(screenWidth - 160, 0, 160, 32));
 			}
 		}
 

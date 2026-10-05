@@ -10,6 +10,8 @@
 	"bettermusictoast.option.duration.tooltip": "How long the display stays visible in \"Timed\" mode. The timer pauses while it is covered or a menu is open (unless \"Show in Menus\" is on).",
 	"bettermusictoast.option.avoidMode": "On Notifications",
 	"bettermusictoast.option.avoidMode.tooltip": "What happens when an advancement, recipe, effect icons, a boss bar or an action bar message appears in the same spot.",
+	"bettermusictoast.option.animateIcon": "Note Animation",
+	"bettermusictoast.option.animateIcon.tooltip": "Animates the music notes icon in the display. Off: the notes stand still. Music discs are not affected.",
 	"bettermusictoast.option.size": "Size",
 	"bettermusictoast.option.size.tooltip": "Size of the display. Only sizes that keep the font sharp are offered; how many depends on your GUI scale.",
 	"bettermusictoast.option.showArtist": "Show Artist",

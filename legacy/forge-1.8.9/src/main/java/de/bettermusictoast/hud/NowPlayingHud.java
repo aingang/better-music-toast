@@ -36,11 +36,16 @@ public final class NowPlayingHud {
 
 	private static final float FADE_MS = 280.0f;
 	private static final float MOVE_MS = 90.0f;
+	/** How long the way back has to stay clear before the panel returns. */
+	private static final long HOLD_MS = 700;
 
 	private float anim;
 	private float currentY = Float.NaN;
 	private Position lastPosition;
 	private long lastFrameNanos;
+	private int heldY;
+	private long holdUntil;
+	private long blockedUntil;
 
 	/** In-game HUD pass. With "show in menus" the screen pass takes over while a menu is open. */
 	public void renderHud() {
@@ -70,6 +75,7 @@ public final class NowPlayingHud {
 		Minecraft mc = Minecraft.getMinecraft();
 		NowPlayingTracker tracker = BetterMusicToast.tracker();
 		ModConfig config = BetterMusicToast.config();
+		tracker.checkEnded();
 		TrackInfo track = tracker.track();
 		if (track == null || (!overScreen && mc.thePlayer == null)) {
 			anim = 0;
@@ -111,19 +117,25 @@ public final class NowPlayingHud {
 
 		// Over a menu the HUD is covered, so only the achievement pop-up can get in the way.
 		List<Rect> obstacles = HudObstacles.collect(mc, screenWidth, screenHeight, !overScreen);
-		int targetY = baseY;
-		boolean blocked = false;
+		long nowMs = nowNanos / 1_000_000L;
+		int targetY;
+		boolean blocked;
 		if (config.avoidMode == ModConfig.AvoidMode.MOVE) {
-			targetY = avoid(x, baseY, scaledWidth, scaledHeight, obstacles, position == Position.ABOVE_HOTBAR);
-			targetY = MathHelper.clamp_int(targetY, 0, Math.max(0, screenHeight - scaledHeight));
+			int wantedY = avoid(x, baseY, scaledWidth, scaledHeight, obstacles, position == Position.ABOVE_HOTBAR);
+			// No room left beside the notifications: step aside completely rather than cover them.
+			blocked = wantedY < 0 || wantedY + scaledHeight > screenHeight;
+			wantedY = MathHelper.clamp_int(wantedY, 0, Math.max(0, screenHeight - scaledHeight));
+			targetY = holdPosition(wantedY, baseY, x, scaledWidth, scaledHeight, obstacles, nowMs, position);
 		} else {
-			Rect panel = new Rect(x, baseY, scaledWidth, scaledHeight);
-			for (Rect obstacle : obstacles) {
-				if (panel.intersects(obstacle)) {
-					blocked = true;
-					break;
-				}
-			}
+			blocked = intersectsAny(new Rect(x, baseY, scaledWidth, scaledHeight), obstacles);
+			targetY = baseY;
+		}
+		// Notifications in a row leave a gap of a few frames between them; stay out of the way
+		// through it instead of popping back in just before the next one arrives.
+		if (blocked) {
+			blockedUntil = nowMs + HOLD_MS;
+		} else if (nowMs < blockedUntil) {
+			blocked = true;
 		}
 
 		// F1 (hidden HUD) or the F3 debug screen.
@@ -196,6 +208,32 @@ public final class NowPlayingHud {
 		return screenHeight - (survivalBars ? 62 : 48);
 	}
 
+	/**
+	 * Moving away from the usual spot happens at once; moving back only after the way has been clear
+	 * for {@link #HOLD_MS}, so notifications in a row keep the panel below them the whole time.
+	 */
+	private int holdPosition(int wantedY, int baseY, int x, int width, int height, List<Rect> obstacles,
+			long nowMs, Position position) {
+		boolean fresh = Float.isNaN(currentY) || lastPosition != position;
+		if (fresh || Math.abs(wantedY - baseY) >= Math.abs(heldY - baseY)
+				|| intersectsAny(new Rect(x, heldY, width, height), obstacles)) {
+			heldY = wantedY;
+			holdUntil = nowMs + HOLD_MS;
+		} else if (nowMs >= holdUntil) {
+			heldY = wantedY;
+		}
+		return heldY;
+	}
+
+	private static boolean intersectsAny(Rect panel, List<Rect> obstacles) {
+		for (Rect obstacle : obstacles) {
+			if (panel.intersects(obstacle)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	private static int avoid(int x, int y, int width, int height, List<Rect> obstacles, boolean upward) {
 		for (int i = 0; i < 16; i++) {
 			Rect panel = new Rect(x, y, width, height);
@@ -233,7 +271,7 @@ public final class NowPlayingHud {
 			// A plain texture: its animation (8 frames, 2 ticks each, stacked vertically) is played
 			// here, and it is tinted and faded through the colour, like in the newer versions.
 			int tint = argb(theme.icon, alpha);
-			int frame = (int) (Minecraft.getSystemTime() / 100L % 8L);
+			int frame = BetterMusicToast.config().animateIcon ? (int) (Minecraft.getSystemTime() / 100L % 8L) : 0;
 			GlStateManager.enableBlend();
 			GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
 			GlStateManager.color(((tint >> 16) & 0xFF) / 255.0f, ((tint >> 8) & 0xFF) / 255.0f, (tint & 0xFF) / 255.0f,

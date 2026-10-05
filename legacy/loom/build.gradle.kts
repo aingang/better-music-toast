@@ -193,7 +193,7 @@ tasks.processResources {
     }
     // Song names and the music notes icon that Minecraft itself only ships since 1.21.6.
     if (mcAtLeast("1.21.6")) {
-        exclude("assets/minecraft/lang/**", "assets/bettermusictoast/textures/gui/sprites/**")
+        exclude("assets/minecraft/lang/**", "assets/bettermusictoast/textures/gui/sprites/music_notes.png*")
     }
 }
 

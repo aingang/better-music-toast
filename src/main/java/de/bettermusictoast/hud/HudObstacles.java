@@ -50,12 +50,14 @@ public final class HudObstacles {
 			*///?}
 			if (portion <= 0.0f) continue;
 			Toast toast = instance.bettermusictoast$getToast();
+			// The whole slot counts from the first frame of the slide-in to the last of the slide-out, so the
+			// panel is already out of the way when the toast arrives instead of being pushed while it slides.
 			//? if >=1.21.6 {
-			int x = (int) toast.xPos(screenWidth, portion);
+			int x = (int) toast.xPos(screenWidth, 1.0f);
 			int y = (int) toast.yPos(instance.bettermusictoast$getFirstSlotIndex());
 			//?} else {
 			/*// Same placement vanilla's ToastInstance.render uses before 1.21.6.
-			int x = (int) (screenWidth - toast.width() * portion);
+			int x = screenWidth - toast.width();
 			//? if >=1.19.1 {
 			int y = instance.bettermusictoast$getFirstSlotIndex() * 32;
 			//?} else

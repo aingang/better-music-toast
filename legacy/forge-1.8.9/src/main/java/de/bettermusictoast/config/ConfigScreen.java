@@ -81,16 +81,23 @@ public final class ConfigScreen extends GuiScreen {
 		}));
 		list.addSmall(durationSlider, size());
 		updateDurationSlider();
-		list.addBig(enumOption("avoidMode", ModConfig.AvoidMode.values(), config.avoidMode,
-				new CycleButton.Labeler<ModConfig.AvoidMode>() {
+		list.addSmall(
+				enumOption("avoidMode", ModConfig.AvoidMode.values(), config.avoidMode,
+						new CycleButton.Labeler<ModConfig.AvoidMode>() {
+							@Override
+							public String label(ModConfig.AvoidMode v) {
+								return I18n.format(v.translationKey());
+							}
+						}, new CycleButton.Listener<ModConfig.AvoidMode>() {
+							@Override
+							public void changed(ModConfig.AvoidMode v) {
+								config.avoidMode = v;
+							}
+						}),
+				bool("animateIcon", config.animateIcon, new CycleButton.Listener<Boolean>() {
 					@Override
-					public String label(ModConfig.AvoidMode v) {
-						return I18n.format(v.translationKey());
-					}
-				}, new CycleButton.Listener<ModConfig.AvoidMode>() {
-					@Override
-					public void changed(ModConfig.AvoidMode v) {
-						config.avoidMode = v;
+					public void changed(Boolean v) {
+						config.animateIcon = v;
 					}
 				}));
 		list.addSmall(

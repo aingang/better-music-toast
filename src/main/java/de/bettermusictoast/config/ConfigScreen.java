@@ -121,8 +121,10 @@ public final class ConfigScreen extends OptionsSubScreen {
 		this.durationOption = duration();
 		this.list.addSmall(durationOption, size());
 		updateDurationSlider();
-		this.list.addBig(enumOption("avoidMode", ModConfig.AvoidMode.values(), config.avoidMode,
-				ModConfig.AvoidMode::translationKey, v -> config.avoidMode = v));
+		this.list.addSmall(
+				enumOption("avoidMode", ModConfig.AvoidMode.values(), config.avoidMode,
+						ModConfig.AvoidMode::translationKey, v -> config.avoidMode = v),
+				bool("animateIcon", config.animateIcon, v -> config.animateIcon = v));
 		this.list.addSmall(
 				bool("showArtist", config.showArtist, v -> config.showArtist = v),
 				bool("showMusicDiscs", config.showMusicDiscs, v -> config.showMusicDiscs = v));

@@ -169,7 +169,7 @@ tasks {
         // Song names, the music notes icon and the Music Frequency option that Minecraft itself
         // only has since 1.21.6.
         if (sc.current.parsed >= "1.21.6") {
-            exclude("assets/minecraft/lang/**", "assets/bettermusictoast/textures/gui/sprites/**")
+            exclude("assets/minecraft/lang/**", "assets/bettermusictoast/textures/gui/sprites/music_notes.png*")
         }
         // Names for C418's numbered music files (calm1, hal1, ...), renamed by Minecraft in 1.20.3.
         if (sc.current.parsed >= "1.20.3") {

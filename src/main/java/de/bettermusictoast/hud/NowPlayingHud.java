@@ -63,6 +63,10 @@ public final class NowPlayingHud {
 			Identifier.fromNamespaceAndPath(BetterMusicToastClient.MOD_ID, "music_notes");
 *///?}
 
+	/** First frame of the music notes, for when the animation is turned off. */
+	//? if >=1.20.2
+	private static final Identifier MUSIC_NOTES_STILL = Identifier.fromNamespaceAndPath(BetterMusicToastClient.MOD_ID, "music_notes_still");
+
 	private static final int SCREEN_MARGIN = 4;
 	private static final int OBSTACLE_GAP = 2;
 	private static final int ICON_X = 5;
@@ -74,11 +78,16 @@ public final class NowPlayingHud {
 
 	private static final float FADE_MS = 280.0f;
 	private static final float MOVE_MS = 90.0f;
+	/** How long the way back has to stay clear before the panel returns. */
+	private static final long HOLD_MS = 700;
 
 	private float anim;
 	private float currentY = Float.NaN;
 	private Position lastPosition;
 	private long lastFrameNanos;
+	private int heldY;
+	private long holdUntil;
+	private long blockedUntil;
 
 	/** In-game HUD pass. With "show in menus" the screen pass takes over while a menu is open. */
 	// NeoForge's GUI layers keep the name render() on every version.
@@ -120,6 +129,7 @@ public final class NowPlayingHud {
 		Minecraft mc = Minecraft.getInstance();
 		NowPlayingTracker tracker = BetterMusicToastClient.tracker();
 		ModConfig config = BetterMusicToastClient.config();
+		tracker.checkEnded();
 		TrackInfo track = tracker.track();
 		if (track == null || (!overScreen && mc.player == null)) {
 			anim = 0;
@@ -154,14 +164,26 @@ public final class NowPlayingHud {
 
 		// Over a menu the HUD is covered, so only toasts can get in the way.
 		List<Rect> obstacles = HudObstacles.collect(mc, screenWidth, screenHeight, !overScreen);
-		int targetY = baseY;
-		boolean blocked = false;
+		long nowMs = nowNanos / 1_000_000L;
+		int targetY;
+		boolean blocked;
 		if (config.avoidMode == ModConfig.AvoidMode.MOVE) {
-			targetY = avoid(x, baseY, scaledWidth, scaledHeight, obstacles, position == Position.ABOVE_HOTBAR);
-			targetY = Math.clamp(targetY, 0, Math.max(0, screenHeight - scaledHeight));
+			int wantedY = avoid(x, baseY, scaledWidth, scaledHeight, obstacles, position == Position.ABOVE_HOTBAR);
+			// No room left beside the notifications: step aside completely rather than cover them.
+			blocked = wantedY < 0 || wantedY + scaledHeight > screenHeight;
+			wantedY = Math.clamp(wantedY, 0, Math.max(0, screenHeight - scaledHeight));
+			targetY = holdPosition(wantedY, baseY, x, scaledWidth, scaledHeight, obstacles, nowMs, position);
 		} else {
 			Rect panel = new Rect(x, baseY, scaledWidth, scaledHeight);
 			blocked = obstacles.stream().anyMatch(panel::intersects);
+			targetY = baseY;
+		}
+		// Notifications in a row leave a gap of a few frames between them; stay out of the way
+		// through it instead of popping back in just before the next one arrives.
+		if (blocked) {
+			blockedUntil = nowMs + HOLD_MS;
+		} else if (nowMs < blockedUntil) {
+			blocked = true;
 		}
 
 		boolean hudHidden = !overScreen && McCompat.isHudHidden(mc);
@@ -237,6 +259,24 @@ public final class NowPlayingHud {
 		return screenHeight - (survivalBars ? 62 : 48);
 	}
 
+	/**
+	 * Moving away from the usual spot happens at once; moving back only after the way has been clear
+	 * for {@link #HOLD_MS}, so notifications in a row keep the panel below them the whole time.
+	 */
+	private int holdPosition(int wantedY, int baseY, int x, int width, int height, List<Rect> obstacles,
+			long nowMs, Position position) {
+		boolean fresh = Float.isNaN(currentY) || lastPosition != position;
+		Rect held = new Rect(x, heldY, width, height);
+		if (fresh || Math.abs(wantedY - baseY) >= Math.abs(heldY - baseY)
+				|| obstacles.stream().anyMatch(held::intersects)) {
+			heldY = wantedY;
+			holdUntil = nowMs + HOLD_MS;
+		} else if (nowMs >= holdUntil) {
+			heldY = wantedY;
+		}
+		return heldY;
+	}
+
 	private static int avoid(int x, int y, int width, int height, List<Rect> obstacles, boolean upward) {
 		for (int i = 0; i < 16; i++) {
 			Rect panel = new Rect(x, y, width, height);
@@ -266,10 +306,13 @@ public final class NowPlayingHud {
 		if (!track.icon().isEmpty() && alpha > 0.6f) {
 			g.item(track.icon(), ICON_X, iconY);
 		} else {
+			boolean animate = BetterMusicToastClient.config().animateIcon;
 			//? if >=1.21.6 {
-			g.blitSprite(RenderPipelines.GUI_TEXTURED, MUSIC_NOTES_SPRITE, ICON_X, iconY, 16, 16, argb(theme.icon, alpha));
+			g.blitSprite(RenderPipelines.GUI_TEXTURED, animate ? MUSIC_NOTES_SPRITE : MUSIC_NOTES_STILL,
+					ICON_X, iconY, 16, 16, argb(theme.icon, alpha));
 			//?} else if >=1.21.2 {
-			/*g.blitSprite(RenderType::guiTextured, MUSIC_NOTES_SPRITE, ICON_X, iconY, 16, 16, argb(theme.icon, alpha));
+			/*g.blitSprite(RenderType::guiTextured, animate ? MUSIC_NOTES_SPRITE : MUSIC_NOTES_STILL,
+					ICON_X, iconY, 16, 16, argb(theme.icon, alpha));
 			*///?} else if >=1.20.2 {
 			/*// Before 1.21.2 sprites take no colour and are drawn without blending: tint and fade
 			// them through the shader colour, like vanilla did back then.
@@ -277,14 +320,14 @@ public final class NowPlayingHud {
 			com.mojang.blaze3d.systems.RenderSystem.enableBlend();
 			g.setColor(((tint >> 16) & 0xFF) / 255.0f, ((tint >> 8) & 0xFF) / 255.0f, (tint & 0xFF) / 255.0f,
 					((tint >>> 24) & 0xFF) / 255.0f);
-			g.blitSprite(MUSIC_NOTES_SPRITE, ICON_X, iconY, 16, 16);
+			g.blitSprite(animate ? MUSIC_NOTES_SPRITE : MUSIC_NOTES_STILL, ICON_X, iconY, 16, 16);
 			g.setColor(1.0f, 1.0f, 1.0f, 1.0f);
 			com.mojang.blaze3d.systems.RenderSystem.disableBlend();
 			*///?} else {
 			/*// Before 1.20.2 there is no sprite atlas for menus, so the icon is a plain texture and its
 			// animation (8 frames, 2 ticks each, stacked vertically) is played here.
 			int tint = argb(theme.icon, alpha);
-			int frame = (int) (net.minecraft.Util.getMillis() / 100L % 8L);
+			int frame = animate ? (int) (net.minecraft.Util.getMillis() / 100L % 8L) : 0;
 			com.mojang.blaze3d.systems.RenderSystem.enableBlend();
 			g.setColor(((tint >> 16) & 0xFF) / 255.0f, ((tint >> 8) & 0xFF) / 255.0f, (tint & 0xFF) / 255.0f,
 					((tint >>> 24) & 0xFF) / 255.0f);
