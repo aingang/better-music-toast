@@ -1,5 +1,4 @@
-- New: "Note Animation" setting (on by default). Turn it off for music notes that stand still. It sits next to "On Notifications", which is now a half-width button.
-- Fixed: When creating or loading a world, the display kept showing the menu song although the music had already stopped.
-- Fixed: With several notifications in a row, the display could briefly end up over them. It now stays below them the whole time and only moves back once the spot has been free for a moment. If there is no room left beside the notifications, it steps aside completely.
+- New: Minecraft 1.9.4, 1.10.2, 1.11 – 1.11.2 and 1.12 – 1.12.2 on Forge. Same box, settings and color themes as on the newer versions, plus Music Frequency and music that keeps playing while the game is paused, like on 1.8.9.
+- Includes everything from 1.6.8: the "Note Animation" setting, the display disappearing when the music stops while a world loads, and staying below notifications that come in a row.
 
 Full history of all versions: https://github.com/aingang/better-music-toast/blob/main/CHANGELOG.md

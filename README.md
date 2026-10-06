@@ -22,7 +22,7 @@ Settings: Options → Music & Sounds → **Better Music Toast**, or through Mod 
 - **Fabric:** Minecraft 1.16 – 1.16.5 and 1.18 – 26.3, with [Fabric API](https://modrinth.com/mod/fabric-api);
   [Mod Menu](https://modrinth.com/mod/modmenu) optional
 - **NeoForge:** Minecraft 1.20.1 – 26.3
-- **Forge:** Minecraft 1.8.9, 1.16.1 – 1.16.5, 1.18 – 1.19.4 and 1.20 – 26.3 (on 1.16.1 Forge 32.0.72 or newer,
+- **Forge:** Minecraft 1.8.9, 1.9.4, 1.10.2, 1.11 – 1.11.2, 1.12 – 1.12.2, 1.16.1 – 1.16.5, 1.18 – 1.19.4 and 1.20 – 26.3 (on 1.16.1 Forge 32.0.72 or newer,
   on 1.18.2 Forge 40.1.60 or newer)
 
 Client-side only, not needed on servers. Built with [Stonecutter](https://stonecutter.kikugie.dev/) from one
