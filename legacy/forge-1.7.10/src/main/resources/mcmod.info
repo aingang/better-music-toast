@@ -1,0 +1,16 @@
+[
+  {
+    "modid": "bettermusictoast",
+    "name": "Better Music Toast",
+    "description": "Shows the currently playing song in a small box in the style of the achievement pop-ups.",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "https://modrinth.com/project/A7qcTXkk",
+    "updateUrl": "",
+    "authorList": ["aingang"],
+    "credits": "Color themes from Wada Sanzō's \"A Dictionary of Color Combinations\"",
+    "logoFile": "assets/bettermusictoast/icon.png",
+    "screenshots": [],
+    "dependencies": []
+  }
+]

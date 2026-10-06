@@ -7,6 +7,7 @@ All versions of Better Music Toast (called "Now Playing Toast" before 1.2.1), ne
 - Fixed: When creating or loading a world, the display kept showing the menu song although the music had already stopped.
 - Fixed: With several notifications in a row, the display could briefly end up over them. It now stays below them the whole time and only moves back once the spot has been free for a moment. If there is no room left beside the notifications, it steps aside completely.
 - New (added later in 1.6.8): Minecraft 1.9.4, 1.10.2, 1.11 – 1.11.2 and 1.12 – 1.12.2 on Forge, with Music Frequency and music that keeps playing while the game is paused, like on 1.8.9.
+- New (added later in 1.6.8): Minecraft 1.7.10 on Forge, with the same features.
 
 ## 1.6.7
 - Changed: Better Music Toast now has its own license ("All Rights Reserved"). Playing it, reading its code, showing it in videos and putting it in any modpack are allowed without asking. Re-uploading the mod or publishing modified versions needs permission. See [LICENSE](LICENSE).
