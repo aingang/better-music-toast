@@ -63,14 +63,25 @@ public final class TrackResolver {
 				: new String[] {shortKey};
 		^///?}
 		*///?}
+		String translation = null;
 		for (String key : keys) {
 			if (language.has(key)) {
-				return fromTranslation(language.getOrDefault(key), icon);
+				translation = language.getOrDefault(key);
+				break;
 			}
 		}
 
+		// A resource pack or mod may play another song under this path; then that song's own name counts.
+		TrackInfo fromPack = PackTrackInfo.resolve(sound.getPath(), keys, translation != null, fileName, icon);
+		if (fromPack != null) {
+			return fromPack;
+		}
+		if (translation != null) {
+			return fromTranslation(translation, icon);
+		}
+
 		// Unknown (e.g. modded) track: prettify the file name and credit the mod.
-		return new TrackInfo(prettify(fileName), modName(location.getNamespace()), icon);
+		return new TrackInfo(prettify(fileName), modName(location.getNamespace()), icon, true);
 	}
 
 	private static TrackInfo fromTranslation(String text, ItemStack icon) {
@@ -103,31 +114,88 @@ public final class TrackResolver {
 		/*return Registry.ITEM.getOptional(id).map(ItemStack::new).orElse(ItemStack.EMPTY);*/
 	}
 
-	private static String modName(String namespace) {
+	static String modName(String namespace) {
 		//? if >=1.17 {
 		if (namespace.equals(Identifier.DEFAULT_NAMESPACE)) {
 		//?} else
 		/*if (namespace.equals("minecraft")) {*/
 			return null;
 		}
+		String name = modDisplayName(namespace);
+		return name != null ? name : namespace;
+	}
+
+	/** The name of the loaded mod with this id, or null if there is none. */
+	static String modDisplayName(String modId) {
 		//? if fabric {
-		return FabricLoader.getInstance().getModContainer(namespace)
+		return FabricLoader.getInstance().getModContainer(modId)
 				.map(ModContainer::getMetadata)
 				.map(meta -> meta.getName())
-				.orElse(namespace);
+				.orElse(null);
 		//?} else if forge && >=26.1 {
 		/*// Since 26.1 Forge's mod list is static.
-		return ModList.getModContainerById(namespace)
+		return ModList.getModContainerById(modId)
 				.map(mod -> mod.getModInfo().getDisplayName())
-				.orElse(namespace);
+				.orElse(null);
 		*///?} else {
-		/*return ModList.get().getModContainerById(namespace)
+		/*return ModList.get().getModContainerById(modId)
 				.map(mod -> mod.getModInfo().getDisplayName())
-				.orElse(namespace);
+				.orElse(null);
 		*///?}
 	}
 
-	private static String prettify(String fileName) {
+	/** The name of the mod whose jar contains this file (e.g. "assets/minecraft/sounds/…"), or null. */
+	static String modOwning(String path) {
+		try {
+			//? if fabric {
+			for (ModContainer mod : FabricLoader.getInstance().getAllMods()) {
+				if (mod.findPath(path).isPresent()) {
+					return mod.getMetadata().getName();
+				}
+			}
+			//?} else {
+			/*// Looking through every mod file takes a moment, and the same songs come again.
+			if (MOD_OWNING.containsKey(path)) {
+				return MOD_OWNING.get(path);
+			}
+			String owner = null;
+			//? if forge && >=26.1 {
+			/^for (var file : ModList.getModFiles()) {^/
+			//?} else
+			for (var file : ModList.get().getModFiles()) {
+				if (modFileContains(file.getFile().getFilePath(), path)) {
+					owner = file.getMods().get(0).getDisplayName();
+					break;
+				}
+			}
+			MOD_OWNING.put(path, owner);
+			return owner;
+			*///?}
+		} catch (RuntimeException | LinkageError e) {
+			// An unusual mod file or loader: then the source stays unknown.
+		}
+		return null;
+	}
+
+	//? if !fabric {
+	/*private static final java.util.Map<String, String> MOD_OWNING = new java.util.HashMap<>();
+
+	private static boolean modFileContains(java.nio.file.Path modFile, String path) {
+		try {
+			if (java.nio.file.Files.isDirectory(modFile)) {
+				return java.nio.file.Files.exists(modFile.resolve(path));
+			}
+			try (java.util.zip.ZipFile zip = new java.util.zip.ZipFile(modFile.toFile())) {
+				return zip.getEntry(path) != null;
+			}
+		} catch (java.io.IOException | RuntimeException e) {
+			// Mods inside other mods' jars have no file of their own; they are skipped.
+			return false;
+		}
+	}
+	*///?}
+
+	static String prettify(String fileName) {
 		StringBuilder result = new StringBuilder();
 		for (String word : fileName.split("[_\\-]+")) {
 			if (word.isEmpty()) continue;

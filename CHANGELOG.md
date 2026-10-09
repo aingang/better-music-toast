@@ -2,6 +2,12 @@
 
 All versions of Better Music Toast (called "Now Playing Toast" before 1.2.1), newest first.
 
+## 1.6.9
+- Fixed: Songs from resource packs and music mods (for example Medieval Music) showed the name of the Minecraft song they replace. The display now shows the song's own name: from the pack's language file, from the title and artist stored in the music file, or else the name of the resource pack or mod.
+- Changed: New songs that a resource pack adds now name the pack as their source.
+- New: Shows the songs of Reactive Music, Music Triggers and Music Player, which play music with a player of their own. None of them is needed.
+- New: Music discs from mods that name their song only in the "Now Playing" message (for example Net Music) show that name.
+
 ## 1.6.8
 - New: "Note Animation" setting (on by default). Turn it off for music notes that stand still. It sits next to "On Notifications", which is now a half-width button.
 - Fixed: When creating or loading a world, the display kept showing the menu song although the music had already stopped.

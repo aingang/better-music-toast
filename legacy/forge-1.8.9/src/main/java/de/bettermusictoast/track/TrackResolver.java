@@ -39,15 +39,26 @@ public final class TrackResolver {
 		String[] keys = disc
 				? new String[] {"item.record." + fileName + ".desc", shortKey}
 				: new String[] {shortKey};
+		String translation = null;
 		for (String key : keys) {
 			String text = I18n.format(key);
 			if (!text.equals(key)) {
-				return fromTranslation(text, icon);
+				translation = text;
+				break;
 			}
 		}
 
+		// A resource pack or mod may play another song under this path; then that song's own name counts.
+		TrackInfo fromPack = PackTrackInfo.resolve(file, translation != null, fileName, icon);
+		if (fromPack != null) {
+			return fromPack;
+		}
+		if (translation != null) {
+			return fromTranslation(translation, icon);
+		}
+
 		// Unknown (e.g. modded) track: prettify the file name and credit the mod.
-		return new TrackInfo(prettify(fileName), modName(namespace), icon);
+		return new TrackInfo(prettify(fileName), modName(namespace), icon, true);
 	}
 
 	private static TrackInfo fromTranslation(String text, ItemStack icon) {
@@ -80,7 +91,7 @@ public final class TrackResolver {
 		return item == null ? null : new ItemStack(item);
 	}
 
-	private static String modName(String namespace) {
+	static String modName(String namespace) {
 		if (namespace.equals("minecraft")) {
 			return null;
 		}
@@ -88,7 +99,7 @@ public final class TrackResolver {
 		return mod != null ? mod.getName() : namespace;
 	}
 
-	private static String prettify(String fileName) {
+	static String prettify(String fileName) {
 		StringBuilder result = new StringBuilder();
 		for (String word : fileName.split("[_\\-]+")) {
 			if (word.isEmpty()) continue;

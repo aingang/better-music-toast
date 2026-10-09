@@ -7,6 +7,8 @@ Shows the song that's currently playing in a small box that fits right into the 
 ## Features
 
 - A small toast with the song title and artist whenever a new track starts, including menu music and music discs
+- Also names songs from resource packs and music mods, and shows the songs of Reactive Music, Music Triggers and
+  Music Player
 - Colour themes, several positions and sizes, shown for the whole song or just a few seconds
 - Moves out of the way when advancements, the boss bar or other notifications show up
 - Classic mode: only C418's soundtrack, with the tracks that belong to each biome

@@ -1,16 +1,19 @@
 package de.bettermusictoast.track;
 
 import de.bettermusictoast.BetterMusicToast;
+import de.bettermusictoast.compat.Fields;
 import de.bettermusictoast.compat.SoundAccess;
 import de.bettermusictoast.config.ModConfig;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.SoundCategory;
 import net.minecraft.client.audio.SoundEventAccessorComposite;
 import net.minecraft.client.audio.SoundManager;
 import net.minecraft.client.audio.SoundPoolEntry;
+import net.minecraft.client.gui.GuiIngame;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.GameSettings;
+import net.minecraft.item.ItemStack;
 
 /**
  * Keeps track of the music / music-disc sounds the sound engine starts, what is playing and
@@ -21,6 +24,9 @@ public final class NowPlayingTracker {
 	private static final long START_GRACE_MS = 1500;
 	private static final long PREVIEW_MS = 4000;
 	private static final long SETTINGS_PREVIEW_MS = 5000;
+	/** How far apart a disc and its "Now playing" message may start to belong together. */
+	private static final long NOW_PLAYING_MS = 3000;
+	private static final Fields<String> RECORD_MESSAGE = new Fields<String>(GuiIngame.class, "recordPlaying", "field_73838_g");
 
 	/** Started, but the file it plays is only known once the sound engine has set it up. */
 	private ISound pending;
@@ -36,6 +42,12 @@ public final class NowPlayingTracker {
 	private long shownMs;
 	private long previewUntil;
 	private long settingsPreviewUntil;
+	/** Whether the song shown comes from a mod with its own music player (see {@link ExternalMusic}). */
+	private boolean external;
+	private String externalKey;
+	private String lastRecordMessage;
+	private String nowPlayingText;
+	private long nowPlayingAt;
 
 	/** Called by Forge whenever the sound engine starts a sound. */
 	public void onPlaySound(SoundManager manager, ISound sound) {
@@ -71,8 +83,12 @@ public final class NowPlayingTracker {
 			return;
 		}
 		instance = sound;
+		external = false;
 		source = disc ? SoundCategory.RECORDS : SoundCategory.MUSIC;
 		track = TrackResolver.resolve(entry.getSoundPoolEntryLocation(), disc);
+		if (disc && track.guessed() && nowPlayingText != null && now() - nowPlayingAt < NOW_PLAYING_MS) {
+			track = named(nowPlayingText, track.icon());
+		}
 		startedAt = now();
 		ended = false;
 		shownMs = 0;
@@ -93,6 +109,88 @@ public final class NowPlayingTracker {
 	public void tick() {
 		resolvePending();
 		checkEnded();
+		readNowPlayingMessage();
+		readExternalMusic();
+	}
+
+	/** Follows the songs of mods that play music past Minecraft's sound engine (e.g. Music Triggers). */
+	private void readExternalMusic() {
+		ExternalMusic.Song song = ExternalMusic.current();
+		if (song == null || !song.playing) {
+			if (external && !ended && previewUntil == 0) {
+				ended = true;
+			}
+			if (song == null) {
+				// The same song starting again later is a new start.
+				externalKey = null;
+			}
+			return;
+		}
+		boolean newSong = !song.key.equals(externalKey);
+		externalKey = song.key;
+		// A music disc keeps the box while the other mod plays quietly underneath; a resumed song comes back.
+		boolean discPlaying = !external && track != null && !ended && previewUntil == 0 && source == SoundCategory.RECORDS;
+		if ((newSong && !discPlaying) || (external && ended && previewUntil == 0)) {
+			instance = null;
+			external = true;
+			source = song.musicVolume ? SoundCategory.MUSIC : SoundCategory.MASTER;
+			track = new TrackInfo(song.title, song.artist, null);
+			startedAt = now();
+			ended = false;
+			shownMs = 0;
+			previewUntil = 0;
+		}
+	}
+	/**
+	 * Mods that stream music discs only name the song in the jukebox's "Now playing: …" message. That name
+	 * replaces one guessed from the file, whether the message comes before or after the sound.
+	 */
+	private void readNowPlayingMessage() {
+		Minecraft mc = Minecraft.getMinecraft();
+		if (mc.ingameGUI == null) {
+			return;
+		}
+		String message = RECORD_MESSAGE.get(mc.ingameGUI);
+		// Every new message is a new string, even with the same text.
+		if (message == lastRecordMessage) {
+			return;
+		}
+		lastRecordMessage = message;
+		String name = nowPlayingName(message);
+		if (name == null) {
+			return;
+		}
+		nowPlayingText = name;
+		nowPlayingAt = now();
+		if (track != null && source == SoundCategory.RECORDS && track.guessed() && !ended && previewUntil == 0
+				&& now() - startedAt < NOW_PLAYING_MS) {
+			track = named(name, track.icon());
+		}
+	}
+
+	/** The song in a "Now playing: …" message, which is already translated, or null if it shows something else. */
+	private static String nowPlayingName(String message) {
+		if (message == null || message.isEmpty()) {
+			return null;
+		}
+		String marker = "\u0000";
+		String pattern = I18n.format("record.nowPlaying", marker);
+		int at = pattern.indexOf(marker);
+		if (at < 0 || pattern.length() == marker.length()) {
+			return null;
+		}
+		String prefix = pattern.substring(0, at);
+		String suffix = pattern.substring(at + marker.length());
+		if (message.length() <= prefix.length() + suffix.length() || !message.startsWith(prefix) || !message.endsWith(suffix)) {
+			return null;
+		}
+		String name = message.substring(prefix.length(), message.length() - suffix.length()).trim();
+		return name.isEmpty() ? null : name;
+	}
+
+	private static TrackInfo named(String text, ItemStack icon) {
+		String[] parts = TrackResolver.splitArtist(text);
+		return parts != null ? new TrackInfo(parts[1], parts[0], icon) : new TrackInfo(text, null, icon);
 	}
 
 	/**
