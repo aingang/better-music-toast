@@ -43,7 +43,18 @@ loom {
     }
 }
 
+// Classes that are the same in the 1.7.10, 1.8.9 and 1.12 builds exist only once: in legacy/shared,
+// or, where the root project has the very same file, there.
+val sharedJava by tasks.registering(Sync::class) {
+    from("../shared/java")
+    from(repoRoot.resolve("src/main/java")) {
+        include("de/bettermusictoast/track/ExternalMusic.java", "de/bettermusictoast/track/OggTags.java")
+    }
+    into(layout.buildDirectory.dir("generated/sharedJava"))
+}
+
 sourceSets.main {
+    java.srcDir(sharedJava)
     output.setResourcesDir(sourceSets.main.flatMap { it.java.classesDirectory })
 }
 
